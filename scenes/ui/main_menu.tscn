@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://bbphe0nc4lheq"]
+
+[ext_resource type="Script" uid="uid://d3oa0iuc5kmga" path="res://scenes/ui/main_menu.gd" id="1_sl1te"]
+
+[node name="MainMenu" type="Control" unique_id=90338667]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sl1te")
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1646585688]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=2131325674]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer" unique_id=831287563]
+layout_mode = 2
+text = "Kartenspiel"
+
+[node name="StartButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1517487411]
+layout_mode = 2
+text = "Start"
+
+[node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=849804253]
+layout_mode = 2
+text = "Quit"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
