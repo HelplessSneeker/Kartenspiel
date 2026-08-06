@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://6o2csr2jllqj"]
+
+[ext_resource type="Script" uid="uid://bs3yqbfecyowa" path="res://cards/card.gd" id="1_ivai2"]
+
+[node name="Card" type="PanelContainer" unique_id=514923645]
+custom_minimum_size = Vector2(100, 150)
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_ivai2")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=558112738]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=369139916]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=986834283]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CostLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=666068353]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TextLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1543716907]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+autowrap_mode = 2

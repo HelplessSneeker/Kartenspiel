@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CardData" format=3 uid="uid://bklpwgppsi6du"]
+
+[ext_resource type="Script" uid="uid://bedxkpm6a0xyk" path="res://cards/data/card_data.gd" id="1_nybwo"]
+
+[resource]
+script = ExtResource("1_nybwo")
+cost = 1
+damage = 5
+description = "Füge {damage} Schaden zu."
+metadata/_custom_type_script = "uid://bedxkpm6a0xyk"
