@@ -10,8 +10,13 @@ const CARD_SCENE := preload("res://cards/card.tscn")
 ## Abstand zwischen zwei Karten, solange genug Platz ist.
 @export var spacing := 12.0
 
-## Wie weit die Hand im Ruhezustand nach unten rutscht (Pixel).
-@export var idle_drop := 55.0
+## Abstand der Kartenunterkante zum unteren Bildschirmrand, wenn die Hand ruht.
+@export var idle_offset := 0.0
+
+## Dasselbe, solange die Maus in der Hand ist. Beide Zustaende haben bewusst
+## ihre eigene Zahl - vorher hingen sie aneinander und liessen sich nicht
+## unabhaengig einstellen.
+@export var active_offset := 25.0
 
 ## Groesse der Karten im Ruhezustand.
 @export var idle_scale := 0.8
@@ -74,41 +79,55 @@ func _apply_layout(animate: bool = true) -> void:
 	var card_size: Vector2 = _views[0].size
 	_fit_self(card_size.y)
 
-	# Erst mit Wunschabstand rechnen. Passt das nicht in die Breite,
-	# ruecken die Karten zusammen und ueberlappen sich.
-	var step := card_size.x + spacing
-	var total := step * count - spacing
-	if total > size.x and count > 1:
-		step = (size.x - card_size.x) / float(count - 1)
-		total = step * (count - 1) + card_size.x
-	var start_x := (size.x - total) * 0.5
+	# Alle Karten ausser der gehoverten haben diese Groesse. Der Abstand muss
+	# daran haengen: rechnet man mit der unskalierten Breite, stehen
+	# geschrumpfte Karten mit Luecken fuer ihre volle Groesse da.
+	var base_scale := 1.0 if _active else idle_scale
+	var visible_width := card_size.x * base_scale
+
+	# Abstand von Kartenmitte zu Kartenmitte. Wird es zu eng, ruecken die
+	# Karten zusammen und ueberlappen sich.
+	var step := visible_width + spacing
+	var span := step * (count - 1)
+	if span + visible_width > size.x and count > 1:
+		step = (size.x - visible_width) / float(count - 1)
+		span = step * (count - 1)
+	var first_center := (size.x - span) * 0.5
+
+	var base_offset := active_offset if _active else idle_offset
 
 	for i in count:
 		var view := _views[i]
 		var is_hovered := _active and view == _hovered
 
-		var target_scale := idle_scale
-		var target_y := idle_drop
-		if _active:
-			target_scale = hover_scale if is_hovered else 1.0
-			target_y = -hover_lift if is_hovered else 0.0
+		var target_scale := base_scale
+		var offset := base_offset
+		if is_hovered:
+			target_scale = hover_scale
+			offset += hover_lift
 
 		# z_index steuert nur die Zeichenreihenfolge, nicht das Layout -
 		# im Gegensatz zu move_to_front(), das die Kindreihenfolge aendert.
 		view.z_index = 100 if is_hovered else i
 		view.dimmed = not _active
 
-		var target_pos := Vector2(start_x + step * i, target_y)
+		# pivot_offset sitzt auf Unterkante-Mitte, und genau dieser Punkt bleibt
+		# beim Skalieren stehen. Deshalb wird er positioniert, nicht die Ecke.
+		var target_pos := Vector2(
+			first_center + step * i - card_size.x * 0.5,
+			size.y - card_size.y - offset,
+		)
 		_move_to(view, target_pos, Vector2.ONE * target_scale, animate)
 
 
-## Die Hand zieht sich selbst auf die noetige Hoehe: Kartenhoehe plus der
-## Strecke, um die die Karten im Ruhezustand nach unten rutschen. Sonst haengt
-## die Sichtbarkeit an einer von Hand gesetzten Inspector-Zahl - und bei
-## Hoehe 0 liegen die Karten unterhalb des Bildschirms.
+## Die Hand zieht sich selbst auf die noetige Hoehe, statt sie aus einer von
+## Hand gesetzten Inspector-Zahl zu beziehen - bei Hoehe 0 lagen die Karten
+## unterhalb des Bildschirms. Der Zuschlag fuer hover_scale sorgt dafuer, dass
+## auch die vergroesserte Karte noch im Rechteck liegt und die Maus-Erkennung
+## nicht abreisst.
 ## Setzt Anchor-Preset "Bottom Wide" voraus (anchor_top == anchor_bottom == 1).
 func _fit_self(card_height: float) -> void:
-	var wanted := card_height + idle_drop
+	var wanted := card_height * maxf(1.0, hover_scale) + maxf(idle_offset, active_offset)
 	if is_equal_approx(size.y, wanted):
 		return
 	offset_top = -wanted
