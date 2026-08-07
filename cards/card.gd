@@ -1,6 +1,19 @@
 class_name CardView
 extends PanelContainer
 
+## Eine Karte auf der Hand.
+##
+## ACHTUNG, Kartenmasse haengen zusammen: die Labels in card.tscn haben
+## custom_minimum_size.x = 110, die Karte selbst 130 - das ist 110 plus die
+## zweimal 10 content_margin aus dem Theme. Diese Zahlen muessen zueinander
+## passen, und die Label-Breite darf nicht "aufgeraeumt" werden.
+##
+## Grund: ein Label mit autowrap meldet als Mindestbreite fast nichts, weil es
+## ja umbrechen kann. Godot rechnet die Mindesthoehe dann fuer genau diese
+## winzige Breite aus, also fuer maximal viele Zeilen. Ohne feste Label-Breite
+## meldet die Karte statt 190 rund 690 Pixel Hoehe - und hand.gd baut ihr
+## Layout auf genau diesem Wert auf.
+
 ## Wird gefeuert, wenn auf diese Karte geklickt wird.
 ## Die Karte selbst weiss nicht, was "spielen" bedeutet - das entscheidet game.gd.
 signal clicked(card: CardView)

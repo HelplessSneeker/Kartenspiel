@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bs3yqbfecyowa" path="res://cards/card.gd" id="1_ivai2"]
 
 [node name="Card" type="PanelContainer" unique_id=514923645]
-custom_minimum_size = Vector2(112, 158)
+custom_minimum_size = Vector2(130, 190)
 theme_type_variation = &"Card"
 script = ExtResource("1_ivai2")
 
@@ -13,6 +13,7 @@ theme_override_constants/separation = 6
 
 [node name="NameLabel" type="Label" parent="VBoxContainer" unique_id=986834283]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 theme_type_variation = &"CardName"
 autowrap_mode = 3
@@ -24,6 +25,7 @@ theme_type_variation = &"CardCost"
 
 [node name="TextLabel" type="Label" parent="VBoxContainer" unique_id=1543716907]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"CardText"
