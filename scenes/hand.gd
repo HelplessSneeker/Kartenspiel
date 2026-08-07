@@ -72,6 +72,7 @@ func _apply_layout(animate: bool = true) -> void:
 		return
 
 	var card_size: Vector2 = _views[0].size
+	_fit_self(card_size.y)
 
 	# Erst mit Wunschabstand rechnen. Passt das nicht in die Breite,
 	# ruecken die Karten zusammen und ueberlappen sich.
@@ -101,6 +102,19 @@ func _apply_layout(animate: bool = true) -> void:
 		_move_to(view, target_pos, Vector2.ONE * target_scale, animate)
 
 
+## Die Hand zieht sich selbst auf die noetige Hoehe: Kartenhoehe plus der
+## Strecke, um die die Karten im Ruhezustand nach unten rutschen. Sonst haengt
+## die Sichtbarkeit an einer von Hand gesetzten Inspector-Zahl - und bei
+## Hoehe 0 liegen die Karten unterhalb des Bildschirms.
+## Setzt Anchor-Preset "Bottom Wide" voraus (anchor_top == anchor_bottom == 1).
+func _fit_self(card_height: float) -> void:
+	var wanted := card_height + idle_drop
+	if is_equal_approx(size.y, wanted):
+		return
+	offset_top = -wanted
+	offset_bottom = 0.0
+
+
 func _move_to(view: CardView, pos: Vector2, card_scale: Vector2, animate: bool) -> void:
 	if animate:
 		view.animate_to(pos, card_scale, tween_time)
@@ -128,9 +142,14 @@ func _on_card_mouse_entered(view: CardView) -> void:
 
 
 func _on_card_mouse_exited(view: CardView) -> void:
-	if _hovered == view:
-		_hovered = null
-		_apply_layout()
+	if _hovered != view:
+		return
+	_hovered = null
+	# Eine vergroesserte Karte kann ueber den Rand der Hand hinausragen. Verlaesst
+	# der Cursor sie dort, feuert `mouse_exited` der Hand nie - deshalb hier
+	# selbst nachsehen, statt auf das Signal zu warten.
+	_active = get_global_rect().has_point(get_global_mouse_position())
+	_apply_layout()
 
 
 func _on_card_clicked(view: CardView) -> void:
