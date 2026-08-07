@@ -8,5 +8,5 @@ card_name = "Verteidigung"
 cost = 1
 category = 1
 block = 5
-description = "Erhalte {block} Block."
+description = "{icon_block} {block} Block"
 metadata/_custom_type_script = "uid://bedxkpm6a0xyk"

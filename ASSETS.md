@@ -17,6 +17,19 @@ Download**, nicht später. Wer das nachträglich rekonstruieren will, hat verlor
 | `assets/fonts/Oswald.ttf` | Schrift für Kartennamen | [google/fonts `ofl/oswald`](https://github.com/google/fonts/tree/main/ofl/oswald) | Vernon Adams, Kalapi Gajjar, Cyreal | OFL 1.1 (`OFL-Oswald.txt`) | 08.08.2026 |
 | `assets/fonts/Inter.ttf` | Schrift für Fließtext & UI | [google/fonts `ofl/inter`](https://github.com/google/fonts/tree/main/ofl/inter) | Rasmus Andersson | OFL 1.1 (`OFL-Inter.txt`) | 08.08.2026 |
 
+| `assets/icons/damage.svg` | Schaden | [game-icons `skoll/gladius`](https://game-icons.net/1x1/skoll/gladius.html) | **Skoll** | **CC BY 3.0** | 08.08.2026 |
+| `assets/icons/block.svg` | Block | [game-icons `sbed/shield`](https://game-icons.net/1x1/sbed/shield.html) | **sbed** | **CC BY 3.0** | 08.08.2026 |
+| `assets/icons/energy.svg` | Energie | [game-icons `lorc/power-lightning`](https://game-icons.net/1x1/lorc/power-lightning.html) | **Lorc** | **CC BY 3.0** | 08.08.2026 |
+| `assets/icons/heal.svg` | Heilung | [game-icons `sbed/health-normal`](https://game-icons.net/1x1/sbed/health-normal.html) | **sbed** | **CC BY 3.0** | 08.08.2026 |
+
+**Die Icons sind CC BY — Namensnennung ist Pflicht**, anders als bei den Schriften.
+Ohne Credits-Screen darf das Spiel nicht veröffentlicht werden.
+
+**Modifiziert** (bei CC BY erlaubt, hier der Vollständigkeit halber):
+das schwarze Hintergrund-Rechteck der Originale wurde entfernt (auf dunklen Karten
+wäre es ein schwarzer Klotz), und `width`/`height` auf 64 gesetzt, damit Godot die
+SVGs nicht auf 512×512 rastert. Die Icon-Pfade selbst sind unverändert.
+
 Beides **Variable Fonts** mit Weight-Achse — eine Datei deckt alle Schnitte ab.
 OFL verlangt, dass der Lizenztext mitgeliefert wird; deshalb liegen die `OFL-*.txt`
 neben den Schriften. Namensnennung ist bei OFL **nicht** Pflicht (anders als CC BY),
@@ -38,5 +51,9 @@ schadet im Credits-Screen aber nicht.
 Sobald das erste CC-BY-Asset drin ist, gehört dieser Block in den Credits-Screen:
 
 ```
-Icons made by <Autor>. Available on https://game-icons.net (CC BY 3.0)
+Icons made by Skoll, sbed and Lorc.
+Available on https://game-icons.net — licensed under CC BY 3.0.
+
+Fonts: Oswald (Vernon Adams, Kalapi Gajjar, Cyreal) and Inter (Rasmus Andersson),
+licensed under the SIL Open Font License 1.1.
 ```
