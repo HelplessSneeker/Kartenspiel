@@ -1,5 +1,8 @@
 [gd_resource type="Theme" format=3]
 
+[ext_resource type="FontFile" path="res://assets/fonts/Inter.ttf" id="1_inter"]
+[ext_resource type="FontFile" path="res://assets/fonts/Oswald.ttf" id="2_oswald"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
 content_margin_left = 10.0
 content_margin_top = 10.0
@@ -17,11 +20,14 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [resource]
+default_font = ExtResource("1_inter")
+default_font_size = 15
 Card/base_type = &"PanelContainer"
 Card/styles/panel = SubResource("StyleBoxFlat_card")
 CardName/base_type = &"Label"
+CardName/fonts/font = ExtResource("2_oswald")
 CardName/colors/font_color = Color(0.921569, 0.929412, 0.960784, 1)
-CardName/font_sizes/font_size = 16
+CardName/font_sizes/font_size = 18
 CardCost/base_type = &"Label"
 CardCost/colors/font_color = Color(0.658824, 0.694118, 0.807843, 1)
 CardCost/font_sizes/font_size = 13

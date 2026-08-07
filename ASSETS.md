@@ -14,7 +14,13 @@ Download**, nicht später. Wer das nachträglich rekonstruieren will, hat verlor
 
 | Datei / Ordner | Was | Quelle | Autor | Lizenz | Datum |
 | --- | --- | --- | --- | --- | --- |
-| _(noch keine)_ | | | | | |
+| `assets/fonts/Oswald.ttf` | Schrift für Kartennamen | [google/fonts `ofl/oswald`](https://github.com/google/fonts/tree/main/ofl/oswald) | Vernon Adams, Kalapi Gajjar, Cyreal | OFL 1.1 (`OFL-Oswald.txt`) | 08.08.2026 |
+| `assets/fonts/Inter.ttf` | Schrift für Fließtext & UI | [google/fonts `ofl/inter`](https://github.com/google/fonts/tree/main/ofl/inter) | Rasmus Andersson | OFL 1.1 (`OFL-Inter.txt`) | 08.08.2026 |
+
+Beides **Variable Fonts** mit Weight-Achse — eine Datei deckt alle Schnitte ab.
+OFL verlangt, dass der Lizenztext mitgeliefert wird; deshalb liegen die `OFL-*.txt`
+neben den Schriften. Namensnennung ist bei OFL **nicht** Pflicht (anders als CC BY),
+schadet im Credits-Screen aber nicht.
 
 ## Vorgemerkte Quellen
 
