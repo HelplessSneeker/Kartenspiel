@@ -11,6 +11,14 @@ const UNPLAYABLE_TINT := Color(0.55, 0.55, 0.55)
 ## Hand ruht - voruebergehender Zustand, haengt an der Maus.
 const IDLE_TINT := Color(0.65, 0.65, 0.7)
 
+## Kartenruecken. Der Default-Theme liefert fuer PanelContainer eine
+## halbtransparente Flaeche - fuer eine Karte, die andere Karten ueberlappt,
+## unbrauchbar. Deshalb ein eigener StyleBox statt des Theme-Panels.
+const BG_COLOR := Color("232839")
+const BORDER_COLOR := Color("454d69")
+const CORNER_RADIUS := 8
+const BORDER_WIDTH := 2
+
 var data: CardData
 
 ## Beide Faerbungen sind unabhaengig voneinander und werden multipliziert:
@@ -26,6 +34,22 @@ var dimmed := false:
 		_update_tint()
 
 var _tween: Tween
+
+
+func _ready() -> void:
+	add_theme_stylebox_override("panel", _build_style())
+
+
+## Bewusst im Code statt im Editor: das Aussehen soll spaeter von den
+## Kartendaten abhaengen koennen (Kategorie, Seltenheit), und dafuer braucht
+## es sowieso einen Ort, an dem der StyleBox gebaut wird.
+func _build_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = BG_COLOR
+	style.border_color = BORDER_COLOR
+	style.set_border_width_all(BORDER_WIDTH)
+	style.set_corner_radius_all(CORNER_RADIUS)
+	return style
 
 
 func setup(new_data: CardData) -> void:
