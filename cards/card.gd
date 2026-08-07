@@ -5,6 +5,8 @@ extends PanelContainer
 ## Die Karte selbst weiss nicht, was "spielen" bedeutet - das entscheidet game.gd.
 signal clicked(card: CardView)
 
+const UNPLAYABLE_TINT := Color(0.55, 0.55, 0.55)
+
 var data: CardData
 
 
@@ -16,6 +18,11 @@ func setup(new_data: CardData) -> void:
 		"damage": data.damage,
 		"block": data.block,
 	})
+
+
+## Rein optisch - die Regel, ob gespielt werden darf, liegt in game.gd.
+func set_playable(playable: bool) -> void:
+	modulate = Color.WHITE if playable else UNPLAYABLE_TINT
 
 
 func _gui_input(event: InputEvent) -> void:
