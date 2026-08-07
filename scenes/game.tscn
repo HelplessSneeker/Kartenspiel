@@ -5,6 +5,7 @@
 [ext_resource type="Resource" uid="uid://bklpwgppsi6du" path="res://cards/data/schlag.tres" id="3_iywne"]
 [ext_resource type="Resource" uid="uid://bgkw4eya0hy42" path="res://cards/data/verteidigung.tres" id="4_p57ef"]
 [ext_resource type="Script" uid="uid://d3pd0u6pwdqs0" path="res://scenes/hand.gd" id="5_iywne"]
+[ext_resource type="Theme" path="res://resources/game_theme.tres" id="6_theme"]
 
 [node name="Game" type="Control" unique_id=139426249]
 layout_mode = 3
@@ -13,6 +14,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("6_theme")
 script = ExtResource("1_uwrxv")
 starting_deck = Array[ExtResource("2_lbhrr")]([ExtResource("4_p57ef"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("4_p57ef"), ExtResource("4_p57ef")])
 

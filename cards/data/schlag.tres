@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_nybwo")
+card_name = "Schlag"
 cost = 1
 damage = 5
 description = "Füge {damage} Schaden zu."

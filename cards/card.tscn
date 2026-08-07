@@ -3,31 +3,28 @@
 [ext_resource type="Script" uid="uid://bs3yqbfecyowa" path="res://cards/card.gd" id="1_ivai2"]
 
 [node name="Card" type="PanelContainer" unique_id=514923645]
-custom_minimum_size = Vector2(100, 150)
-offset_right = 40.0
-offset_bottom = 40.0
+custom_minimum_size = Vector2(112, 158)
+theme_type_variation = &"Card"
 script = ExtResource("1_ivai2")
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=558112738]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=369139916]
 layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/separation = 6
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=369139916]
-layout_mode = 2
-
-[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=986834283]
+[node name="NameLabel" type="Label" parent="VBoxContainer" unique_id=986834283]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"CardName"
+autowrap_mode = 3
 
-[node name="CostLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=666068353]
+[node name="CostLabel" type="Label" parent="VBoxContainer" unique_id=666068353]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"CardCost"
 
-[node name="TextLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1543716907]
+[node name="TextLabel" type="Label" parent="VBoxContainer" unique_id=1543716907]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-autowrap_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"CardText"
+autowrap_mode = 3

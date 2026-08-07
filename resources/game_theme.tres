@@ -1,0 +1,30 @@
+[gd_resource type="Theme" format=3]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.137255, 0.156863, 0.223529, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.270588, 0.301961, 0.411765, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[resource]
+Card/base_type = &"PanelContainer"
+Card/styles/panel = SubResource("StyleBoxFlat_card")
+CardName/base_type = &"Label"
+CardName/colors/font_color = Color(0.921569, 0.929412, 0.960784, 1)
+CardName/font_sizes/font_size = 16
+CardCost/base_type = &"Label"
+CardCost/colors/font_color = Color(0.658824, 0.694118, 0.807843, 1)
+CardCost/font_sizes/font_size = 13
+CardText/base_type = &"Label"
+CardText/colors/font_color = Color(0.788235, 0.807843, 0.870588, 1)
+CardText/font_sizes/font_size = 13

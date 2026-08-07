@@ -11,13 +11,11 @@ const UNPLAYABLE_TINT := Color(0.55, 0.55, 0.55)
 ## Hand ruht - voruebergehender Zustand, haengt an der Maus.
 const IDLE_TINT := Color(0.65, 0.65, 0.7)
 
-## Kartenruecken. Der Default-Theme liefert fuer PanelContainer eine
-## halbtransparente Flaeche - fuer eine Karte, die andere Karten ueberlappt,
-## unbrauchbar. Deshalb ein eigener StyleBox statt des Theme-Panels.
-const BG_COLOR := Color("232839")
-const BORDER_COLOR := Color("454d69")
-const CORNER_RADIUS := 8
-const BORDER_WIDTH := 2
+## Rahmenfarbe je Kategorie - das Einzige am Kartenaussehen, das wirklich von
+## den Kartendaten abhaengt. Hintergrund, Radius, Rahmenbreite und das Padding
+## kommen aus dem Theme (Variation "Card") und stehen deshalb nicht mehr hier.
+const BORDER_AKTION := Color("b4553c")
+const BORDER_REAKTION := Color("4a7fb5")
 
 var data: CardData
 
@@ -36,22 +34,6 @@ var dimmed := false:
 var _tween: Tween
 
 
-func _ready() -> void:
-	add_theme_stylebox_override("panel", _build_style())
-
-
-## Bewusst im Code statt im Editor: das Aussehen soll spaeter von den
-## Kartendaten abhaengen koennen (Kategorie, Seltenheit), und dafuer braucht
-## es sowieso einen Ort, an dem der StyleBox gebaut wird.
-func _build_style() -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = BG_COLOR
-	style.border_color = BORDER_COLOR
-	style.set_border_width_all(BORDER_WIDTH)
-	style.set_corner_radius_all(CORNER_RADIUS)
-	return style
-
-
 func setup(new_data: CardData) -> void:
 	data = new_data
 	%NameLabel.text = data.card_name
@@ -60,6 +42,37 @@ func setup(new_data: CardData) -> void:
 		"damage": data.damage,
 		"block": data.block,
 	})
+	# Der Style haengt an `data`, und in _ready() gibt es die noch nicht -
+	# deshalb hier und nicht dort.
+	_apply_style()
+
+
+## Holt den StyleBox aus dem Theme und faerbt nur den Rahmen um.
+##
+## Der Theme-Type wird explizit mitgegeben, damit immer das Original aus dem
+## Theme kommt und nicht der Override, den diese Methode selbst gesetzt hat -
+## sonst faerbt jeder weitere Aufruf auf dem Ergebnis des vorigen.
+##
+## duplicate() ist Pflicht: StyleBoxes sind Resources und damit zwischen allen
+## Karten geteilt. Ohne Kopie faerbt die zuletzt gebaute Karte rueckwirkend
+## alle anderen mit um.
+func _apply_style() -> void:
+	var base := get_theme_stylebox("panel", "Card") as StyleBoxFlat
+	if base == null:
+		return
+	var style: StyleBoxFlat = base.duplicate()
+	style.border_color = _border_color()
+	add_theme_stylebox_override("panel", style)
+
+
+func _border_color() -> Color:
+	if data == null:
+		return BORDER_AKTION
+	match data.category:
+		CardData.Category.REAKTION:
+			return BORDER_REAKTION
+		_:
+			return BORDER_AKTION
 
 
 func snap_to(target_position: Vector2, target_scale: Vector2) -> void:

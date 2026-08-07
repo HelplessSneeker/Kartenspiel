@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_kko04")
+card_name = "Verteidigung"
 cost = 1
 category = 1
 block = 5
