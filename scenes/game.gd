@@ -1,7 +1,5 @@
 extends Control
 
-const CARD_SCENE := preload("res://cards/card.tscn")
-
 ## Energie pro Zug - fix, kein Ramp (Beschluss 07.08.2026).
 const MAX_ENERGY := 4
 
@@ -19,6 +17,7 @@ var energy: int = MAX_ENERGY
 
 
 func _ready() -> void:
+	%Hand.card_clicked.connect(play_card)
 	deck = starting_deck.duplicate()
 	deck.shuffle()
 	for i in STARTING_HAND:
@@ -86,19 +85,8 @@ func refresh() -> void:
 	refresh_hud()
 
 
-## Baut die Hand komplett aus `hand` neu auf. Einziger Ort, an dem
-## HandContainer-Kinder entstehen oder verschwinden.
 func refresh_hand() -> void:
-	for child in %HandContainer.get_children():
-		%HandContainer.remove_child(child)
-		child.queue_free()
-
-	for card_data in hand:
-		var card: CardView = CARD_SCENE.instantiate()
-		%HandContainer.add_child(card)
-		card.setup(card_data)
-		card.set_playable(card_data.cost <= energy)
-		card.clicked.connect(_on_card_clicked)
+	%Hand.set_cards(hand, energy)
 
 
 func refresh_hud() -> void:
@@ -108,10 +96,6 @@ func refresh_hud() -> void:
 
 
 # --- Signale ------------------------------------------------------------------
-
-func _on_card_clicked(card: CardView) -> void:
-	play_card(card.data)
-
 
 func _on_draw_button_pressed() -> void:
 	draw_card()
