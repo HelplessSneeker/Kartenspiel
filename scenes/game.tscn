@@ -5,6 +5,7 @@
 [ext_resource type="Resource" uid="uid://bklpwgppsi6du" path="res://cards/data/schlag.tres" id="3_iywne"]
 [ext_resource type="Resource" uid="uid://bgkw4eya0hy42" path="res://cards/data/verteidigung.tres" id="4_p57ef"]
 [ext_resource type="Script" uid="uid://d3pd0u6pwdqs0" path="res://scenes/hand.gd" id="5_iywne"]
+[ext_resource type="PackedScene" path="res://combat/health_view.tscn" id="6_health"]
 
 [node name="Game" type="Control" unique_id=139426249]
 layout_mode = 3
@@ -75,6 +76,31 @@ text = "Zug beenden"
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Battelfield" unique_id=262212547]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayerView" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer" instance=ExtResource("6_health")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+title = "Spieler"
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer" unique_id=262212548]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="EnemyView" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer" instance=ExtResource("6_health")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+title = "Gegner"
+
 [node name="Hand" type="Control" parent="." unique_id=173045572]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 22)
@@ -87,5 +113,54 @@ grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("5_iywne")
 
+[node name="OverlayLayer" type="CanvasLayer" parent="." unique_id=173045580]
+layer = 10
+
+[node name="VictoryOverlay" type="Control" parent="OverlayLayer" unique_id=173045573]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="OverlayLayer/VictoryOverlay" unique_id=173045574]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="CenterContainer" type="CenterContainer" parent="OverlayLayer/VictoryOverlay" unique_id=173045575]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dialog" type="PanelContainer" parent="OverlayLayer/VictoryOverlay/CenterContainer" unique_id=173045576]
+layout_mode = 2
+theme_type_variation = &"Dialog"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="OverlayLayer/VictoryOverlay/CenterContainer/Dialog" unique_id=173045577]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="OverlayLayer/VictoryOverlay/CenterContainer/Dialog/VBoxContainer" unique_id=173045578]
+layout_mode = 2
+theme_type_variation = &"DialogTitle"
+text = "Gegner besiegt"
+horizontal_alignment = 1
+
+[node name="RetryButton" type="Button" parent="OverlayLayer/VictoryOverlay/CenterContainer/Dialog/VBoxContainer" unique_id=173045579]
+layout_mode = 2
+text = "Nochmal"
+
 [connection signal="pressed" from="MarginContainer/VBoxContainer/TopBar/HBoxContainer/DrawButton" to="." method="_on_draw_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/TopBar/HBoxContainer/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
+[connection signal="pressed" from="OverlayLayer/VictoryOverlay/CenterContainer/Dialog/VBoxContainer/RetryButton" to="." method="_on_retry_button_pressed"]

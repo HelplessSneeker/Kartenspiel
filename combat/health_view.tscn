@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://combat/health_view.gd" id="1_hview"]
+
+[node name="HealthView" type="PanelContainer"]
+theme_type_variation = &"HealthPanel"
+script = ExtResource("1_hview")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HealthTitle"
+horizontal_alignment = 1
+
+[node name="Bar" type="ProgressBar" parent="VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 18)
+layout_mode = 2
+theme_type_variation = &"HealthBar"
+show_percentage = false
+
+[node name="ValueLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HealthValue"
+horizontal_alignment = 1
+
+[node name="BlockLabel" type="RichTextLabel" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"HealthBlock"
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
