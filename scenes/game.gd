@@ -135,7 +135,15 @@ func _on_end_turn_button_pressed() -> void:
 	end_turn()
 
 
-## Noch ohne Folgen ausser der Meldung - was bei einem Sieg passiert
-## (Bildschirm, naechster Kampf, Belohnung), ist eine eigene Etappe.
+## Der Kampf blockiert nach dem Sieg alle Karten. Solange das nirgends steht,
+## sieht das Spiel dabei aus wie eingefroren - deshalb zeigt der Sieg sich, statt
+## nur in der Konsole zu landen. Das Overlay liegt ueber allem und faengt Klicks
+## ab; die Sperre in play_card() bleibt trotzdem, denn die Regel gehoert in die
+## Logik und nicht in die Anzeige.
 func _on_enemy_died() -> void:
-	print("Gegner besiegt.")
+	%VictoryOverlay.show()
+
+
+func _on_retry_button_pressed() -> void:
+	Sfx.play("click")
+	get_tree().reload_current_scene()

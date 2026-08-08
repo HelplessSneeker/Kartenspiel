@@ -110,6 +110,22 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog"]
+content_margin_left = 32.0
+content_margin_top = 24.0
+content_margin_right = 32.0
+content_margin_bottom = 24.0
+bg_color = Color(0.137255, 0.156863, 0.223529, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.352941, 0.392157, 0.521569, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar_bg"]
 bg_color = Color(0.227451, 0.12549, 0.156863, 1)
 corner_radius_top_left = 4
@@ -174,6 +190,12 @@ HealthValue/font_sizes/font_size = 13
 HealthBlock/base_type = &"RichTextLabel"
 HealthBlock/colors/default_color = Color(0.498039, 0.705882, 0.909804, 1)
 HealthBlock/font_sizes/normal_font_size = 13
+Dialog/base_type = &"PanelContainer"
+Dialog/styles/panel = SubResource("StyleBoxFlat_dialog")
+DialogTitle/base_type = &"Label"
+DialogTitle/fonts/font = ExtResource("2_oswald")
+DialogTitle/colors/font_color = Color(0.921569, 0.929412, 0.960784, 1)
+DialogTitle/font_sizes/font_size = 30
 HealthBar/base_type = &"ProgressBar"
 HealthBar/styles/background = SubResource("StyleBoxFlat_bar_bg")
 HealthBar/styles/fill = SubResource("StyleBoxFlat_bar_fill")
