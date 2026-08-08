@@ -94,6 +94,36 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_health"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+bg_color = Color(0.137255, 0.156863, 0.223529, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.270588, 0.301961, 0.411765, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar_bg"]
+bg_color = Color(0.227451, 0.12549, 0.156863, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar_fill"]
+bg_color = Color(0.756863, 0.282353, 0.294118, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
 [resource]
 default_font = ExtResource("1_inter")
 default_font_size = 15
@@ -132,3 +162,18 @@ Title/base_type = &"Label"
 Title/fonts/font = ExtResource("2_oswald")
 Title/colors/font_color = Color(0.921569, 0.929412, 0.960784, 1)
 Title/font_sizes/font_size = 44
+HealthPanel/base_type = &"PanelContainer"
+HealthPanel/styles/panel = SubResource("StyleBoxFlat_health")
+HealthTitle/base_type = &"Label"
+HealthTitle/fonts/font = ExtResource("2_oswald")
+HealthTitle/colors/font_color = Color(0.921569, 0.929412, 0.960784, 1)
+HealthTitle/font_sizes/font_size = 17
+HealthValue/base_type = &"Label"
+HealthValue/colors/font_color = Color(0.788235, 0.807843, 0.870588, 1)
+HealthValue/font_sizes/font_size = 13
+HealthBlock/base_type = &"RichTextLabel"
+HealthBlock/colors/default_color = Color(0.498039, 0.705882, 0.909804, 1)
+HealthBlock/font_sizes/normal_font_size = 13
+HealthBar/base_type = &"ProgressBar"
+HealthBar/styles/background = SubResource("StyleBoxFlat_bar_bg")
+HealthBar/styles/fill = SubResource("StyleBoxFlat_bar_fill")

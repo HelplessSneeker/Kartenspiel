@@ -10,13 +10,25 @@ const STARTING_HAND := 5
 ## gezogen wird aus `deck`, das beim Start eine Kopie davon ist.
 @export var starting_deck: Array[CardData] = []
 
+@export var player_max_health := 60
+@export var enemy_max_health := 40
+
 var deck: Array[CardData] = []
 var hand: Array[CardData] = []
 var discard: Array[CardData] = []
 var energy: int = MAX_ENERGY
 
+var player: Combatant
+var enemy: Combatant
+
 
 func _ready() -> void:
+	player = Combatant.new(player_max_health)
+	enemy = Combatant.new(enemy_max_health)
+	enemy.died.connect(_on_enemy_died)
+	%PlayerView.show_combatant(player)
+	%EnemyView.show_combatant(enemy)
+
 	%Hand.card_clicked.connect(play_card)
 	deck = starting_deck.duplicate()
 	deck.shuffle()
@@ -40,14 +52,18 @@ func play_card(card_data: CardData) -> void:
 			card_data.card_name, card_data.cost, energy,
 		])
 		return
+	if not enemy.is_alive():
+		return
 
 	Sfx.play("card_play")
 	energy -= card_data.cost
 
+	# Wer das Ziel ist, entscheidet noch die Karten-Art, nicht die Karte selbst.
+	# Sobald es mehrere Gegner gibt, wandert das in eine echte Zielauswahl.
 	if card_data.damage > 0:
-		print("%s -> %d Schaden" % [card_data.card_name, card_data.damage])
+		enemy.take_damage(card_data.damage)
 	if card_data.block > 0:
-		print("%s -> %d Block" % [card_data.card_name, card_data.block])
+		player.add_block(card_data.block)
 
 	hand.erase(card_data)
 	discard.append(card_data)
@@ -55,6 +71,8 @@ func play_card(card_data: CardData) -> void:
 
 
 func end_turn() -> void:
+	# Block haelt nur eine Runde - sonst staut er sich unbegrenzt auf.
+	player.clear_block()
 	energy = MAX_ENERGY
 	if _draw_one():
 		Sfx.play("card_draw")
@@ -115,3 +133,9 @@ func _on_draw_button_pressed() -> void:
 
 func _on_end_turn_button_pressed() -> void:
 	end_turn()
+
+
+## Noch ohne Folgen ausser der Meldung - was bei einem Sieg passiert
+## (Bildschirm, naechster Kampf, Belohnung), ist eine eigene Etappe.
+func _on_enemy_died() -> void:
+	print("Gegner besiegt.")

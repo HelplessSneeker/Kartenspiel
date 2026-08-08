@@ -5,6 +5,7 @@
 [ext_resource type="Resource" uid="uid://bklpwgppsi6du" path="res://cards/data/schlag.tres" id="3_iywne"]
 [ext_resource type="Resource" uid="uid://bgkw4eya0hy42" path="res://cards/data/verteidigung.tres" id="4_p57ef"]
 [ext_resource type="Script" uid="uid://d3pd0u6pwdqs0" path="res://scenes/hand.gd" id="5_iywne"]
+[ext_resource type="PackedScene" path="res://combat/health_view.tscn" id="6_health"]
 
 [node name="Game" type="Control" unique_id=139426249]
 layout_mode = 3
@@ -74,6 +75,31 @@ text = "Zug beenden"
 [node name="Battelfield" type="Control" parent="MarginContainer/VBoxContainer" unique_id=262212546]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Battelfield" unique_id=262212547]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayerView" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer" instance=ExtResource("6_health")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+title = "Spieler"
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer" unique_id=262212548]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="EnemyView" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer" instance=ExtResource("6_health")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+title = "Gegner"
 
 [node name="Hand" type="Control" parent="." unique_id=173045572]
 unique_name_in_owner = true

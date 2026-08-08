@@ -40,23 +40,6 @@ const IDLE_TINT := Color(0.65, 0.65, 0.7)
 const BORDER_AKTION := Color("b4553c")
 const BORDER_REAKTION := Color("4a7fb5")
 
-## Icons, die in Kartentexten als Platzhalter auftauchen duerfen. Der Schluessel
-## ist der Name, den die .tres benutzt: "{icon_dmg}" zieht ICON_PATHS["dmg"].
-const ICON_PATHS := {
-	"dmg": "res://assets/icons/damage.svg",
-	"block": "res://assets/icons/block.svg",
-	"energy": "res://assets/icons/energy.svg",
-	"heal": "res://assets/icons/heal.svg",
-}
-
-## Die SVGs sind weiss, gefaerbt wird erst beim Rendern. Reinweiss ist neben dem
-## gedaempften Fliesstext zu laut, deshalb je Bedeutung ein eigener Ton.
-const ICON_TINTS := {
-	"dmg": "#e08a6e",
-	"block": "#7fb0e0",
-	"energy": "#f0d070",
-	"heal": "#8fd08f",
-}
 
 var data: CardData
 
@@ -78,36 +61,21 @@ var _tween: Tween
 func setup(new_data: CardData) -> void:
 	data = new_data
 	%NameLabel.text = data.card_name
-	%CostLabel.text = "%s %d" % [icon_bb("energy"), data.cost]
+	%CostLabel.text = "%s %d" % [Icons.bb("energy"), data.cost]
 	# Zahlen und Icons wandern im selben format()-Aufruf in den Text. Eine .tres
 	# schreibt also "{icon_dmg} {damage} Schaden" - Beschreibungen ohne
 	# Icon-Platzhalter funktionieren unveraendert weiter.
 	%TextLabel.text = data.description.format({
 		"damage": data.damage,
 		"block": data.block,
-		"icon_dmg": icon_bb("dmg"),
-		"icon_block": icon_bb("block"),
-		"icon_energy": icon_bb("energy"),
-		"icon_heal": icon_bb("heal"),
+		"icon_dmg": Icons.bb("dmg"),
+		"icon_block": Icons.bb("block"),
+		"icon_energy": Icons.bb("energy"),
+		"icon_heal": Icons.bb("heal"),
 	})
 	# Der Style haengt an `data`, und in _ready() gibt es die noch nicht -
 	# deshalb hier und nicht dort.
 	_apply_style()
-
-
-## Baut das BBCode-Tag fuer ein Icon.
-##
-## height=1em bindet die Icongroesse an die Schriftgroesse ringsum, statt sie in
-## Pixeln festzunageln - aendert sich die Schrift im Theme, wandern die Icons
-## mit. color= toent die weisse Grafik ein; deshalb muessen die SVGs weiss sein
-## und nicht schwarz, denn getoent wird multiplikativ und Schwarz bliebe schwarz.
-static func icon_bb(icon_name: String) -> String:
-	if not ICON_PATHS.has(icon_name):
-		push_warning("Unbekanntes Icon: %s" % icon_name)
-		return ""
-	return "[img height=1em color=%s]%s[/img]" % [
-		ICON_TINTS[icon_name], ICON_PATHS[icon_name],
-	]
 
 
 ## Holt den StyleBox aus dem Theme und faerbt nur den Rahmen um.
