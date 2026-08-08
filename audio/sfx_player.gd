@@ -20,6 +20,7 @@ const SFX_PATHS := {
 		"res://assets/audio/sfx/card-place-2.ogg",
 		"res://assets/audio/sfx/card-place-3.ogg",
 	],
+	# Aktuell von niemandem gerufen - siehe _reshuffle_discard() in game.gd.
 	"shuffle": ["res://assets/audio/sfx/card-shuffle.ogg"],
 	"error": ["res://assets/audio/sfx/error_002.ogg"],
 	"click": ["res://assets/audio/sfx/click_001.ogg"],

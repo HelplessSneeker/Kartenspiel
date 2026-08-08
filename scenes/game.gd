@@ -78,13 +78,16 @@ func _draw_one() -> bool:
 
 
 ## Ziehstapel leer -> Ablage zurueckmischen.
+##
+## Bewusst ohne Sound: das Mischgeraeusch ist deutlich laenger als die anderen
+## und draengt sich mitten im Zug in den Vordergrund. Zum Zurueckholen genuegt
+## ein Sfx.play("shuffle") - Datei und Eintrag liegen weiterhin bereit.
 func _reshuffle_discard() -> void:
 	if discard.is_empty():
 		return
 	deck.append_array(discard)
 	discard.clear()
 	deck.shuffle()
-	Sfx.play("shuffle")
 
 
 # --- Zustand -> Anzeige -------------------------------------------------------
