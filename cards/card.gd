@@ -15,8 +15,14 @@ extends PanelContainer
 ## Layout auf genau diesem Wert auf.
 ##
 ## CostLabel und TextLabel sind RichTextLabel, weil dort Icons per BBCode im
-## Fliesstext stehen. Beide brauchen fit_content an und scroll_active aus -
-## sonst melden sie ihre Inhaltshoehe nicht, sondern zeigen eine Scrollleiste.
+## Fliesstext stehen. Drei Properties sind dabei Pflicht:
+##
+## - fit_content an und scroll_active aus, sonst meldet das Label seine
+##   Inhaltshoehe nicht, sondern zeigt eine Scrollleiste.
+## - mouse_filter auf IGNORE. Label steht von Haus aus auf IGNORE,
+##   RichTextLabel dagegen auf STOP, weil es Links und Textauswahl kann. Auf
+##   STOP schluckt es die Maus, und die Karte darunter bekommt weder Hover noch
+##   Klick - die Karte ist dann nur noch an ihren Raendern bedienbar.
 
 ## Wird gefeuert, wenn auf diese Karte geklickt wird.
 ## Die Karte selbst weiss nicht, was "spielen" bedeutet - das entscheidet game.gd.
