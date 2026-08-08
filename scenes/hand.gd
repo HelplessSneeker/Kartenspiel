@@ -108,6 +108,12 @@ func _apply_layout(animate: bool = true) -> void:
 
 		# z_index steuert nur die Zeichenreihenfolge, nicht das Layout -
 		# im Gegensatz zu move_to_front(), das die Kindreihenfolge aendert.
+		#
+		# Achtung: das wirkt nicht nur zwischen den Karten, sondern im ganzen
+		# Canvas. Eine Karte mit z_index 2 zeichnet auch ueber Geschwister der
+		# Hand, die auf 0 stehen - ein Overlay wuerde dann nur die erste Karte
+		# verdecken. Was verlaesslich obenauf liegen soll, gehoert deshalb in
+		# einen CanvasLayer, siehe OverlayLayer in game.tscn.
 		view.z_index = 100 if is_hovered else i
 		view.dimmed = not _active
 
