@@ -28,17 +28,20 @@ func _ready() -> void:
 # --- Aktionen (Zustand aendern, danach anzeigen) ------------------------------
 
 func draw_card() -> void:
-	_draw_one()
+	if _draw_one():
+		Sfx.play("card_draw")
 	refresh()
 
 
 func play_card(card_data: CardData) -> void:
 	if card_data.cost > energy:
+		Sfx.play("error")
 		print("Zu teuer: %s kostet %d, du hast %d." % [
 			card_data.card_name, card_data.cost, energy,
 		])
 		return
 
+	Sfx.play("card_play")
 	energy -= card_data.cost
 
 	if card_data.damage > 0:
@@ -53,7 +56,8 @@ func play_card(card_data: CardData) -> void:
 
 func end_turn() -> void:
 	energy = MAX_ENERGY
-	_draw_one()
+	if _draw_one():
+		Sfx.play("card_draw")
 	refresh()
 
 
@@ -61,12 +65,16 @@ func end_turn() -> void:
 
 ## Zieht eine Karte in die Hand. Ohne refresh() - das machen die Aktionen,
 ## sonst wird beim Startblatt fuenfmal unnoetig die Hand neu gebaut.
-func _draw_one() -> void:
+##
+## Gibt zurueck, ob tatsaechlich gezogen wurde. Sind Stapel und Ablage beide
+## leer, passiert nichts - und dann soll auch kein Ziehgeraeusch kommen.
+func _draw_one() -> bool:
 	if deck.is_empty():
 		_reshuffle_discard()
 	if deck.is_empty():
-		return
+		return false
 	hand.append(deck.pop_back())
+	return true
 
 
 ## Ziehstapel leer -> Ablage zurueckmischen.
@@ -76,6 +84,7 @@ func _reshuffle_discard() -> void:
 	deck.append_array(discard)
 	discard.clear()
 	deck.shuffle()
+	Sfx.play("shuffle")
 
 
 # --- Zustand -> Anzeige -------------------------------------------------------

@@ -22,8 +22,12 @@ Download**, nicht später. Wer das nachträglich rekonstruieren will, hat verlor
 | `assets/icons/energy.svg` | Energie | [game-icons `lorc/power-lightning`](https://game-icons.net/1x1/lorc/power-lightning.html) | **Lorc** | **CC BY 3.0** | 08.08.2026 |
 | `assets/icons/heal.svg` | Heilung | [game-icons `sbed/health-normal`](https://game-icons.net/1x1/sbed/health-normal.html) | **sbed** | **CC BY 3.0** | 08.08.2026 |
 
-**Die Icons sind CC BY — Namensnennung ist Pflicht**, anders als bei den Schriften.
-Ohne Credits-Screen darf das Spiel nicht veröffentlicht werden.
+| `assets/audio/sfx/card-*.ogg` | Karten ziehen/legen/mischen | [Kenney Casino Audio](https://kenney.nl/assets/casino-audio) | Kenney | CC0 | 08.08.2026 |
+| `assets/audio/sfx/click_001.ogg` | Menü-Klick | [Kenney Interface Sounds](https://kenney.nl/assets/interface-sounds) | Kenney | CC0 | 08.08.2026 |
+| `assets/audio/sfx/error_002.ogg` | Zu wenig Energie | [Kenney Interface Sounds](https://kenney.nl/assets/interface-sounds) | Kenney | CC0 | 08.08.2026 |
+
+**Die Icons sind CC BY — Namensnennung ist Pflicht**, anders als bei den Schriften
+und den Kenney-Sounds. Ohne Credits-Screen darf das Spiel nicht veröffentlicht werden.
 
 **Modifiziert** (bei CC BY erlaubt, hier der Vollständigkeit halber):
 das schwarze Hintergrund-Rechteck der Originale wurde entfernt (auf dunklen Karten
