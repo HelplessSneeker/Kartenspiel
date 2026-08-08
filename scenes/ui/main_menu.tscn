@@ -21,18 +21,26 @@ grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=2131325674]
 layout_mode = 2
+theme_override_constants/separation = 12
 
 [node name="Label" type="Label" parent="CenterContainer/VBoxContainer" unique_id=831287563]
 layout_mode = 2
+theme_type_variation = &"Title"
 text = "Kartenspiel"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="CenterContainer/VBoxContainer" unique_id=831287564]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+mouse_filter = 2
 
 [node name="StartButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1517487411]
 layout_mode = 2
-text = "Start"
+text = "Spielen"
 
 [node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=849804253]
 layout_mode = 2
-text = "Quit"
+text = "Beenden"
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
