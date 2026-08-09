@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bbphe0nc4lheq"]
 
 [ext_resource type="Script" uid="uid://d3oa0iuc5kmga" path="res://scenes/ui/main_menu.gd" id="1_sl1te"]
+[ext_resource type="PackedScene" path="res://scenes/ui/options_panel.tscn" id="2_options"]
 
 [node name="MainMenu" type="Control" unique_id=90338667]
 layout_mode = 3
@@ -38,6 +39,11 @@ mouse_filter = 2
 layout_mode = 2
 text = "Spielen"
 
+[node name="OptionsButton" type="Button" parent="CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Optionen"
+
 [node name="CreditsButton" type="Button" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 text = "Credits"
@@ -46,6 +52,12 @@ text = "Credits"
 layout_mode = 2
 text = "Beenden"
 
+[node name="Options" parent="." instance=ExtResource("2_options")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
 [connection signal="pressed" from="CenterContainer/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/CreditsButton" to="." method="_on_credits_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

@@ -23,7 +23,22 @@ const SFX_PATHS := {
 	# Aktuell von niemandem gerufen - siehe _reshuffle_discard() in game.gd.
 	"shuffle": ["res://assets/audio/sfx/card-shuffle.ogg"],
 	"error": ["res://assets/audio/sfx/error_002.ogg"],
-	"click": ["res://assets/audio/sfx/click_001.ogg"],
+	# Platzhalter: der Interface-Klick klang im Menue unangenehm (Befund bfn,
+	# 09.08.2026). Bis ein eigener Menuelaut da ist, nimmt der Klick den
+	# Kartenlegeton.
+	#
+	# Getauscht wird hier und nicht bei den Aufrufern. Die sagen weiterhin
+	# Sfx.play("click"), also *was* passiert ist - welche Datei dabei laeuft, ist
+	# genau die Entscheidung, die dieses Autoload besitzt. Sonst haette der
+	# Tausch acht Stellen in fuenf Dateien beruehrt und je nachdem, welche man
+	# vergisst, klaenge das Menue an zwei Orten verschieden.
+	#
+	# Das Original liegt weiter unter assets/audio/sfx/click_001.ogg.
+	"click": [
+		"res://assets/audio/sfx/card-place-1.ogg",
+		"res://assets/audio/sfx/card-place-2.ogg",
+		"res://assets/audio/sfx/card-place-3.ogg",
+	],
 }
 
 ## Wie viele Sounds gleichzeitig laufen duerfen. Ein einzelner Player wuerde den
@@ -64,6 +79,10 @@ func _load_streams() -> void:
 func _build_pool() -> void:
 	for i in POOL_SIZE:
 		var player := AudioStreamPlayer.new()
+		# Alle Effekte auf den SFX-Bus, sonst greift der Effekte-Regler ins
+		# Leere und es gaebe nur noch Gesamtlautstaerke. Den Bus legt das
+		# Settings-Autoload an - deshalb steht es in project.godot vor diesem.
+		player.bus = Settings.SFX_BUS
 		add_child(player)
 		_players.append(player)
 

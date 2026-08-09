@@ -14,19 +14,23 @@ extends Control
 ## gar nicht, und die Escape-Taste, die die Pause ueberhaupt erst ausloest, kaeme
 ## nie an.
 
-## Platzhalter. Der Interface-Klick aus dem Kenney-Pack klang an dieser Stelle
-## unangenehm - bis es einen eigenen Menuelaut gibt, tut es der Kartenlegeton.
-##
-## Bewusst eine Konstante und nicht viermal derselbe String: der Austausch soll
-## eine Zeile sein, sobald der richtige Sound da ist. Vier verstreute Literale
-## sind der Grund, warum Platzhalter Platzhalter bleiben.
-const MENU_SFX := "card_play"
-
 
 func _ready() -> void:
 	hide()
+	# Die Optionen haengen als letztes Kind unter diesem Knoten: dadurch liegen
+	# sie ueber dem Pause-Dialog statt in ihm, und `%Options` bleibt trotzdem
+	# aufloesbar - eindeutige Namen gelten nur innerhalb einer Szene.
+	%Options.closed.connect(_on_options_closed)
 
 
+## Escape hat hier drei Bedeutungen, und die Reihenfolge ist die Regel:
+## Optionen offen -> Optionen zu. Sonst Pause offen -> weiterspielen. Sonst
+## pausieren.
+##
+## Bewusst an *einer* Stelle entschieden. Liesse das Optionsfenster ebenfalls auf
+## Escape lauschen, haetten zwei Knoten dieselbe Taste, und wer zuerst drankommt,
+## haengt an der Baumreihenfolge - das ist keine Regel, das ist ein Zufall, der
+## sich beim naechsten Umhaengen aendert.
 func _unhandled_input(event: InputEvent) -> void:
 	# "ui_cancel" ist Godots eingebaute Aktion auf Escape - es braucht dafuer
 	# keinen Eintrag in der Input-Map.
@@ -34,20 +38,30 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	# Sonst reicht dasselbe Escape noch an andere weiter.
 	get_viewport().set_input_as_handled()
-	if visible:
+	if %Options.visible:
+		%Options.close()
+	elif visible:
 		resume()
 	else:
 		open()
 
 
+func _on_options_button_pressed() -> void:
+	Sfx.play("click")
+	%Options.open()
+
+
 func open() -> void:
-	Sfx.play(MENU_SFX)
+	Sfx.play("click")
 	show()
+	# Jetzt hat das Theme einen sichtbaren Fokus-Rahmen, also lohnt sich der
+	# Griff danach: Enter fuehrt sofort zum naheliegenden Knopf, ohne Maus.
+	%ResumeButton.grab_focus()
 	get_tree().paused = true
 
 
 func resume() -> void:
-	Sfx.play(MENU_SFX)
+	Sfx.play("click")
 	get_tree().paused = false
 	hide()
 
@@ -64,12 +78,16 @@ func _on_resume_button_pressed() -> void:
 ## in einem noch pausierten Baum und steht sofort still, ohne dass es ein Menue
 ## gaebe, das sie wieder freigeben koennte.
 func _on_restart_button_pressed() -> void:
-	Sfx.play(MENU_SFX)
+	Sfx.play("click")
 	get_tree().paused = false
 	get_tree().reload_current_scene()
 
 
 func _on_menu_button_pressed() -> void:
-	Sfx.play(MENU_SFX)
+	Sfx.play("click")
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+
+
+func _on_options_closed() -> void:
+	%OptionsButton.grab_focus()
