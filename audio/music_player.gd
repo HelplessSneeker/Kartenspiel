@@ -54,12 +54,19 @@ func play(track_name: String) -> void:
 
 	var path: String = TRACKS[track_name]
 	# Erst fragen, dann laden. `load()` auf einen Pfad, den es nicht gibt,
-	# schreibt einen Ladefehler in die Konsole - und solange noch gar keine
-	# Musik im Projekt liegt, waere das bei jedem Szenenwechsel einer.
+	# schreibt einen Ladefehler in die Konsole - und solange noch nicht jedes
+	# Stueck im Projekt liegt, waere das bei jedem Szenenwechsel einer.
 	if not ResourceLoader.exists(path):
 		if not _warned.has(path):
 			_warned[path] = true
 			push_warning("Musikdatei fehlt (noch): %s" % path)
+		# Wichtig: das vorige Stueck ausblenden, statt es weiterlaufen zu lassen.
+		#
+		# Vorher stand hier nur `return`, und weil damit auch `_current` stehen
+		# blieb, spielte die Menuemusik einfach im Kampf weiter - es sah aus wie
+		# ein Fehler im Szenenwechsel, war aber bloss die fehlende Datei. Stille
+		# ist die ehrlichere Antwort: sie zeigt, dass hier etwas fehlt.
+		stop()
 		return
 
 	var stream := load(path) as AudioStream
