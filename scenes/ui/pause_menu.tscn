@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/pause_menu.gd" id="1_pause"]
+[ext_resource type="PackedScene" path="res://scenes/ui/options_panel.tscn" id="2_options"]
 
 [node name="PauseMenu" type="Control"]
 process_mode = 3
@@ -57,10 +58,21 @@ text = "Fortsetzen"
 layout_mode = 2
 text = "Neu starten"
 
+[node name="OptionsButton" type="Button" parent="CenterContainer/Dialog/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Optionen"
+
 [node name="MenuButton" type="Button" parent="CenterContainer/Dialog/VBoxContainer"]
 layout_mode = 2
 text = "Hauptmenü"
 
+[node name="Options" parent="." instance=ExtResource("2_options")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
 [connection signal="pressed" from="CenterContainer/Dialog/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="CenterContainer/Dialog/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed" from="CenterContainer/Dialog/VBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="CenterContainer/Dialog/VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
