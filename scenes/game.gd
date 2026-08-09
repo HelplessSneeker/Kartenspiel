@@ -41,6 +41,7 @@ var _game_over := false
 
 
 func _ready() -> void:
+	Music.play("battle")
 	player = Combatant.new(player_max_health)
 	enemy = Combatant.new(enemy_max_health)
 	player.died.connect(_on_player_died)

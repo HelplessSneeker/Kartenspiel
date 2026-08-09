@@ -11,6 +11,7 @@ extends Control
 
 
 func _ready() -> void:
+	Music.play("menu")
 	# Die URLs im Text sind BBCode-Links. Godot klickt sie nicht selbst an - es
 	# meldet nur, dass eine Meta angeklickt wurde, und was dann passiert,
 	# entscheidet das Spiel. Deshalb diese Verbindung.
