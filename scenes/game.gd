@@ -243,3 +243,10 @@ func _end_game(title: String) -> void:
 func _on_retry_button_pressed() -> void:
 	Sfx.play("click")
 	get_tree().reload_current_scene()
+
+
+## Nach Sieg oder Niederlage war der einzige Weg weiter der Neustart. Ein
+## Endzustand, aus dem nur eine Tuer fuehrt, ist eine Sackgasse mit Aussicht.
+func _on_menu_button_pressed() -> void:
+	Sfx.play("click")
+	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
