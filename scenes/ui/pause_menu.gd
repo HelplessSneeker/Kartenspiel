@@ -14,6 +14,14 @@ extends Control
 ## gar nicht, und die Escape-Taste, die die Pause ueberhaupt erst ausloest, kaeme
 ## nie an.
 
+## Platzhalter. Der Interface-Klick aus dem Kenney-Pack klang an dieser Stelle
+## unangenehm - bis es einen eigenen Menuelaut gibt, tut es der Kartenlegeton.
+##
+## Bewusst eine Konstante und nicht viermal derselbe String: der Austausch soll
+## eine Zeile sein, sobald der richtige Sound da ist. Vier verstreute Literale
+## sind der Grund, warum Platzhalter Platzhalter bleiben.
+const MENU_SFX := "card_play"
+
 
 func _ready() -> void:
 	hide()
@@ -33,13 +41,13 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func open() -> void:
-	Sfx.play("click")
+	Sfx.play(MENU_SFX)
 	show()
 	get_tree().paused = true
 
 
 func resume() -> void:
-	Sfx.play("click")
+	Sfx.play(MENU_SFX)
 	get_tree().paused = false
 	hide()
 
@@ -56,12 +64,12 @@ func _on_resume_button_pressed() -> void:
 ## in einem noch pausierten Baum und steht sofort still, ohne dass es ein Menue
 ## gaebe, das sie wieder freigeben koennte.
 func _on_restart_button_pressed() -> void:
-	Sfx.play("click")
+	Sfx.play(MENU_SFX)
 	get_tree().paused = false
 	get_tree().reload_current_scene()
 
 
 func _on_menu_button_pressed() -> void:
-	Sfx.play("click")
+	Sfx.play(MENU_SFX)
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
