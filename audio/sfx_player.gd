@@ -37,6 +37,12 @@ var _next_player := 0
 
 
 func _ready() -> void:
+	# Autoloads haengen unter dem Wurzelknoten und erben dessen Prozess-Modus -
+	# und der ist PAUSABLE. Ohne diese Zeile schweigt das Pause-Menue: sein
+	# Klick geht zwar raus, aber die AudioStreamPlayer hier stehen still,
+	# solange get_tree().paused gilt. Ein Ton, der nur ausserhalb der Pause
+	# kommt, ist genau dort kaputt, wo man ihn zur Rueckmeldung braucht.
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_load_streams()
 	_build_pool()
 

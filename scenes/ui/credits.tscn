@@ -1,0 +1,62 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/credits.gd" id="1_credits"]
+
+[node name="Credits" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_credits")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"DialogTitle"
+text = "Credits"
+horizontal_alignment = 1
+
+[node name="Text" type="RichTextLabel" parent="CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
+theme_type_variation = &"Body"
+bbcode_enabled = true
+text = "[color=#eaedf5][font_size=17]Icons[/font_size][/color]
+Skoll, sbed und Lorc — [url=https://game-icons.net]game-icons.net[/url]
+Lizenz: [url=https://creativecommons.org/licenses/by/3.0/]CC BY 3.0[/url]
+Das schwarze Hintergrund-Rechteck der Originale wurde entfernt.
+
+[color=#eaedf5][font_size=17]Schriften[/font_size][/color]
+Oswald — Vernon Adams, Kalapi Gajjar, Cyreal
+Inter — Rasmus Andersson
+Lizenz: [url=https://openfontlicense.org/]SIL Open Font License 1.1[/url]
+
+[color=#eaedf5][font_size=17]Sounds[/font_size][/color]
+Kenney — [url=https://kenney.nl]kenney.nl[/url]
+Lizenz: CC0
+
+[color=#eaedf5][font_size=17]Engine[/font_size][/color]
+Godot Engine — [url=https://godotengine.org]godotengine.org[/url]"
+fit_content = true
+scroll_active = false
+
+[node name="BackButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Zurück"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
