@@ -110,6 +110,22 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pile"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.109804, 0.121569, 0.176471, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.243137, 0.270588, 0.372549, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog"]
 content_margin_left = 32.0
 content_margin_top = 24.0
@@ -187,6 +203,15 @@ HealthTitle/font_sizes/font_size = 17
 HealthValue/base_type = &"Label"
 HealthValue/colors/font_color = Color(0.788235, 0.807843, 0.870588, 1)
 HealthValue/font_sizes/font_size = 13
+Pile/base_type = &"PanelContainer"
+Pile/styles/panel = SubResource("StyleBoxFlat_pile")
+PileCount/base_type = &"Label"
+PileCount/fonts/font = ExtResource("2_oswald")
+PileCount/colors/font_color = Color(0.921569, 0.929412, 0.960784, 1)
+PileCount/font_sizes/font_size = 26
+PileTitle/base_type = &"Label"
+PileTitle/colors/font_color = Color(0.560784, 0.588235, 0.678431, 1)
+PileTitle/font_sizes/font_size = 12
 Intent/base_type = &"RichTextLabel"
 Intent/fonts/normal_font = ExtResource("2_oswald")
 Intent/colors/default_color = Color(0.921569, 0.929412, 0.960784, 1)

@@ -10,6 +10,7 @@
 [ext_resource type="Resource" path="res://combat/actions/hieb.tres" id="8_hieb"]
 [ext_resource type="Resource" path="res://combat/actions/deckung.tres" id="9_deckung"]
 [ext_resource type="Resource" path="res://combat/actions/wuchtschlag.tres" id="10_wucht"]
+[ext_resource type="PackedScene" path="res://ui/pile.tscn" id="11_pile"]
 
 [node name="Game" type="Control" unique_id=139426249]
 layout_mode = 3
@@ -46,23 +47,11 @@ theme_type_variation = &"Hud"
 layout_mode = 2
 theme_override_constants/separation = 18
 
-[node name="DeckLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=963389426]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 4
-theme_type_variation = &"HudLabel"
-
 [node name="EnergyLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=1294135581]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 theme_type_variation = &"HudEnergy"
-
-[node name="DiscardLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=1222903372]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 4
-theme_type_variation = &"HudLabel"
 
 [node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=480580606]
 layout_mode = 2
@@ -116,6 +105,35 @@ unique_name_in_owner = true
 layout_mode = 2
 title = "Gegner"
 
+[node name="DeckPile" parent="." instance=ExtResource("11_pile")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -122.0
+offset_right = 88.0
+offset_bottom = -16.0
+grow_vertical = 0
+title = "Deck"
+
+[node name="DiscardPile" parent="." instance=ExtResource("11_pile")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -88.0
+offset_top = -122.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+title = "Ablage"
+
 [node name="Hand" type="Control" parent="." unique_id=173045572]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 22)
@@ -127,6 +145,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("5_iywne")
+deck_pile_path = NodePath("../DeckPile")
+discard_pile_path = NodePath("../DiscardPile")
 
 [node name="OverlayLayer" type="CanvasLayer" parent="." unique_id=173045580]
 layer = 10

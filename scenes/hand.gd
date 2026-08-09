@@ -1,9 +1,27 @@
 class_name Hand
 extends Control
 
+## Die Karten auf der Hand - und ihr Weg vom Ziehstapel hierher und zur Ablage.
+##
+## WICHTIGE ÄNDERUNG gegenueber vorher: die Hand baut sich nicht mehr bei jeder
+## Zustandsaenderung komplett neu. `set_cards()` war bequem - "hier ist der
+## Zustand, mach was draus" -, konnte aber prinzipiell nichts animieren: wer
+## jedes Mal alles wegwirft und neu baut, weiss nie, *was* sich geaendert hat.
+## Eine Karte, die zur Ablage fliegen soll, muss aber dieselbe Karte sein, die
+## eben noch in der Hand lag.
+##
+## Deshalb bekommt die Hand jetzt Verben statt eines Zustands: austeilen,
+## ablegen, alles abwerfen. game.gd bleibt die einzige Quelle der Wahrheit -
+## es sagt der Hand, was passiert ist, statt nur, wie es danach aussieht.
+
 ## Reicht den Klick nach oben durch. Die Hand kennt keine Spielregeln -
 ## sie zeigt Karten an und meldet, wenn eine angeklickt wurde.
-signal card_clicked(data: CardData)
+##
+## Gemeldet wird die View, nicht mehr nur ihre Daten: das Deck enthaelt fuenfmal
+## dieselbe `schlag.tres`, alle fuenf sind dieselbe Resource. Aus den Daten
+## allein liesse sich nicht sagen, *welche* der drei Karten auf dem Tisch
+## gemeint ist - und genau die soll gleich zur Ablage fliegen.
+signal card_clicked(view: CardView)
 
 const CARD_SCENE := preload("res://cards/card.tscn")
 
@@ -28,14 +46,36 @@ const CARD_SCENE := preload("res://cards/card.tscn")
 ## in _apply_layout(), das Ding kann Hover-Flackern ausloesen.
 @export var hover_lift := 0.0
 
-## Dauer der Uebergaenge in Sekunden.
+## Dauer der Uebergaenge innerhalb der Hand (zusammenruecken, hovern).
 @export var tween_time := 0.12
+
+## Woher Karten kommen und wohin sie gehen. Zeigt auf die beiden Pile-Knoten.
+##
+## Als NodePath und nicht als zwei Vector2 im Inspector: zieht man den Stapel
+## im Editor um, wandert der Flugweg mit. Zwei von Hand gepflegte Zahlen waeren
+## am ersten Layout-Umbau falsch, ohne dass es jemand merkt.
+@export var deck_pile_path: NodePath
+@export var discard_pile_path: NodePath
+
+## Dauer eines Fluges zwischen Stapel und Hand. Deutlich laenger als
+## tween_time - eine Bewegung, die man verfolgen koennen soll, darf nicht so
+## schnell sein wie eine, die nur nicht ruckeln soll.
+@export var travel_time := 0.3
+
+## Versatz zwischen zwei Karten beim Austeilen.
+@export var deal_delay := 0.08
+
+## Groesse einer Karte, solange sie auf einem Stapel liegt.
+@export var pile_scale := 0.55
 
 var _views: Array[CardView] = []
 var _hovered: CardView = null
 
 ## True, sobald die Maus irgendwo im Hand-Rechteck ist.
 var _active := false
+
+## Sperre gegen den eigenen Wiedereintritt, siehe _apply_layout().
+var _laying_out := false
 
 
 func _ready() -> void:
@@ -44,14 +84,18 @@ func _ready() -> void:
 	resized.connect(_apply_layout.bind(false))
 
 
-## Baut die Hand komplett neu auf. `energy` entscheidet nur, welche Karten
-## als spielbar aussehen - die echte Regel liegt weiterhin in game.gd.
-func set_cards(cards: Array[CardData], energy: int) -> void:
-	for view in _views:
-		remove_child(view)
-		view.queue_free()
-	_views.clear()
-	_hovered = null
+# --- Verben -------------------------------------------------------------------
+
+## Teilt eine frische Hand aus. Die Karten starten auf dem Ziehstapel und
+## fliegen nacheinander an ihren Platz.
+##
+## `energy` entscheidet nur, welche Karten als spielbar aussehen - die echte
+## Regel liegt weiterhin in game.gd.
+func deal(cards: Array[CardData], energy: int) -> void:
+	# Erwartet eine leere Hand. Ist doch noch etwas da, gehoert es weg -
+	# lieber hier abgeraeumt als spaeter als Geisterkarte gesucht.
+	if not _views.is_empty():
+		discard_all()
 
 	for data in cards:
 		var view: CardView = CARD_SCENE.instantiate()
@@ -68,13 +112,95 @@ func set_cards(cards: Array[CardData], energy: int) -> void:
 		view.clicked.connect(_on_card_clicked)
 		_views.append(view)
 
-	_apply_layout(false)
+	if _views.is_empty():
+		return
+
+	# Erst die Hand auf ihre Hoehe ziehen, dann die Startpunkte ausrechnen.
+	# _pile_position() rechnet den Stapel aus globalen in Hand-Koordinaten um -
+	# und die Hand verschiebt sich beim ersten Austeilen um ihre eigene Hoehe
+	# nach oben. Andersherum starteten die Karten beim allerersten Zug rund 240
+	# Pixel daneben, ab dem zweiten aber richtig: der unangenehme Fehler, der
+	# nur einmal auftritt und deshalb wie ein Zufall aussieht.
+	_fit_self(_views[0].size.y)
+
+	# Startpunkt: der Ziehstapel. Von dort holt _apply_layout() sie ab.
+	for view in _views:
+		view.snap_to(_pile_position(deck_pile_path, 0.0, view.size), Vector2.ONE * pile_scale)
+
+	_apply_layout(true, true)
 
 
-func _apply_layout(animate: bool = true) -> void:
+## Eine gespielte Karte geht zur Ablage.
+func play_out(view: CardView) -> void:
+	_send_to_discard(view)
+	_apply_layout()
+
+
+## Zugende: die ganze Hand wandert auf die Ablage.
+func discard_all() -> void:
+	# Ueber eine Kopie, weil _send_to_discard() aus _views entfernt - eine Liste
+	# waehrend der eigenen Schleife zu kuerzen ueberspringt jedes zweite Element.
+	for view in _views.duplicate():
+		_send_to_discard(view)
+	_apply_layout()
+
+
+## Faerbt um, welche Karten bezahlbar sind. Baut nichts neu.
+func set_energy(energy: int) -> void:
+	for view in _views:
+		view.playable = view.data.cost <= energy
+
+
+# --- Innenleben ---------------------------------------------------------------
+
+## Entlaesst eine Karte aus der Hand und schickt sie zur Ablage.
+##
+## Sie fliegt zwar noch, gehoert aber ab sofort nicht mehr zur Hand: sie ist aus
+## `_views` raus, also rechnet das Layout nicht mehr mit ihr, und sie nimmt keine
+## Maus mehr an - sonst koennte man eine bereits gespielte Karte nochmal
+## anklicken, waehrend sie davonfliegt.
+func _send_to_discard(view: CardView) -> void:
+	_views.erase(view)
+	if _hovered == view:
+		_hovered = null
+	view.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Ueber allen anderen, damit der Weg zur Ablage nicht hinter der Hand
+	# verschwindet.
+	view.z_index = 200
+	view.fly_out(
+		_pile_position(discard_pile_path, size.x, view.size),
+		Vector2.ONE * pile_scale,
+		travel_time,
+	)
+
+
+## Wo eine Karte liegt, wenn sie auf einem Stapel liegt - in Hand-Koordinaten.
+##
+## Die Stapel stehen ausserhalb der Hand im Szenenbaum, deshalb der Umweg ueber
+## die globale Transformation. `fallback_x` greift, solange kein Stapel gesetzt
+## ist: dann fliegen die Karten an den unteren Rand statt ins Nichts.
+func _pile_position(path: NodePath, fallback_x: float, card_size: Vector2) -> Vector2:
+	var anchor := Vector2(fallback_x, size.y)
+	var pile := get_node_or_null(path) as Control
+	if pile != null:
+		anchor = get_global_transform().affine_inverse() * pile.get_global_rect().get_center()
+	# position ist die linke obere Ecke, gemeint ist aber der Punkt, um den
+	# skaliert wird - Unterkante-Mitte, siehe pivot_offset.
+	return anchor - Vector2(card_size.x * 0.5, card_size.y)
+
+
+func _apply_layout(animate: bool = true, staggered: bool = false) -> void:
 	var count := _views.size()
 	if count == 0:
 		return
+
+	# _fit_self() aendert die eigene Hoehe und loest damit `resized` aus, das
+	# wieder hier landet - mit animate = false. Ohne diese Sperre wuerde der
+	# geschachtelte Aufruf die Karten sofort an ihr Ziel schnappen, und die
+	# Animation, die der aeussere Aufruf gerade starten wollte, waere unsichtbar.
+	if _laying_out:
+		return
+	_laying_out = true
 
 	var card_size: Vector2 = _views[0].size
 	_fit_self(card_size.y)
@@ -95,6 +221,7 @@ func _apply_layout(animate: bool = true) -> void:
 	var first_center := (size.x - span) * 0.5
 
 	var base_offset := active_offset if _active else idle_offset
+	var duration := travel_time if staggered else tween_time
 
 	for i in count:
 		var view := _views[i]
@@ -123,7 +250,10 @@ func _apply_layout(animate: bool = true) -> void:
 			first_center + step * i - card_size.x * 0.5,
 			size.y - card_size.y - offset,
 		)
-		_move_to(view, target_pos, Vector2.ONE * target_scale, animate)
+		var delay := deal_delay * i if staggered else 0.0
+		_move_to(view, target_pos, Vector2.ONE * target_scale, animate, duration, delay)
+
+	_laying_out = false
 
 
 ## Die Hand zieht sich selbst auf die noetige Hoehe, statt sie aus einer von
@@ -140,9 +270,16 @@ func _fit_self(card_height: float) -> void:
 	offset_bottom = 0.0
 
 
-func _move_to(view: CardView, pos: Vector2, card_scale: Vector2, animate: bool) -> void:
+func _move_to(
+	view: CardView,
+	pos: Vector2,
+	card_scale: Vector2,
+	animate: bool,
+	duration: float,
+	delay: float,
+) -> void:
 	if animate:
-		view.animate_to(pos, card_scale, tween_time)
+		view.animate_to(pos, card_scale, duration, delay)
 	else:
 		view.snap_to(pos, card_scale)
 
@@ -178,4 +315,4 @@ func _on_card_mouse_exited(view: CardView) -> void:
 
 
 func _on_card_clicked(view: CardView) -> void:
-	card_clicked.emit(view.data)
+	card_clicked.emit(view)

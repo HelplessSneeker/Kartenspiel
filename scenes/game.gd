@@ -102,11 +102,14 @@ func _start_player_turn() -> void:
 	# Verteidigung fuer den Wuchtschlag auf?" hoert auf, eine Option zu sein.
 	# Der Zug ist die Einheit, in der entschieden wird.
 	_discard_hand()
+	%Hand.discard_all()
+
 	var drew := false
 	for i in HAND_SIZE:
 		drew = _draw_one() or drew
 	if drew:
 		Sfx.play("card_draw")
+	%Hand.deal(hand, energy)
 
 	# Erst jetzt steht fest, was der Gegner als naechstes tut - der Spieler
 	# sieht seine neue Hand und die Drohung zusammen.
@@ -116,9 +119,12 @@ func _start_player_turn() -> void:
 
 # --- Aktionen (Zustand aendern, danach anzeigen) ------------------------------
 
-func play_card(card_data: CardData) -> void:
+## Bekommt die angeklickte View, nicht nur ihre Daten - weil am Ende genau
+## diese Karte zur Ablage fliegen soll und nicht irgendeine mit denselben Werten.
+func play_card(view: CardView) -> void:
 	if _game_over:
 		return
+	var card_data := view.data
 	if card_data.cost > energy:
 		Sfx.play("error")
 		return
@@ -133,8 +139,12 @@ func play_card(card_data: CardData) -> void:
 	if card_data.block > 0:
 		player.add_block(card_data.block)
 
+	# erase() trifft den ersten Eintrag mit diesen Daten. Bei fuenf identischen
+	# schlag.tres ist das egal - welche der fuenf gemeint war, entscheidet allein
+	# die Anzeige, und die bekommt die View direkt.
 	hand.erase(card_data)
 	discard.append(card_data)
+	%Hand.play_out(view)
 	refresh()
 
 
@@ -174,20 +184,20 @@ func _reshuffle_discard() -> void:
 
 # --- Zustand -> Anzeige -------------------------------------------------------
 
+## Nur noch das, was sich aus dem Zustand *ableitet*. Welche Karten auf dem
+## Tisch liegen, ergibt sich nicht mehr hier: das sagen deal(), play_out() und
+## discard_all() der Hand direkt, weil eine Bewegung wissen muss, was sich
+## geaendert hat - und nicht nur, wie das Ergebnis aussieht.
 func refresh() -> void:
-	refresh_hand()
 	refresh_hud()
 	refresh_intent()
-
-
-func refresh_hand() -> void:
-	%Hand.set_cards(hand, energy)
+	%Hand.set_energy(energy)
 
 
 func refresh_hud() -> void:
-	%DeckLabel.text = "Deck: %d" % deck.size()
 	%EnergyLabel.text = "Energie: %d/%d" % [energy, MAX_ENERGY]
-	%DiscardLabel.text = "Ablage: %d" % discard.size()
+	%DeckPile.count = deck.size()
+	%DiscardPile.count = discard.size()
 
 
 ## Zeigt die angekuendigte Gegneraktion.
