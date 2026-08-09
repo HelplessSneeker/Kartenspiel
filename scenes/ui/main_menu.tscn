@@ -39,12 +39,12 @@ mouse_filter = 2
 layout_mode = 2
 text = "Spielen"
 
-[node name="OptionsButton" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="OptionsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1725419095]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Optionen"
 
-[node name="CreditsButton" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="CreditsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1107737795]
 layout_mode = 2
 text = "Credits"
 
@@ -52,7 +52,7 @@ text = "Credits"
 layout_mode = 2
 text = "Beenden"
 
-[node name="Options" parent="." instance=ExtResource("2_options")]
+[node name="Options" parent="." unique_id=186850343 instance=ExtResource("2_options")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1

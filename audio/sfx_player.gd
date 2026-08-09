@@ -16,8 +16,6 @@ const SFX_PATHS := {
 		"res://assets/audio/sfx/card-slide-3.ogg",
 	],
 	"card_play": [
-		"res://assets/audio/sfx/card-place-1.ogg",
-		"res://assets/audio/sfx/card-place-2.ogg",
 		"res://assets/audio/sfx/card-place-3.ogg",
 	],
 	# Aktuell von niemandem gerufen - siehe _reshuffle_discard() in game.gd.
@@ -35,9 +33,7 @@ const SFX_PATHS := {
 	#
 	# Das Original liegt weiter unter assets/audio/sfx/click_001.ogg.
 	"click": [
-		"res://assets/audio/sfx/card-place-1.ogg",
 		"res://assets/audio/sfx/card-place-2.ogg",
-		"res://assets/audio/sfx/card-place-3.ogg",
 	],
 }
 
