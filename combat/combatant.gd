@@ -16,9 +16,9 @@ signal died
 var max_health: int
 var health: int
 
-## Faengt Schaden ab, bevor er ans Leben geht. Aktuell nur Deko - es gibt noch
-## nichts, was zurueckschlaegt. Trotzdem hier, weil 3 der 5 Startkarten
-## `block` tragen und sonst beim Ausspielen sichtbar nichts passieren wuerde.
+## Faengt Schaden ab, bevor er ans Leben geht. Haelt genau eine Runde: wer ihn
+## setzt, ruft clear_block() zu Beginn seines naechsten eigenen Zuges - also
+## erst, nachdem der Gegenangriff durch war, gegen den geblockt wurde.
 var block: int = 0
 
 

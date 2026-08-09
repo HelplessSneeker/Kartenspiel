@@ -112,14 +112,36 @@ func snap_to(target_position: Vector2, target_scale: Vector2) -> void:
 	scale = target_scale
 
 
-func animate_to(target_position: Vector2, target_scale: Vector2, duration: float) -> void:
+## `delay` staffelt das Austeilen: fuenf Karten, die gleichzeitig losfliegen,
+## sind ein Sprung, fuenf im Abstand von Sekundenbruchteilen sind fuenf Karten.
+func animate_to(target_position: Vector2, target_scale: Vector2, duration: float, delay: float = 0.0) -> void:
 	# Ein laufender Tween muss weg, sonst zerren zwei um dieselbe Property
 	# und die Karte zittert zwischen zwei Zielen.
 	_kill_tween()
 	_tween = create_tween().set_parallel()
 	_tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_tween.tween_property(self, "position", target_position, duration).set_delay(delay)
+	_tween.tween_property(self, "scale", target_scale, duration).set_delay(delay)
+
+
+## Letzte Reise: zur Ablage schrumpfen, ausblenden, sich selbst wegraeumen.
+##
+## Die Karte raeumt sich am Ende selbst weg, statt dass der Aufrufer einen Timer
+## stellt und hofft. Wer die Dauer kennt, soll auch das Aufraeumen besitzen.
+##
+## Dass hier `modulate` angefasst wird, geht nur gut, weil eine ausfliegende
+## Karte vorher aus der Hand entlassen wurde: `playable` und `dimmed` schreiben
+## dieselbe Property, und ein Hover-Wechsel wuerde das Ausblenden sonst
+## zurueckdrehen.
+func fly_out(target_position: Vector2, target_scale: Vector2, duration: float) -> void:
+	_kill_tween()
+	_tween = create_tween().set_parallel()
+	_tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	_tween.tween_property(self, "position", target_position, duration)
 	_tween.tween_property(self, "scale", target_scale, duration)
+	_tween.tween_property(self, "modulate:a", 0.0, duration)
+	# chain() haengt hinter *alle* parallelen Tweener, nicht neben sie.
+	_tween.chain().tween_callback(queue_free)
 
 
 func _update_tint() -> void:

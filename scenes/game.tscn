@@ -6,6 +6,11 @@
 [ext_resource type="Resource" uid="uid://bgkw4eya0hy42" path="res://cards/data/verteidigung.tres" id="4_p57ef"]
 [ext_resource type="Script" uid="uid://d3pd0u6pwdqs0" path="res://scenes/hand.gd" id="5_iywne"]
 [ext_resource type="PackedScene" path="res://combat/health_view.tscn" id="6_health"]
+[ext_resource type="Script" path="res://combat/enemy_action.gd" id="7_action"]
+[ext_resource type="Resource" path="res://combat/actions/hieb.tres" id="8_hieb"]
+[ext_resource type="Resource" path="res://combat/actions/deckung.tres" id="9_deckung"]
+[ext_resource type="Resource" path="res://combat/actions/wuchtschlag.tres" id="10_wucht"]
+[ext_resource type="PackedScene" path="res://ui/pile.tscn" id="11_pile"]
 
 [node name="Game" type="Control" unique_id=139426249]
 layout_mode = 3
@@ -15,7 +20,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_uwrxv")
-starting_deck = Array[ExtResource("2_lbhrr")]([ExtResource("4_p57ef"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("4_p57ef"), ExtResource("4_p57ef")])
+starting_deck = Array[ExtResource("2_lbhrr")]([ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef")])
+enemy_pattern = Array[ExtResource("7_action")]([ExtResource("8_hieb"), ExtResource("8_hieb"), ExtResource("9_deckung"), ExtResource("10_wucht")])
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1894322726]
 layout_mode = 1
@@ -41,32 +47,16 @@ theme_type_variation = &"Hud"
 layout_mode = 2
 theme_override_constants/separation = 18
 
-[node name="DeckLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=963389426]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 4
-theme_type_variation = &"HudLabel"
-
 [node name="EnergyLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=1294135581]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 theme_type_variation = &"HudEnergy"
 
-[node name="DiscardLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=1222903372]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 4
-theme_type_variation = &"HudLabel"
-
 [node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=480580606]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
-
-[node name="DrawButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=1026489411]
-layout_mode = 2
-text = "Ziehen"
 
 [node name="EndTurnButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=1757884632]
 layout_mode = 2
@@ -95,11 +85,54 @@ layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="EnemyView" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer" instance=ExtResource("6_health")]
-unique_name_in_owner = true
+[node name="EnemySide" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 4
+theme_override_constants/separation = 6
+
+[node name="IntentLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer/EnemySide"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"Intent"
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+
+[node name="EnemyView" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer/EnemySide" instance=ExtResource("6_health")]
+unique_name_in_owner = true
+layout_mode = 2
 title = "Gegner"
+
+[node name="DeckPile" parent="." instance=ExtResource("11_pile")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -122.0
+offset_right = 88.0
+offset_bottom = -16.0
+grow_vertical = 0
+title = "Deck"
+
+[node name="DiscardPile" parent="." instance=ExtResource("11_pile")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -88.0
+offset_top = -122.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+title = "Ablage"
 
 [node name="Hand" type="Control" parent="." unique_id=173045572]
 unique_name_in_owner = true
@@ -112,11 +145,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("5_iywne")
+deck_pile_path = NodePath("../DeckPile")
+discard_pile_path = NodePath("../DiscardPile")
 
 [node name="OverlayLayer" type="CanvasLayer" parent="." unique_id=173045580]
 layer = 10
 
-[node name="VictoryOverlay" type="Control" parent="OverlayLayer" unique_id=173045573]
+[node name="EndOverlay" type="Control" parent="OverlayLayer" unique_id=173045573]
 unique_name_in_owner = true
 visible = false
 layout_mode = 3
@@ -126,7 +161,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Dim" type="ColorRect" parent="OverlayLayer/VictoryOverlay" unique_id=173045574]
+[node name="Dim" type="ColorRect" parent="OverlayLayer/EndOverlay" unique_id=173045574]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -135,7 +170,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 
-[node name="CenterContainer" type="CenterContainer" parent="OverlayLayer/VictoryOverlay" unique_id=173045575]
+[node name="CenterContainer" type="CenterContainer" parent="OverlayLayer/EndOverlay" unique_id=173045575]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -143,24 +178,24 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Dialog" type="PanelContainer" parent="OverlayLayer/VictoryOverlay/CenterContainer" unique_id=173045576]
+[node name="Dialog" type="PanelContainer" parent="OverlayLayer/EndOverlay/CenterContainer" unique_id=173045576]
 layout_mode = 2
 theme_type_variation = &"Dialog"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="OverlayLayer/VictoryOverlay/CenterContainer/Dialog" unique_id=173045577]
+[node name="VBoxContainer" type="VBoxContainer" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog" unique_id=173045577]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="TitleLabel" type="Label" parent="OverlayLayer/VictoryOverlay/CenterContainer/Dialog/VBoxContainer" unique_id=173045578]
+[node name="EndTitle" type="Label" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer" unique_id=173045578]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"DialogTitle"
 text = "Gegner besiegt"
 horizontal_alignment = 1
 
-[node name="RetryButton" type="Button" parent="OverlayLayer/VictoryOverlay/CenterContainer/Dialog/VBoxContainer" unique_id=173045579]
+[node name="RetryButton" type="Button" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer" unique_id=173045579]
 layout_mode = 2
 text = "Nochmal"
 
-[connection signal="pressed" from="MarginContainer/VBoxContainer/TopBar/HBoxContainer/DrawButton" to="." method="_on_draw_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/TopBar/HBoxContainer/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
-[connection signal="pressed" from="OverlayLayer/VictoryOverlay/CenterContainer/Dialog/VBoxContainer/RetryButton" to="." method="_on_retry_button_pressed"]
+[connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/RetryButton" to="." method="_on_retry_button_pressed"]

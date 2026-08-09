@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/pile.gd" id="1_pile"]
+
+[node name="Pile" type="PanelContainer"]
+custom_minimum_size = Vector2(72, 106)
+theme_type_variation = &"Pile"
+script = ExtResource("1_pile")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 2
+
+[node name="CountLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PileCount"
+horizontal_alignment = 1
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PileTitle"
+horizontal_alignment = 1
