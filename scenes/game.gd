@@ -105,10 +105,7 @@ func _start_player_turn() -> void:
 	_discard_hand()
 	%Hand.discard_all()
 
-	var drew := false
-	for i in HAND_SIZE:
-		drew = _draw_one() or drew
-	if drew:
+	if not _draw_cards(HAND_SIZE).is_empty():
 		Sfx.play("card_draw")
 	%Hand.deal(hand, energy)
 
@@ -133,36 +130,100 @@ func play_card(view: CardView) -> void:
 	Sfx.play("card_play")
 	energy -= card_data.cost
 
-	# Wer das Ziel ist, entscheidet noch die Karten-Art, nicht die Karte selbst.
-	# Sobald es mehrere Gegner gibt, wandert das in eine echte Zielauswahl.
-	if card_data.damage > 0:
-		enemy.take_damage(card_data.damage)
-	if card_data.block > 0:
-		player.add_block(card_data.block)
-
-	# erase() trifft den ersten Eintrag mit diesen Daten. Bei fuenf identischen
-	# schlag.tres ist das egal - welche der fuenf gemeint war, entscheidet allein
+	# Die Karte verlaesst die Hand, *bevor* sie wirkt. Sonst zieht eine Karte mit
+	# "ziehe 2" Karten in eine Hand, in der sie selbst noch liegt - und die
+	# frisch gezogene wandert gleich mit auf die Ablage.
+	#
+	# erase() trifft den ersten Eintrag mit diesen Daten. Bei drei identischen
+	# schlag.tres ist das egal - welche der drei gemeint war, entscheidet allein
 	# die Anzeige, und die bekommt die View direkt.
 	hand.erase(card_data)
 	discard.append(card_data)
 	%Hand.play_out(view)
+
+	for effect in card_data.effects:
+		_apply_effect(effect)
+		# Eine Karte kann beide Seiten toeten (Aderlass gegen einen Gegner mit
+		# 5 Leben). Was danach in der Liste steht, darf dann nicht mehr wirken.
+		if _game_over:
+			break
+
 	refresh()
+
+
+## Fuehrt eine einzelne Wirkung aus.
+##
+## Warum hier und nicht in CardEffect selbst? Weil eine Wirkung Zugriff auf
+## alles braucht, was der Kampf hat: beide Kaempfer, den Ziehstapel, die
+## Energie, die Hand. Laege sie in der Resource, muesste man ihr das alles
+## mitgeben - und CardEffect wuesste dann, wie ein Kampf aufgebaut ist. So
+## bleibt es bei der Trennung, die ueberall in diesem Projekt gilt: die .tres
+## sagt *was*, der Code sagt *wie*.
+##
+## Wer das Ziel ist, entscheidet weiterhin die Art der Wirkung, nicht die Karte.
+## Sobald es mehrere Gegner gibt, kommt hier eine echte Zielauswahl dazu.
+func _apply_effect(effect: CardEffect) -> void:
+	if effect == null:
+		return
+
+	match effect.kind:
+		CardEffect.Kind.SCHADEN:
+			enemy.take_damage(effect.amount)
+		CardEffect.Kind.BLOCK:
+			player.add_block(effect.amount)
+		CardEffect.Kind.HEILEN:
+			player.heal(effect.amount)
+		CardEffect.Kind.SELBSTSCHADEN:
+			player.take_damage(effect.amount)
+		CardEffect.Kind.ENERGIE:
+			energy += effect.amount
+		CardEffect.Kind.ZIEHEN:
+			_draw_into_hand(effect.amount)
+
+
+## Zieht mitten im Zug nach - Zustand und Anzeige in einem Schritt.
+##
+## Beim Zugbeginn laeuft das getrennt (erst alles ziehen, dann einmal
+## austeilen), weil dort fuenf Karten auf einmal kommen und die Hand vorher
+## leer ist. Hier kommen ein oder zwei in eine bestehende Hand - der Unterschied
+## ist die ganze Begruendung fuer das zweite Verb in hand.gd.
+func _draw_into_hand(count: int) -> void:
+	var drawn := _draw_cards(count)
+	if drawn.is_empty():
+		return
+	Sfx.play("card_draw")
+	%Hand.draw_in(drawn, energy)
 
 
 # --- Zustand (kein Anfassen der Anzeige) -------------------------------------
 
-## Zieht eine Karte in die Hand. Ohne refresh() - das machen die Aktionen,
-## sonst wird beim Nachziehen fuenfmal unnoetig die Hand neu gebaut.
+## Zieht bis zu `count` Karten in die Hand und gibt zurueck, welche das waren.
 ##
-## Gibt zurueck, ob tatsaechlich gezogen wurde. Sind Stapel und Ablage beide
-## leer, passiert nichts - und dann soll auch kein Ziehgeraeusch kommen.
-func _draw_one() -> bool:
+## Nicht die Anzahl, sondern die Karten selbst: die Anzeige muss genau diese
+## Karten auf den Tisch legen, und "es waren zwei" reicht dafuer nicht.
+##
+## Ohne refresh() - das machen die Aufrufer, sonst wird beim Ziehen von fuenf
+## Karten fuenfmal unnoetig die Anzeige neu gerechnet.
+func _draw_cards(count: int) -> Array[CardData]:
+	var drawn: Array[CardData] = []
+	for i in count:
+		var card := _draw_one()
+		if card == null:
+			break
+		drawn.append(card)
+	return drawn
+
+
+## Zieht eine Karte. Sind Ziehstapel und Ablage beide leer, gibt es null -
+## und dann soll auch kein Ziehgeraeusch kommen.
+func _draw_one() -> CardData:
 	if deck.is_empty():
 		_reshuffle_discard()
 	if deck.is_empty():
-		return false
-	hand.append(deck.pop_back())
-	return true
+		return null
+	var card: CardData = deck.pop_back()
+	hand.append(card)
+	return card
 
 
 func _discard_hand() -> void:

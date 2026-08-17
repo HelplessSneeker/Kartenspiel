@@ -12,6 +12,11 @@
 [ext_resource type="Resource" path="res://combat/actions/wuchtschlag.tres" id="10_wucht"]
 [ext_resource type="PackedScene" path="res://ui/pile.tscn" id="11_pile"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="12_pause"]
+[ext_resource type="Resource" path="res://cards/data/wuchtstoss.tres" id="13_wuchtstoss"]
+[ext_resource type="Resource" path="res://cards/data/durchatmen.tres" id="14_durchatmen"]
+[ext_resource type="Resource" path="res://cards/data/aderlass.tres" id="15_aderlass"]
+[ext_resource type="Resource" path="res://cards/data/zweite_luft.tres" id="16_zweiteluft"]
+[ext_resource type="Resource" path="res://cards/data/adrenalin.tres" id="17_adrenalin"]
 
 [node name="Game" type="Control" unique_id=139426249]
 layout_mode = 3
@@ -21,7 +26,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_uwrxv")
-starting_deck = Array[ExtResource("2_lbhrr")]([ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef")])
+starting_deck = Array[ExtResource("2_lbhrr")]([ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("13_wuchtstoss"), ExtResource("14_durchatmen"), ExtResource("15_aderlass"), ExtResource("16_zweiteluft"), ExtResource("17_adrenalin")])
 enemy_pattern = Array[ExtResource("7_action")]([ExtResource("8_hieb"), ExtResource("8_hieb"), ExtResource("9_deckung"), ExtResource("10_wucht")])
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1894322726]

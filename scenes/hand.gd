@@ -98,19 +98,7 @@ func deal(cards: Array[CardData], energy: int) -> void:
 		discard_all()
 
 	for data in cards:
-		var view: CardView = CARD_SCENE.instantiate()
-		add_child(view)
-		view.setup(data)
-		view.playable = data.cost <= energy
-		# Ohne Container muss die Karte ihre Groesse selbst annehmen.
-		view.size = view.get_combined_minimum_size()
-		# Skaliert wird um die Unterkante-Mitte: die Karte waechst nach oben
-		# und zur Seite, ihr unterer Rand bleibt stehen.
-		view.pivot_offset = Vector2(view.size.x * 0.5, view.size.y)
-		view.mouse_entered.connect(_on_card_mouse_entered.bind(view))
-		view.mouse_exited.connect(_on_card_mouse_exited.bind(view))
-		view.clicked.connect(_on_card_clicked)
-		_views.append(view)
+		_make_view(data, energy)
 
 	if _views.is_empty():
 		return
@@ -125,6 +113,35 @@ func deal(cards: Array[CardData], energy: int) -> void:
 
 	# Startpunkt: der Ziehstapel. Von dort holt _apply_layout() sie ab.
 	for view in _views:
+		view.snap_to(_pile_position(deck_pile_path, 0.0, view.size), Vector2.ONE * pile_scale)
+
+	_apply_layout(true, true)
+
+
+## Karten, die mitten im Zug dazukommen - eine Karte hat "ziehe N" ausgeloest.
+##
+## Eigenes Verb neben deal(), obwohl beides "Karten erscheinen" heisst: deal()
+## setzt eine Hand *neu* auf und raeumt vorher weg, was noch liegt. Hier liegt
+## etwas, und es soll liegen bleiben; die neuen Karten schieben sich dazwischen
+## und alles rueckt zusammen.
+##
+## Bewusste Unschaerfe: der Flug wird gestaffelt wie beim Austeilen, und das
+## gilt fuer die ganze Hand. Die Karten, die nur zur Seite ruecken, tun das
+## dadurch etwas langsamer und leicht versetzt. Ein sauberer Weg waere,
+## _apply_layout() zu sagen, *welche* Karten neu sind - das ist ein Parameter
+## mehr an einer Stelle, die ohnehin die kniffligste Funktion der Datei ist.
+## Erst ansehen, dann entscheiden, ob es stoert.
+func draw_in(cards: Array[CardData], energy: int) -> void:
+	if cards.is_empty():
+		return
+
+	var arrived: Array[CardView] = []
+	for data in cards:
+		arrived.append(_make_view(data, energy))
+
+	# Startpunkt Ziehstapel - nur fuer die neuen. Die alten stehen schon, wo sie
+	# stehen, und werden von _apply_layout() von dort abgeholt.
+	for view in arrived:
 		view.snap_to(_pile_position(deck_pile_path, 0.0, view.size), Vector2.ONE * pile_scale)
 
 	_apply_layout(true, true)
@@ -152,6 +169,24 @@ func set_energy(energy: int) -> void:
 
 
 # --- Innenleben ---------------------------------------------------------------
+
+## Baut eine Kartenanzeige und haengt sie in die Hand - ohne sie zu platzieren.
+## Das macht danach _apply_layout(), fuer alle Karten auf einmal.
+func _make_view(data: CardData, energy: int) -> CardView:
+	var view: CardView = CARD_SCENE.instantiate()
+	add_child(view)
+	view.setup(data)
+	view.playable = data.cost <= energy
+	# Ohne Container muss die Karte ihre Groesse selbst annehmen.
+	view.size = view.get_combined_minimum_size()
+	# Skaliert wird um die Unterkante-Mitte: die Karte waechst nach oben
+	# und zur Seite, ihr unterer Rand bleibt stehen.
+	view.pivot_offset = Vector2(view.size.x * 0.5, view.size.y)
+	view.mouse_entered.connect(_on_card_mouse_entered.bind(view))
+	view.mouse_exited.connect(_on_card_mouse_exited.bind(view))
+	view.clicked.connect(_on_card_clicked)
+	_views.append(view)
+	return view
 
 ## Entlaesst eine Karte aus der Hand und schickt sie zur Ablage.
 ##
