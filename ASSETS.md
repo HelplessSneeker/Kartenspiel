@@ -26,8 +26,17 @@ Download**, nicht später. Wer das nachträglich rekonstruieren will, hat verlor
 | `assets/audio/sfx/click_001.ogg` | Menü-Klick | [Kenney Interface Sounds](https://kenney.nl/assets/interface-sounds) | Kenney | CC0 | 08.08.2026 |
 | `assets/audio/sfx/error_002.ogg` | Zu wenig Energie | [Kenney Interface Sounds](https://kenney.nl/assets/interface-sounds) | Kenney | CC0 | 08.08.2026 |
 
-**Die Icons sind CC BY — Namensnennung ist Pflicht**, anders als bei den Schriften
-und den Kenney-Sounds. Ohne Credits-Screen darf das Spiel nicht veröffentlicht werden.
+| `assets/audio/music/menu.ogg` | Menümusik — „Vibing Over Venus" (ISRC USUAN2300005) | [incompetech](https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2300005) | **Kevin MacLeod** | **CC BY 4.0** | 17.08.2026 |
+| `assets/audio/music/battle.ogg` | Kampfmusik — „Dentaneosuchus Hunt" (ISRC USUAN2500003) | [incompetech](https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2500003) | **Kevin MacLeod** | **CC BY 4.0** | 17.08.2026 |
+
+**Die Icons und die Musik sind CC BY — Namensnennung ist Pflicht**, anders als bei den
+Schriften und den Kenney-Sounds. Ohne Credits-Screen darf das Spiel nicht veröffentlicht
+werden.
+
+Kevin MacLeod gibt den Wortlaut **vor** und verlangt ihn sichtbar im Spiel; für
+Videospiele nennt seine FAQ ausdrücklich den Credits-Screen im Menü. Der Titel muss
+**pro Stück** dastehen — eine Sammelnennung „Musik: Kevin MacLeod" reicht nicht.
+Kommt später ein drittes Stück dazu, kommt es auch in die Credits.
 
 **Modifiziert** (bei CC BY erlaubt, hier der Vollständigkeit halber):
 das schwarze Hintergrund-Rechteck der Originale wurde entfernt (auf dunklen Karten
@@ -60,4 +69,9 @@ Available on https://game-icons.net — licensed under CC BY 3.0.
 
 Fonts: Oswald (Vernon Adams, Kalapi Gajjar, Cyreal) and Inter (Rasmus Andersson),
 licensed under the SIL Open Font License 1.1.
+
+"Vibing Over Venus" and "Dentaneosuchus Hunt"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+https://creativecommons.org/licenses/by/4.0/
 ```

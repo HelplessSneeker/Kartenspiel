@@ -28,6 +28,7 @@ const FILE_PATH := "user://settings.cfg"
 ## Godots Standard-Bus heisst immer "Master" und existiert von sich aus.
 const MASTER_BUS := "Master"
 const SFX_BUS := "SFX"
+const MUSIC_BUS := "Music"
 
 var master_volume := 1.0:
 	set(value):
@@ -41,6 +42,12 @@ var sfx_volume := 1.0:
 		_apply_volume(SFX_BUS, sfx_volume)
 		changed.emit()
 
+var music_volume := 0.7:
+	set(value):
+		music_volume = clampf(value, 0.0, 1.0)
+		_apply_volume(MUSIC_BUS, music_volume)
+		changed.emit()
+
 var fullscreen := false:
 	set(value):
 		fullscreen = value
@@ -52,7 +59,8 @@ func _ready() -> void:
 	# Wie beim Sfx-Autoload: nicht mitpausieren, sonst waeren die Optionen aus
 	# dem Pause-Menue heraus wirkungslos.
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	_ensure_sfx_bus()
+	_ensure_bus(SFX_BUS)
+	_ensure_bus(MUSIC_BUS)
 	load_settings()
 
 
@@ -70,6 +78,7 @@ func load_settings() -> void:
 		return
 	master_volume = config.get_value("audio", "master", master_volume)
 	sfx_volume = config.get_value("audio", "sfx", sfx_volume)
+	music_volume = config.get_value("audio", "music", music_volume)
 	fullscreen = config.get_value("video", "fullscreen", fullscreen)
 
 
@@ -77,6 +86,7 @@ func save_settings() -> void:
 	var config := ConfigFile.new()
 	config.set_value("audio", "master", master_volume)
 	config.set_value("audio", "sfx", sfx_volume)
+	config.set_value("audio", "music", music_volume)
 	config.set_value("video", "fullscreen", fullscreen)
 	var err := config.save(FILE_PATH)
 	if err != OK:
@@ -85,21 +95,21 @@ func save_settings() -> void:
 
 # --- Anwenden -----------------------------------------------------------------
 
-## Legt den SFX-Bus an, falls er fehlt.
+## Legt einen Bus an, falls er fehlt.
 ##
 ## Der uebliche Weg dafuer ist das Audio-Panel im Editor, das eine
 ## `default_bus_layout.tres` schreibt. Ich kann den Editor nicht oeffnen und
 ## dieses Dateiformat nicht nachpruefen - im Code angelegt ist es dafuer
-## selbstheilend: legst du den Bus spaeter im Editor richtig an, findet diese
-## Funktion ihn vor und tut nichts.
-func _ensure_sfx_bus() -> void:
-	if AudioServer.get_bus_index(SFX_BUS) != -1:
+## selbstheilend: legst du die Busse spaeter im Editor richtig an, findet diese
+## Funktion sie vor und tut nichts.
+func _ensure_bus(bus_name: String) -> void:
+	if AudioServer.get_bus_index(bus_name) != -1:
 		return
 	AudioServer.add_bus()
 	var idx := AudioServer.bus_count - 1
-	AudioServer.set_bus_name(idx, SFX_BUS)
+	AudioServer.set_bus_name(idx, bus_name)
 	# Ohne send landet der Bus nirgends - der Master-Regler haette dann keine
-	# Wirkung auf die Effekte.
+	# Wirkung mehr auf das, was hier durchlaeuft.
 	AudioServer.set_bus_send(idx, MASTER_BUS)
 
 

@@ -2,6 +2,9 @@ extends Control
 
 
 func _ready() -> void:
+	# Kommt man aus den Credits zurueck, laeuft dasselbe Stueck schon - `Music`
+	# merkt das und laesst es weiterlaufen, statt neu anzufangen.
+	Music.play("menu")
 	%Options.closed.connect(_on_options_closed)
 
 

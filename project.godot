@@ -17,10 +17,12 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-; Reihenfolge ist bedeutsam: Settings legt den Audio-Bus "SFX" an, den Sfx beim
-; Start fuer seine Player braucht. Autoloads werden in dieser Reihenfolge geladen.
+; Reihenfolge ist bedeutsam: Settings legt die Audio-Busse "SFX" und "Music" an,
+; die Sfx und Music beim Start fuer ihre Player brauchen. Autoloads werden in
+; dieser Reihenfolge geladen.
 Settings="*res://settings/settings.gd"
 Sfx="*res://audio/sfx_player.gd"
+Music="*res://audio/music_player.gd"
 
 [display]
 

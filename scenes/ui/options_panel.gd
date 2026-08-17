@@ -24,10 +24,12 @@ func _ready() -> void:
 	# geladenen Wert mit dem Standardwert des Reglers ueber.
 	%MasterSlider.value = Settings.master_volume
 	%SfxSlider.value = Settings.sfx_volume
+	%MusicSlider.value = Settings.music_volume
 	%FullscreenButton.button_pressed = Settings.fullscreen
 
 	%MasterSlider.value_changed.connect(_on_master_changed)
 	%SfxSlider.value_changed.connect(_on_sfx_changed)
+	%MusicSlider.value_changed.connect(_on_music_changed)
 	%FullscreenButton.toggled.connect(_on_fullscreen_toggled)
 
 	_refresh_labels()
@@ -50,6 +52,7 @@ func close() -> void:
 func _refresh_labels() -> void:
 	%MasterValue.text = "%d%%" % roundi(Settings.master_volume * 100.0)
 	%SfxValue.text = "%d%%" % roundi(Settings.sfx_volume * 100.0)
+	%MusicValue.text = "%d%%" % roundi(Settings.music_volume * 100.0)
 	%FullscreenButton.text = "Vollbild: an" if Settings.fullscreen else "Vollbild: aus"
 
 
@@ -62,6 +65,11 @@ func _on_master_changed(value: float) -> void:
 
 func _on_sfx_changed(value: float) -> void:
 	Settings.sfx_volume = value
+	_refresh_labels()
+
+
+func _on_music_changed(value: float) -> void:
+	Settings.music_volume = value
 	_refresh_labels()
 
 
