@@ -18,7 +18,7 @@ extends Control
 ## sie zeigt Karten an und meldet, wenn eine angeklickt wurde.
 ##
 ## Gemeldet wird die View, nicht mehr nur ihre Daten: das Deck enthaelt fuenfmal
-## dieselbe `schlag.tres`, alle fuenf sind dieselbe Resource. Aus den Daten
+## dieselbe `schupfen.tres`, alle fuenf sind dieselbe Resource. Aus den Daten
 ## allein liesse sich nicht sagen, *welche* der drei Karten auf dem Tisch
 ## gemeint ist - und genau die soll gleich zur Ablage fliegen.
 signal card_clicked(view: CardView)

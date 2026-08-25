@@ -1,18 +1,18 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://bklpwgppsi6du"]
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://bgkw4eya0hy42"]
 
 [ext_resource type="Script" uid="uid://bedxkpm6a0xyk" path="res://cards/data/card_data.gd" id="1_card"]
 [ext_resource type="Script" path="res://cards/data/card_effect.gd" id="2_effect"]
 
-[sub_resource type="Resource" id="Effect_schaden"]
+[sub_resource type="Resource" id="Effect_block"]
 script = ExtResource("2_effect")
-kind = 0
+kind = 1
 amount = 5
 
 [resource]
 script = ExtResource("1_card")
-card_name = "Schlag"
+card_name = "Leckeres Bierchen"
 cost = 1
-type = 0
-effects = Array[ExtResource("2_effect")]([SubResource("Effect_schaden")])
-description = "{icon_dmg} {damage} Schaden"
+type = 1
+effects = Array[ExtResource("2_effect")]([SubResource("Effect_block")])
+description = "{icon_block} {block} Block"
 metadata/_custom_type_script = "uid://bedxkpm6a0xyk"
