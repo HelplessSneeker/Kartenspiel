@@ -3,16 +3,16 @@
 [ext_resource type="Script" uid="uid://bedxkpm6a0xyk" path="res://cards/data/card_data.gd" id="1_card"]
 [ext_resource type="Script" path="res://cards/data/card_effect.gd" id="2_effect"]
 
-[sub_resource type="Resource" id="Effect_energie"]
+[sub_resource type="Resource" id="Effect_ziehen"]
 script = ExtResource("2_effect")
-kind = 4
+kind = 3
 amount = 2
 
 [resource]
 script = ExtResource("1_card")
 card_name = "Ane rachen"
-cost = 1
+cost = 0
 type = 2
-effects = Array[ExtResource("2_effect")]([SubResource("Effect_energie")])
-description = "{icon_energy} +{energy} Energie"
+effects = Array[ExtResource("2_effect")]([SubResource("Effect_ziehen")])
+description = "Ziehe {draw} Karten"
 metadata/_custom_type_script = "uid://bedxkpm6a0xyk"

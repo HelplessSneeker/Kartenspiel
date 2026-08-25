@@ -135,7 +135,7 @@ func play_card(view: CardView) -> void:
 	# frisch gezogene wandert gleich mit auf die Ablage.
 	#
 	# erase() trifft den ersten Eintrag mit diesen Daten. Bei drei identischen
-	# schupfen.tres ist das egal - welche der drei gemeint war, entscheidet allein
+	# Angriffskarten ist das egal - welche der drei gemeint war, entscheidet allein
 	# die Anzeige, und die bekommt die View direkt.
 	hand.erase(card_data)
 	discard.append(card_data)

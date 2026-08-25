@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://bagxjnrr5co0e" path="res://scenes/game.gd" id="1_uwrxv"]
 [ext_resource type="Script" uid="uid://bedxkpm6a0xyk" path="res://cards/data/card_data.gd" id="2_lbhrr"]
-[ext_resource type="Resource" uid="uid://bklpwgppsi6du" path="res://cards/data/schupfen.tres" id="3_iywne"]
-[ext_resource type="Resource" uid="uid://bgkw4eya0hy42" path="res://cards/data/leckeres_bierchen.tres" id="4_p57ef"]
+[ext_resource type="Resource" uid="uid://bklpwgppsi6du" path="res://cards/data/guertel.tres" id="3_iywne"]
+[ext_resource type="Resource" uid="uid://bgkw4eya0hy42" path="res://cards/data/lecker_bierchen.tres" id="4_p57ef"]
 [ext_resource type="Script" uid="uid://d3pd0u6pwdqs0" path="res://scenes/hand.gd" id="5_iywne"]
 [ext_resource type="PackedScene" path="res://combat/health_view.tscn" id="6_health"]
 [ext_resource type="Script" path="res://combat/enemy_action.gd" id="7_action"]
