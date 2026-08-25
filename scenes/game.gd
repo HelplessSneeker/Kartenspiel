@@ -187,11 +187,13 @@ func _apply_effect(effect: CardEffect) -> void:
 ## austeilen), weil dort fuenf Karten auf einmal kommen und die Hand vorher
 ## leer ist. Hier kommen ein oder zwei in eine bestehende Hand - der Unterschied
 ## ist die ganze Begruendung fuer das zweite Verb in hand.gd.
+## Den Ziehton spielt hier ausnahmsweise die Hand selbst, nicht game.gd: es ist
+## einer *pro Karte*, versetzt zum jeweiligen Flug, und wann eine Karte
+## losfliegt, weiss nur die Hand. Beim Austeilen (oben) bleibt es bei einem Ton.
 func _draw_into_hand(count: int) -> void:
 	var drawn := _draw_cards(count)
 	if drawn.is_empty():
 		return
-	Sfx.play("card_draw")
 	%Hand.draw_in(drawn, energy)
 
 
