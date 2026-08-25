@@ -15,7 +15,7 @@ amount = 3
 
 [resource]
 script = ExtResource("1_card")
-card_name = "Aderlass"
+card_name = "Voll durchziehen"
 cost = 0
 type = 0
 effects = Array[ExtResource("2_effect")]([SubResource("Effect_schaden"), SubResource("Effect_selbst")])

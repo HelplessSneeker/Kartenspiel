@@ -10,7 +10,7 @@ amount = 5
 
 [resource]
 script = ExtResource("1_card")
-card_name = "Schlag"
+card_name = "Watschn"
 cost = 1
 type = 0
 effects = Array[ExtResource("2_effect")]([SubResource("Effect_schaden")])
