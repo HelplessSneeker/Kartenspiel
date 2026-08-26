@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://bagxjnrr5co0e" path="res://scenes/game.gd" id="1_uwrxv"]
 [ext_resource type="Script" uid="uid://bedxkpm6a0xyk" path="res://cards/data/card_data.gd" id="2_lbhrr"]
-[ext_resource type="Resource" uid="uid://bklpwgppsi6du" path="res://cards/data/schlag.tres" id="3_iywne"]
-[ext_resource type="Resource" uid="uid://bgkw4eya0hy42" path="res://cards/data/verteidigung.tres" id="4_p57ef"]
+[ext_resource type="Resource" uid="uid://bklpwgppsi6du" path="res://cards/data/watschn.tres" id="3_iywne"]
+[ext_resource type="Resource" uid="uid://bgkw4eya0hy42" path="res://cards/data/lecker_bierchen.tres" id="4_p57ef"]
 [ext_resource type="Script" uid="uid://d3pd0u6pwdqs0" path="res://scenes/hand.gd" id="5_iywne"]
 [ext_resource type="PackedScene" path="res://combat/health_view.tscn" id="6_health"]
 [ext_resource type="Script" path="res://combat/enemy_action.gd" id="7_action"]
@@ -12,6 +12,7 @@
 [ext_resource type="Resource" path="res://combat/actions/wuchtschlag.tres" id="10_wucht"]
 [ext_resource type="PackedScene" path="res://ui/pile.tscn" id="11_pile"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="12_pause"]
+[ext_resource type="Resource" path="res://cards/data/ane_rachen.tres" id="18_rachen"]
 
 [node name="Game" type="Control" unique_id=139426249]
 layout_mode = 3
@@ -21,7 +22,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_uwrxv")
-starting_deck = Array[ExtResource("2_lbhrr")]([ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef")])
+starting_deck = Array[ExtResource("2_lbhrr")]([ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("18_rachen"), ExtResource("18_rachen")])
 enemy_pattern = Array[ExtResource("7_action")]([ExtResource("8_hieb"), ExtResource("8_hieb"), ExtResource("9_deckung"), ExtResource("10_wucht")])
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1894322726]

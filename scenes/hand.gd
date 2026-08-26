@@ -18,7 +18,7 @@ extends Control
 ## sie zeigt Karten an und meldet, wenn eine angeklickt wurde.
 ##
 ## Gemeldet wird die View, nicht mehr nur ihre Daten: das Deck enthaelt fuenfmal
-## dieselbe `schlag.tres`, alle fuenf sind dieselbe Resource. Aus den Daten
+## dieselbe Angriffskarte, alle fuenf sind dieselbe Resource. Aus den Daten
 ## allein liesse sich nicht sagen, *welche* der drei Karten auf dem Tisch
 ## gemeint ist - und genau die soll gleich zur Ablage fliegen.
 signal card_clicked(view: CardView)
@@ -62,6 +62,15 @@ const CARD_SCENE := preload("res://cards/card.tscn")
 ## schnell sein wie eine, die nur nicht ruckeln soll.
 @export var travel_time := 0.3
 
+## Dasselbe fuer eine Karte, die *mitten im Zug* nachgezogen wird.
+##
+## Eigene Zahl statt travel_time mitzubenutzen, weil es ein anderer Moment ist:
+## beim Zugbeginn erwartet man fuenf Karten und weiss, wo man hinsieht. Mitten
+## im Zug kommt eine dazu, waehrend die Aufmerksamkeit woanders ist - das darf
+## laenger dauern. Zwei getrennte Regler heisst auch: das Austeilen laesst sich
+## beschleunigen, ohne das Nachziehen wieder unsichtbar zu machen.
+@export var draw_travel_time := 0.45
+
 ## Versatz zwischen zwei Karten beim Austeilen.
 @export var deal_delay := 0.08
 
@@ -98,19 +107,7 @@ func deal(cards: Array[CardData], energy: int) -> void:
 		discard_all()
 
 	for data in cards:
-		var view: CardView = CARD_SCENE.instantiate()
-		add_child(view)
-		view.setup(data)
-		view.playable = data.cost <= energy
-		# Ohne Container muss die Karte ihre Groesse selbst annehmen.
-		view.size = view.get_combined_minimum_size()
-		# Skaliert wird um die Unterkante-Mitte: die Karte waechst nach oben
-		# und zur Seite, ihr unterer Rand bleibt stehen.
-		view.pivot_offset = Vector2(view.size.x * 0.5, view.size.y)
-		view.mouse_entered.connect(_on_card_mouse_entered.bind(view))
-		view.mouse_exited.connect(_on_card_mouse_exited.bind(view))
-		view.clicked.connect(_on_card_clicked)
-		_views.append(view)
+		_make_view(data, energy)
 
 	if _views.is_empty():
 		return
@@ -127,7 +124,54 @@ func deal(cards: Array[CardData], energy: int) -> void:
 	for view in _views:
 		view.snap_to(_pile_position(deck_pile_path, 0.0, view.size), Vector2.ONE * pile_scale)
 
-	_apply_layout(true, true)
+	# Kein Vorlauf: die Hand war leer, es muss niemand Platz machen.
+	_apply_layout(true, _views.duplicate(), travel_time, 0.0)
+
+
+## Karten, die mitten im Zug dazukommen - eine Karte hat "ziehe N" ausgeloest.
+##
+## Eigenes Verb neben deal(), obwohl beides "Karten erscheinen" heisst: deal()
+## setzt eine Hand *neu* auf und raeumt vorher weg, was noch liegt. Hier liegt
+## etwas, und es soll liegen bleiben; die neuen Karten schieben sich dazwischen
+## und alles rueckt zusammen.
+##
+## Das Nachziehen laeuft in zwei Schritten, nicht in einem. Vorher wurde die
+## ganze Hand gestaffelt bewegt - die alten Karten ruckelten also im selben
+## Takt zur Seite, in dem die neuen ankamen, und weil zusaetzlich noch die
+## gespielte Karte zur Ablage flog, war fuer eine halbe Sekunde einfach alles
+## in Bewegung. Zwei neue Karten gingen darin unter.
+##
+## Jetzt: erst ruecken die vorhandenen Karten zusammen (kurz, tween_time), und
+## *danach* fliegen die neuen ein. Der Blick sieht zuerst eine Luecke entstehen
+## und weiss, wo etwas passieren wird, bevor es passiert.
+func draw_in(cards: Array[CardData], energy: int) -> void:
+	if cards.is_empty():
+		return
+
+	var arrived: Array[CardView] = []
+	for data in cards:
+		arrived.append(_make_view(data, energy))
+
+	# Startpunkt Ziehstapel - nur fuer die neuen. Die alten stehen schon, wo sie
+	# stehen, und werden von _apply_layout() von dort abgeholt.
+	for view in arrived:
+		view.snap_to(_pile_position(deck_pile_path, 0.0, view.size), Vector2.ONE * pile_scale)
+
+	# Warten muss nur, wer jemanden zur Seite schickt. Zieht eine Karte in eine
+	# Hand nach, die gerade leer geworden ist, gibt es keine Luecke zu machen.
+	var lead_in := 0.0 if _views.size() == arrived.size() else tween_time
+
+	_apply_layout(true, arrived, draw_travel_time, lead_in)
+
+	# Ein Ton pro Karte, versetzt wie der Flug: zwei Karten sind zwei Geraeusche.
+	# Ein einzelner Ton fuer "ziehe 2" sagt nicht, wie viele es waren - und Ton
+	# ist der Hinweis, den man auch mitbekommt, wenn man woanders hinsieht.
+	#
+	# Hier und nicht in game.gd, obwohl dort sonst alle Toene liegen: *wann* eine
+	# Karte losfliegt, weiss nur die Hand. Beim Austeilen bleibt es bewusst bei
+	# einem Ton fuer fuenf Karten - fuenfmal derselbe Klick waere ein Maschinengewehr.
+	for i in arrived.size():
+		_play_delayed("card_draw", lead_in + deal_delay * i)
 
 
 ## Eine gespielte Karte geht zur Ablage.
@@ -152,6 +196,24 @@ func set_energy(energy: int) -> void:
 
 
 # --- Innenleben ---------------------------------------------------------------
+
+## Baut eine Kartenanzeige und haengt sie in die Hand - ohne sie zu platzieren.
+## Das macht danach _apply_layout(), fuer alle Karten auf einmal.
+func _make_view(data: CardData, energy: int) -> CardView:
+	var view: CardView = CARD_SCENE.instantiate()
+	add_child(view)
+	view.setup(data)
+	view.playable = data.cost <= energy
+	# Ohne Container muss die Karte ihre Groesse selbst annehmen.
+	view.size = view.get_combined_minimum_size()
+	# Skaliert wird um die Unterkante-Mitte: die Karte waechst nach oben
+	# und zur Seite, ihr unterer Rand bleibt stehen.
+	view.pivot_offset = Vector2(view.size.x * 0.5, view.size.y)
+	view.mouse_entered.connect(_on_card_mouse_entered.bind(view))
+	view.mouse_exited.connect(_on_card_mouse_exited.bind(view))
+	view.clicked.connect(_on_card_clicked)
+	_views.append(view)
+	return view
 
 ## Entlaesst eine Karte aus der Hand und schickt sie zur Ablage.
 ##
@@ -189,7 +251,26 @@ func _pile_position(path: NodePath, fallback_x: float, card_size: Vector2) -> Ve
 	return anchor - Vector2(card_size.x * 0.5, card_size.y)
 
 
-func _apply_layout(animate: bool = true, staggered: bool = false) -> void:
+## Setzt jede Karte an ihren Platz.
+##
+## `arriving` sind die Karten, die gerade erst vom Ziehstapel kommen. Sie
+## bekommen einen eigenen, laengeren Flug (`arrival_time`) und werden
+## gegeneinander versetzt; alle anderen ruecken nur kurz zur Seite. Vorher gab
+## es dafuer ein `staggered`-Flag, das fuer die *ganze* Hand galt - genau das
+## hat das Nachziehen unsichtbar gemacht.
+##
+## `lead_in` verzoegert die Ankommenden zusaetzlich, damit die Luecke schon da
+## ist, wenn sie ankommen.
+##
+## `arriving` ist absichtlich untypisiert: es wird nur mit find() gelesen, und
+## ein typisierter Default-Parameter ist eine Godot-Feinheit, die ich hier nicht
+## nachpruefen kann.
+func _apply_layout(
+	animate: bool = true,
+	arriving: Array = [],
+	arrival_time: float = 0.0,
+	lead_in: float = 0.0,
+) -> void:
 	var count := _views.size()
 	if count == 0:
 		return
@@ -221,7 +302,6 @@ func _apply_layout(animate: bool = true, staggered: bool = false) -> void:
 	var first_center := (size.x - span) * 0.5
 
 	var base_offset := active_offset if _active else idle_offset
-	var duration := travel_time if staggered else tween_time
 
 	for i in count:
 		var view := _views[i]
@@ -250,7 +330,17 @@ func _apply_layout(animate: bool = true, staggered: bool = false) -> void:
 			first_center + step * i - card_size.x * 0.5,
 			size.y - card_size.y - offset,
 		)
-		var delay := deal_delay * i if staggered else 0.0
+
+		# Der Versatz zaehlt ueber die Ankommenden, nicht ueber die ganze Hand:
+		# die erste neue Karte soll sofort nach dem Vorlauf losfliegen, egal wie
+		# viele Karten schon auf dem Tisch liegen.
+		var arrival := arriving.find(view)
+		var duration := tween_time
+		var delay := 0.0
+		if arrival >= 0:
+			duration = arrival_time
+			delay = lead_in + deal_delay * arrival
+
 		_move_to(view, target_pos, Vector2.ONE * target_scale, animate, duration, delay)
 
 	_laying_out = false
@@ -268,6 +358,18 @@ func _fit_self(card_height: float) -> void:
 		return
 	offset_top = -wanted
 	offset_bottom = 0.0
+
+
+## Spielt einen Ton erst in `delay` Sekunden.
+##
+## Ueber einen SceneTreeTimer und nicht ueber den Tween der Karte: der Tween
+## gehoert der Karte und wird beim naechsten Layout-Wechsel abgeraeumt - ein
+## Hover mitten im Flug wuerde den Ton verschlucken.
+func _play_delayed(sound: String, delay: float) -> void:
+	if delay <= 0.0:
+		Sfx.play(sound)
+		return
+	get_tree().create_timer(delay).timeout.connect(func() -> void: Sfx.play(sound))
 
 
 func _move_to(

@@ -34,11 +34,16 @@ const UNPLAYABLE_TINT := Color(0.55, 0.55, 0.55)
 ## Hand ruht - voruebergehender Zustand, haengt an der Maus.
 const IDLE_TINT := Color(0.65, 0.65, 0.7)
 
-## Rahmenfarbe je Kategorie - das Einzige am Kartenaussehen, das wirklich von
+## Rahmenfarbe je Kartenart - das Einzige am Kartenaussehen, das wirklich von
 ## den Kartendaten abhaengt. Hintergrund, Radius, Rahmenbreite und das Padding
 ## kommen aus dem Theme (Variation "Card") und stehen deshalb nicht mehr hier.
-const BORDER_AKTION := Color("b4553c")
-const BORDER_REAKTION := Color("4a7fb5")
+##
+## Die Toene sind bewusst dieselben wie die der Icons (siehe Icons.TINTS): eine
+## Karte mit rotem Rahmen zeigt ein rotes Schadenssymbol. Fertigkeit hat kein
+## eigenes Icon und bekommt deshalb einen Ton, den sonst nichts benutzt.
+const BORDER_ANGRIFF := Color("b4553c")
+const BORDER_VERTEIDIGUNG := Color("4a7fb5")
+const BORDER_FERTIGKEIT := Color("8a7ab5")
 
 
 var data: CardData
@@ -65,17 +70,24 @@ func setup(new_data: CardData) -> void:
 	# Zahlen und Icons wandern im selben format()-Aufruf in den Text. Eine .tres
 	# schreibt also "{icon_dmg} {damage} Schaden" - Beschreibungen ohne
 	# Icon-Platzhalter funktionieren unveraendert weiter.
-	%TextLabel.text = data.description.format({
-		"damage": data.damage,
-		"block": data.block,
-		"icon_dmg": Icons.bb("dmg"),
-		"icon_block": Icons.bb("block"),
-		"icon_energy": Icons.bb("energy"),
-		"icon_heal": Icons.bb("heal"),
-	})
+	%TextLabel.text = data.description.format(_text_values())
 	# Der Style haengt an `data`, und in _ready() gibt es die noch nicht -
 	# deshalb hier und nicht dort.
 	_apply_style()
+
+
+## Zahlen kommen aus den Kartendaten, Symbole von hier.
+##
+## Die Trennung ist der Punkt: was eine Karte tut, weiss nur sie selbst; wie ein
+## Schadenssymbol aussieht, ist eine Frage der Darstellung und hat in einer
+## .tres nichts verloren. Beides trifft sich erst in diesem Dictionary.
+func _text_values() -> Dictionary:
+	var values := data.description_values()
+	values["icon_dmg"] = Icons.bb("dmg")
+	values["icon_block"] = Icons.bb("block")
+	values["icon_energy"] = Icons.bb("energy")
+	values["icon_heal"] = Icons.bb("heal")
+	return values
 
 
 ## Holt den StyleBox aus dem Theme und faerbt nur den Rahmen um.
@@ -98,12 +110,14 @@ func _apply_style() -> void:
 
 func _border_color() -> Color:
 	if data == null:
-		return BORDER_AKTION
-	match data.category:
-		CardData.Category.REAKTION:
-			return BORDER_REAKTION
+		return BORDER_ANGRIFF
+	match data.type:
+		CardData.Type.VERTEIDIGUNG:
+			return BORDER_VERTEIDIGUNG
+		CardData.Type.FERTIGKEIT:
+			return BORDER_FERTIGKEIT
 		_:
-			return BORDER_AKTION
+			return BORDER_ANGRIFF
 
 
 func snap_to(target_position: Vector2, target_scale: Vector2) -> void:

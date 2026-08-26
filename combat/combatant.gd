@@ -53,6 +53,20 @@ func add_block(amount: int) -> void:
 	changed.emit()
 
 
+## Leben zurueck, aber nie ueber das Maximum.
+##
+## Auf einen Toten wirkt nichts mehr - dieselbe Sperre wie in take_damage().
+## Ohne sie koennte eine Karte, die Schaden *und* Heilung macht, den Spieler
+## in derselben Zeile toeten und wiederbeleben: `died` waere gefeuert, das
+## Spiel vorbei, die Anzeige zeigte aber wieder Leben. Ein Endzustand, der sich
+## zuruecknehmen laesst, ist keiner.
+func heal(amount: int) -> void:
+	if amount <= 0 or health == 0 or health == max_health:
+		return
+	health = mini(health + amount, max_health)
+	changed.emit()
+
+
 ## Wird zu Rundenbeginn gerufen: Block haelt nur eine Runde.
 func clear_block() -> void:
 	if block == 0:
