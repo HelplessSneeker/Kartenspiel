@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://bklpwgppsi6du"]
+[gd_resource type="Resource" script_class="CardData" load_steps=5 format=3 uid="uid://bklpwgppsi6du"]
 
 [ext_resource type="Script" uid="uid://bedxkpm6a0xyk" path="res://cards/data/card_data.gd" id="1_card"]
 [ext_resource type="Script" path="res://cards/data/card_effect.gd" id="2_effect"]
+[ext_resource type="Texture2D" path="res://assets/art/watschn.jpg" id="3_art"]
 
 [sub_resource type="Resource" id="Effect_schaden"]
 script = ExtResource("2_effect")
@@ -15,4 +16,5 @@ cost = 1
 type = 0
 effects = Array[ExtResource("2_effect")]([SubResource("Effect_schaden")])
 description = "{icon_dmg} {damage} Schaden"
+art = ExtResource("3_art")
 metadata/_custom_type_script = "uid://bedxkpm6a0xyk"

@@ -3,16 +3,35 @@ extends PanelContainer
 
 ## Eine Karte auf der Hand.
 ##
-## ACHTUNG, Kartenmasse haengen zusammen: die Labels in card.tscn haben
-## custom_minimum_size.x = 110, die Karte selbst 130 - das ist 110 plus die
-## zweimal 10 content_margin aus dem Theme. Diese Zahlen muessen zueinander
-## passen, und die Label-Breite darf nicht "aufgeraeumt" werden.
+## ACHTUNG, Kartenmasse haengen zusammen: die Labels und das ArtRect in
+## card.tscn haben custom_minimum_size.x = 110, die Karte selbst 130 - das ist
+## 110 plus die zweimal 10 content_margin aus dem Theme. Diese Zahlen muessen
+## zueinander passen, und die Label-Breite darf nicht "aufgeraeumt" werden.
 ##
 ## Grund: ein Label mit autowrap meldet als Mindestbreite fast nichts, weil es
 ## ja umbrechen kann. Godot rechnet die Mindesthoehe dann fuer genau diese
 ## winzige Breite aus, also fuer maximal viele Zeilen. Ohne feste Label-Breite
-## meldet die Karte statt 190 rund 690 Pixel Hoehe - und hand.gd baut ihr
+## meldet die Karte statt 250 rund 690 Pixel Hoehe - und hand.gd baut ihr
 ## Layout auf genau diesem Wert auf.
+##
+## Die Kartenhoehe (250) ist dagegen unkritisch: hand.gd fragt sie ueber
+## get_combined_minimum_size() ab, statt sie zu kennen. Sie war 190, bevor das
+## Bild dazukam - 80 Pixel Bild plus die zusaetzliche VBox-Separation von 6
+## haetten sonst den Text aus der Karte geschoben.
+##
+## Das ArtRect steht auf expand_mode = EXPAND_IGNORE_SIZE und stretch_mode =
+## STRETCH_KEEP_ASPECT_COVERED. IGNORE_SIZE, damit ein 220 Pixel breites Foto
+## nicht 220 Pixel Kartenbreite verlangt; COVERED, damit es den Rahmen fuellt
+## statt Balken zu lassen. COVERED schneidet dafuer ueber den Rahmen hinaus -
+## deshalb clip_contents.
+##
+## Die Bilder in assets/art/ sind bereits auf 220x160 zugeschnitten, also genau
+## das doppelte des Rahmens. Godot schneidet an ihnen deshalb nichts weg, es
+## skaliert nur auf die Haelfte - das Doppelte ist Reserve fuer Bildschirme mit
+## hoher Pixeldichte. COVERED ist trotzdem richtig gesetzt: es faengt den Fall
+## ab, dass jemand ein Bild mit anderem Seitenverhaeltnis nachlegt. Dann wird
+## dessen Mitte gezeigt - einen Zuschnitt pro Karte gibt es nicht, der gehoert
+## ins Bild selbst.
 ##
 ## CostLabel und TextLabel sind RichTextLabel, weil dort Icons per BBCode im
 ## Fliesstext stehen. Drei Properties sind dabei Pflicht:
@@ -71,6 +90,12 @@ func setup(new_data: CardData) -> void:
 	# schreibt also "{icon_dmg} {damage} Schaden" - Beschreibungen ohne
 	# Icon-Platzhalter funktionieren unveraendert weiter.
 	%TextLabel.text = data.description.format(_text_values())
+	# Eine Karte ohne Bild soll keinen leeren 80-Pixel-Block zeigen. visible aus
+	# nimmt den Node aus der VBox-Rechnung heraus, die Karte wird entsprechend
+	# kuerzer - und weil hand.gd die Hoehe abfragt statt sie zu kennen, darf sie
+	# das auch. Karten mit und ohne Bild sind dann allerdings verschieden hoch.
+	%ArtRect.texture = data.art
+	%ArtRect.visible = data.art != null
 	# Der Style haengt an `data`, und in _ready() gibt es die noch nicht -
 	# deshalb hier und nicht dort.
 	_apply_style()

@@ -27,6 +27,17 @@ enum Type { ANGRIFF, VERTEIDIGUNG, FERTIGKEIT }
 
 @export_multiline var description: String = ""
 
+## Das Bild auf der Karte. Darf leer bleiben - Karten ohne Bild zeigen einfach
+## keins, statt ein Loch im Layout zu lassen (siehe card.gd).
+##
+## Bewusst ein Texture2D und kein Pfad-String: so haengt die Datei am
+## Resource-System. Godot laedt sie mit der Karte, der Editor zeigt sie im
+## Inspector, und ein Tippfehler faellt beim Import auf statt erst zur Laufzeit.
+##
+## Wie das Bild *zugeschnitten* wird, steht nicht hier, sondern im ArtRect in
+## card.tscn - das ist Darstellung, keine Karteneigenschaft.
+@export var art: Texture2D
+
 
 ## Die Zahlen fuer die Platzhalter im Kartentext.
 ##

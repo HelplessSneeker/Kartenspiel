@@ -29,6 +29,38 @@ Download**, nicht später. Wer das nachträglich rekonstruieren will, hat verlor
 | `assets/audio/music/menu.ogg` | Menümusik — „Vibing Over Venus" (ISRC USUAN2300005) | [incompetech](https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2300005) | **Kevin MacLeod** | **CC BY 4.0** | 17.08.2026 |
 | `assets/audio/music/battle.ogg` | Kampfmusik — „Dentaneosuchus Hunt" (ISRC USUAN2500003) | [incompetech](https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2500003) | **Kevin MacLeod** | **CC BY 4.0** | 17.08.2026 |
 
+| `assets/art/bier.jpg` | Kartenbild „Lecker Bierchen" | [Commons `British dimpled glass pint jug with ale`](https://commons.wikimedia.org/wiki/File:British_dimpled_glass_pint_jug_with_ale.jpg) | Jongleur100 | Public domain | 26.08.2026 |
+| `assets/art/tschick.jpg` | Kartenbild „Ane rachen" | [Commons `Cigarette-s x`](https://commons.wikimedia.org/wiki/File:Cigarette-s_x.jpeg) | Tomasz Sienicki | Public domain | 26.08.2026 |
+| `assets/art/watschn.jpg` | Kartenbild „Watschn" | [Commons `FiveFingersFaceHighandMightyTrailerScreenshot1954`](https://commons.wikimedia.org/wiki/File:FiveFingersFaceHighandMightyTrailerScreenshot1954.jpg) | Trailer-Screenshot, *The High and the Mighty* (1954) | Public domain (**nur US** — siehe unten) | 26.08.2026 |
+
+Die drei Kartenbilder sind **modifiziert**: aus dem Original auf das Seitenverhältnis des
+Bildrahmens zugeschnitten (110:80) und auf 220×160 skaliert — das Doppelte des Rahmens, als
+Reserve für Bildschirme mit hoher Pixeldichte. Der Ausschnitt wurde pro Bild gewählt, nicht
+mittig genommen: beim Bier sitzt er hoch, damit die Schaumkrone im Bild bleibt, beim Watschn
+rechts der Mitte, damit der Getroffene nicht am Rand abgeschnitten wird. Bei Public-Domain-
+Material ist das ohne Auflagen erlaubt; es steht hier, damit nachvollziehbar bleibt, dass die
+Dateien nicht den Originalen entsprechen.
+
+### ⚠️ `watschn.jpg` ist ein Platzhalter, kein Release-Asset
+
+Bier und Tschick sind saubere Public-Domain-Fotos: eigene Werke, vom Urheber freigegeben,
+weltweit unbedenklich, keine Namensnennung nötig. Das Watschn-Bild ist es **nicht** —
+drei getrennte Probleme, jedes für sich ein Grund, es vor Veröffentlichung zu tauschen:
+
+1. **PD gilt nur in den USA.** Der Gemeinfreiheits-Grund ist „1954 in den USA ohne
+   Copyright-Vermerk veröffentlicht" — eine Regel des US-Rechts. In Österreich und der
+   EU gilt stattdessen 70 Jahre nach dem Tod der Urheber; danach ist der Film **hier
+   sehr wahrscheinlich noch geschützt**. Ein Release aus Österreich fällt unter EU-Recht.
+2. **Erkennbare Personen.** Zu sehen sind John Wayne und Robert Stack. Auch bei
+   gemeinfreiem Bild bleibt die Verwertung des Abbilds bekannter Personen in einem
+   kommerziellen Produkt ein eigenes Risiko (Persönlichkeitsrecht, in den USA „right
+   of publicity"), das die Bildlizenz nicht abdeckt.
+3. **Es ist ein Filmzitat.** Ein Standbild aus einem bekannten Hollywood-Film auf einer
+   Spielkarte ist auch stilistisch etwas anderes als zwei neutrale Objektfotos.
+
+Zum Bauen und Ausprobieren ist es völlig in Ordnung. Vor einem Release muss es raus —
+am ehesten durch ein selbst gestelltes Foto oder eine gezeichnete Illustration.
+
 **Die Icons und die Musik sind CC BY — Namensnennung ist Pflicht**, anders als bei den
 Schriften und den Kenney-Sounds. Ohne Credits-Screen darf das Spiel nicht veröffentlicht
 werden.
