@@ -18,12 +18,30 @@ extends PanelContainer
 		if is_node_ready():
 			%TitleLabel.text = title
 
+## Das Bild ueber der Beschriftung. Wie `title` im Inspector gesetzt, aus dem
+## gleichen Grund: eine Szene, zwei Kaempfer, kein zweites Skript.
+##
+## Ohne Bild bleibt das PortraitRect unsichtbar und die Anzeige sieht aus wie
+## vorher - eine HealthView ohne Portraet ist also weiterhin gueltig.
+@export var portrait: Texture2D:
+	set(value):
+		portrait = value
+		# Gleiche Falle wie oben: der Setter laeuft vor _ready().
+		if is_node_ready():
+			_apply_portrait()
+
 var _combatant: Combatant
 
 
 func _ready() -> void:
 	%TitleLabel.text = title
+	_apply_portrait()
 	_refresh()
+
+
+func _apply_portrait() -> void:
+	%PortraitRect.texture = portrait
+	%PortraitRect.visible = portrait != null
 
 
 ## Haengt die Anzeige an einen Kaempfer. Ab hier meldet sich der Kaempfer selbst,

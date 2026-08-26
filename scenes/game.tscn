@@ -13,6 +13,8 @@
 [ext_resource type="PackedScene" path="res://ui/pile.tscn" id="11_pile"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="12_pause"]
 [ext_resource type="Resource" path="res://cards/data/ane_rachen.tres" id="18_rachen"]
+[ext_resource type="Texture2D" path="res://assets/art/spieler.jpg" id="19_spieler"]
+[ext_resource type="Texture2D" path="res://assets/art/balg.jpg" id="20_balg"]
 
 [node name="Game" type="Control" unique_id=139426249]
 layout_mode = 3
@@ -81,6 +83,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 title = "Spieler"
+portrait = ExtResource("19_spieler")
 
 [node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer" unique_id=262212548]
 layout_mode = 2
@@ -105,7 +108,8 @@ scroll_active = false
 [node name="EnemyView" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer/EnemySide" instance=ExtResource("6_health")]
 unique_name_in_owner = true
 layout_mode = 2
-title = "Gegner"
+title = "Balg"
+portrait = ExtResource("20_balg")
 
 [node name="DeckPile" parent="." instance=ExtResource("11_pile")]
 unique_name_in_owner = true
@@ -192,7 +196,7 @@ theme_override_constants/separation = 20
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"DialogTitle"
-text = "Gegner besiegt"
+text = "Balg besiegt"
 horizontal_alignment = 1
 
 [node name="RetryButton" type="Button" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer" unique_id=173045579]

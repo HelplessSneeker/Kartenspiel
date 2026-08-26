@@ -10,6 +10,16 @@ script = ExtResource("1_hview")
 layout_mode = 2
 theme_override_constants/separation = 4
 
+[node name="PortraitRect" type="TextureRect" parent="VBoxContainer"]
+unique_name_in_owner = true
+clip_contents = true
+custom_minimum_size = Vector2(120, 140)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
 [node name="TitleLabel" type="Label" parent="VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
