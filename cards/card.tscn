@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bs3yqbfecyowa" path="res://cards/card.gd" id="1_ivai2"]
 
 [node name="Card" type="PanelContainer" unique_id=514923645]
-custom_minimum_size = Vector2(130, 190)
+custom_minimum_size = Vector2(130, 250)
 theme_type_variation = &"Card"
 script = ExtResource("1_ivai2")
 
@@ -27,6 +27,15 @@ theme_type_variation = &"CardCost"
 bbcode_enabled = true
 fit_content = true
 scroll_active = false
+
+[node name="ArtRect" type="TextureRect" parent="VBoxContainer" unique_id=1108224573]
+unique_name_in_owner = true
+clip_contents = true
+custom_minimum_size = Vector2(110, 80)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
 
 [node name="TextLabel" type="RichTextLabel" parent="VBoxContainer" unique_id=1543716907]
 unique_name_in_owner = true
