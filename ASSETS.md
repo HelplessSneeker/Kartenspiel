@@ -32,29 +32,30 @@ Download**, nicht später. Wer das nachträglich rekonstruieren will, hat verlor
 | `assets/art/bier.jpg` | Kartenbild „Lecker Bierchen" | [Commons `British dimpled glass pint jug with ale`](https://commons.wikimedia.org/wiki/File:British_dimpled_glass_pint_jug_with_ale.jpg) | Jongleur100 | Public domain | 26.08.2026 |
 | `assets/art/tschick.jpg` | Kartenbild „Ane rachen" | [Commons `Cigarette-s x`](https://commons.wikimedia.org/wiki/File:Cigarette-s_x.jpeg) | Tomasz Sienicki | Public domain | 26.08.2026 |
 | `assets/art/watschn.jpg` | Kartenbild „Watschn" | [Commons `FiveFingersFaceHighandMightyTrailerScreenshot1954`](https://commons.wikimedia.org/wiki/File:FiveFingersFaceHighandMightyTrailerScreenshot1954.jpg) | Trailer-Screenshot, *The High and the Mighty* (1954) | Public domain (**nur US** — siehe unten) | 26.08.2026 |
-| `assets/art/spieler.jpg` | Porträt Spieler — Ausschnitt aus *El Borracho, Zarauz* (1910) | [Commons `The Drunkard, Zarauz`](https://commons.wikimedia.org/wiki/File:The_Drunkard,_Zarauz_(El_Borracho,_Zarauz)_by_Joaquín_Sorolla.jpg) | Joaquín Sorolla (1863–1923) | Public domain | 26.08.2026 |
-| `assets/art/balg.jpg` | Porträt Gegner — Ausschnitt aus *Tête d'enfant* | [Commons `Teteenfant W-A Bouguereau`](https://commons.wikimedia.org/wiki/File:Teteenfant_W-A_Bouguereau.JPG) | William-Adolphe Bouguereau (1825–1905) | Public domain | 26.08.2026 |
+| `assets/art/spieler.jpg` | Porträt Spieler | von bfn beigesteuert | — | **ungeklärt — Platzhalter** | 26.08.2026 |
+| `assets/art/balg.jpg` | Porträt Balg | von bfn beigesteuert | — | **ungeklärt — Platzhalter** | 26.08.2026 |
 
-### Warum die beiden Porträts Gemälde sind und keine Fotos
+### ⚠️ Die beiden Porträts sind Platzhalter
 
-Gesucht waren Stock-Fotos: ein Alkoholiker für den Spieler, ein übertrieben süßes Kind für
-den Balg. Beides ist als Foto nicht sauber zu bekommen — beim Kind ist es ein echtes
-Problem, kein formales:
+`spieler.jpg` und `balg.jpg` hat bfn beigesteuert, ausdrücklich als Platzhalter zum Bauen.
+Herkunft und Lizenz sind ungeklärt, beide zeigen erkennbare reale Personen. Vor einer
+Veröffentlichung müssen sie ersetzt werden — zusammen mit `watschn.jpg` unten.
 
-**Ein Foto eines realen, erkennbaren Kindes in der Rolle des Prügelziels geht nicht.**
-Bildlizenzen regeln das Urheberrecht, nicht das Persönlichkeitsrecht der abgebildeten
-Person — auch CC0 gibt nur die Rechte des Fotografen frei, nie die des Kindes. Bei
-Minderjährigen gelten dabei strengere Maßstäbe als bei Erwachsenen, und ein Kontext, der
-das Kind zum Gegner in einem Spiel über Ohrfeigen macht, ist genau der Fall, für den keine
-freie Lizenz eine Erlaubnis darstellt. Dasselbe in schwächerer Form beim Spieler: eine
-reale Person als „Alkoholiker" auszuweisen, ist potenziell rufschädigend.
+Für den Ersatz ist das Kinderporträt der schwierigere Fall. Bildlizenzen regeln das
+Urheberrecht des Fotografen, nicht das Persönlichkeitsrecht der abgebildeten Person —
+auch CC0 gibt nur die Rechte des Fotografen frei, nie die des Kindes. Bei Minderjährigen
+gilt ein strengerer Maßstab, und der Kontext „Gegner in einem Spiel über Ohrfeigen" ist
+genau der, für den auch ein bezahltes Stock-Foto mit Model Release praktisch nichts löst.
+Beim Spieler ist es dieselbe Sorte Problem in schwächerer Form: eine reale Person als
+„Alkoholiker" auszuweisen, ist potenziell rufschädigend.
 
-Ein bezahltes Stock-Foto mit Model Release löst das für Erwachsene; für die Kinder-Rolle
-löst es das in dieser Verwendung praktisch auch nicht. Gemeinfreie Malerei umgeht beides:
-Sorolla und Bouguereau sind über 70 Jahre tot, die Werke sind weltweit gemeinfrei, und die
-Dargestellten sind keine lebenden Personen. Der Witz trägt zusätzlich — Bouguereau ist der
-Inbegriff des zuckersüßen Salon-Kindes, was neben einem verlebten Sorolla-Zecher genau den
-Kontrast ergibt, um den es geht.
+Zwei Wege, die das umgehen: eine gezeichnete Illustration, oder gemeinfreie Malerei.
+Konkret geprüft und tauglich befunden waren
+[Sorolla, *El Borracho, Zarauz*](https://commons.wikimedia.org/wiki/File:The_Drunkard,_Zarauz_(El_Borracho,_Zarauz)_by_Joaquín_Sorolla.jpg)
+für den Spieler und
+[Bouguereau, *Tête d'enfant*](https://commons.wikimedia.org/wiki/File:Teteenfant_W-A_Bouguereau.JPG)
+für den Balg — beide Public domain, beide Maler über hundert Jahre tot, keine lebenden
+Personen abgebildet.
 
 Die drei Kartenbilder sind **modifiziert**: aus dem Original auf das Seitenverhältnis des
 Bildrahmens zugeschnitten (110:80) und auf 220×160 skaliert — das Doppelte des Rahmens, als
@@ -64,9 +65,8 @@ rechts der Mitte, damit der Getroffene nicht am Rand abgeschnitten wird. Bei Pub
 Material ist das ohne Auflagen erlaubt; es steht hier, damit nachvollziehbar bleibt, dass die
 Dateien nicht den Originalen entsprechen.
 
-Die beiden **Porträts** sind ebenso zugeschnitten (auf 240×280, Rahmen 120×140) und zeigen
-jeweils nur einen Ausschnitt: beim Spieler den Zecher rechts im Bild, beim Balg den Kopf.
-Die Originalgemälde zeigen deutlich mehr.
+Die beiden **Porträts** sind ebenso zugeschnitten (auf 240×280, Rahmen 120×140), jeweils
+eng aufs Gesicht. Die Originale, die bfn geschickt hat, zeigen deutlich mehr.
 
 ### ⚠️ `watschn.jpg` ist ein Platzhalter, kein Release-Asset
 
