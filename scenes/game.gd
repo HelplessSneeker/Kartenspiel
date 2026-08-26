@@ -291,7 +291,7 @@ func _on_end_turn_button_pressed() -> void:
 ## Klicks ab; die Sperre in play_card() bleibt trotzdem, denn die Regel gehoert
 ## in die Logik und nicht in die Anzeige.
 func _on_enemy_died() -> void:
-	_end_game("Gegner besiegt")
+	_end_game("Balg besiegt")
 
 
 func _on_player_died() -> void:
