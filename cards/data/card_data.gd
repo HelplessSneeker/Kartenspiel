@@ -73,6 +73,27 @@ func is_playable() -> bool:
 	return type != Type.STATUS
 
 
+## Ob die Karte auf den Gegner zielt - sonst auf den Spieler selbst.
+##
+## Entscheidet, wohin die Karte beim Ausspielen fliegt. Abgeleitet aus den
+## Wirkungen und nicht aus `type`, obwohl das kuerzer waere: `type` faerbt den
+## Rahmen und ist ansonsten eine Behauptung, die niemand prueft. Eine
+## Fertigkeitskarte, die Schaden macht, wuerde damit auf den eigenen Spieler
+## einschlagen - und der Fehler saehe aus wie ein Animationsfehler, waere aber
+## ein falsch gesetztes Feld in einer .tres.
+##
+## Dieselbe Regel wie in _apply_effect(): wohin etwas geht, entscheidet die Art
+## der Wirkung. Karte und Wirkung koennen so nicht auseinanderlaufen.
+##
+## Bei gemischten Karten ("8 Schaden und 3 Selbstschaden") gewinnt der Angriff:
+## der Selbstschaden ist der Preis, nicht der Punkt.
+func hits_enemy() -> bool:
+	for effect in effects:
+		if effect != null and effect.kind == CardEffect.Kind.SCHADEN:
+			return true
+	return false
+
+
 ## Die Zahlen fuer die Platzhalter im Kartentext.
 ##
 ## Der Text auf der Karte ist eine Schablone ("{icon_dmg} {damage} Schaden"),
