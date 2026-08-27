@@ -51,6 +51,21 @@ const SFX_PATHS := {
 	"bein": ["res://assets/audio/sfx/bein.ogg"],
 	"mama": ["res://assets/audio/sfx/mama.ogg"],
 	"schmollen": ["res://assets/audio/sfx/schmollen.ogg"],
+
+	# --- Kartengeraeusche -----------------------------------------------------
+	#
+	# PLATZHALTER, ungehoert ausgesucht. Ich habe auf primus kein Audio - die
+	# Auswahl lief ueber Titel, Lizenz und Laenge, nicht ueber den Klang. Beides
+	# gehoert gegengehoert und faellt vermutlich wieder raus.
+	#
+	# Zwei Watschn-Varianten aus demselben Grund wie beim Ziehen: der Schlag
+	# kommt oft, und zweimal exakt dieselbe Wellenform klingt nach Knopfdruck
+	# statt nach Ohrfeige.
+	"watschn": [
+		"res://assets/audio/sfx/watschn-1.ogg",
+		"res://assets/audio/sfx/watschn-2.ogg",
+	],
+	"bier": ["res://assets/audio/sfx/bier.ogg"],
 }
 
 ## Wie viele Sounds gleichzeitig laufen duerfen. Ein einzelner Player wuerde den
