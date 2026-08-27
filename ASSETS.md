@@ -26,6 +26,31 @@ Download**, nicht später. Wer das nachträglich rekonstruieren will, hat verlor
 | `assets/audio/sfx/click_001.ogg` | Menü-Klick | [Kenney Interface Sounds](https://kenney.nl/assets/interface-sounds) | Kenney | CC0 | 08.08.2026 |
 | `assets/audio/sfx/error_002.ogg` | Zu wenig Energie | [Kenney Interface Sounds](https://kenney.nl/assets/interface-sounds) | Kenney | CC0 | 08.08.2026 |
 
+| `assets/audio/sfx/watschn-1.ogg` | Watschn (Variante 1) | [Freesound 72490](https://freesound.org/people/rockwehrmann/sounds/72490/) | rockwehrmann | CC0 | 27.08.2026 |
+| `assets/audio/sfx/watschn-2.ogg` | Watschn (Variante 2) | [Freesound 72491](https://freesound.org/people/rockwehrmann/sounds/72491/) | rockwehrmann | CC0 | 27.08.2026 |
+| `assets/audio/sfx/bier.ogg` | Lecker Bierchen | [Freesound 534336](https://freesound.org/people/Defaultv/sounds/534336/) | Defaultv | CC0 | 27.08.2026 |
+
+**⚠️ Die drei Kartengeräusche sind Platzhalter.** Zwei Vermerke dazu:
+
+1. **Ungehört ausgesucht.** Ludicator hat auf primus kein Audio. Die Auswahl lief über
+   Titel, Lizenz und Länge (Watschn 0,54 s / 0,34 s, Bier 1,04 s) — nicht über den Klang.
+   Ob das nach Ohrfeige und nach Bier klingt, muss bfn gegenhören.
+2. **Es sind Freesound-*Previews*, nicht die Originaldateien.** Der Download der
+   Originale verlangt ein Konto; genommen wurde die frei abrufbare HQ-Preview
+   (`cdn.freesound.org/previews/…-hq.ogg`), also eine transcodierte Fassung.
+   Lizenzrechtlich egal — CC0 kennt keine Einschränkungen —, qualitativ ein Abstrich.
+   Beim Ersetzen: Original ziehen oder gleich einen anderen Sound nehmen.
+
+Lizenz beider Quellen einzeln auf der Freesound-Seite geprüft (nicht nur dem
+Suchfilter geglaubt): alle drei **CC0**, keine Namensnennung nötig. Sie stehen trotzdem
+hier, weil die Tabelle vollständig sein soll.
+
+**Verworfene Kandidaten** (falls neu gesucht wird): OpenGameArt
+[„Punch, slap, n' kick"](https://opengameart.org/content/punch-slap-n-kick) wäre inhaltlich
+passend, ist aber **CC BY 3.0** (Namensnennung) und die 18 Dateien heißen bloß `1.ogg`–`18.ogg`
+— ohne Reinhören nicht auseinanderzuhalten. Bei den Trink-Sounds fielen mehrere über die
+Länge raus (4–9 s; für einen Kartenton zu lang).
+
 | `assets/audio/music/menu.ogg` | Menümusik — „Vibing Over Venus" (ISRC USUAN2300005) | [incompetech](https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2300005) | **Kevin MacLeod** | **CC BY 4.0** | 17.08.2026 |
 | `assets/audio/music/battle.ogg` | Kampfmusik — „Dentaneosuchus Hunt" (ISRC USUAN2500003) | [incompetech](https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2500003) | **Kevin MacLeod** | **CC BY 4.0** | 17.08.2026 |
 

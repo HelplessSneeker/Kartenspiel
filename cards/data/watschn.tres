@@ -16,5 +16,6 @@ cost = 1
 type = 0
 effects = Array[ExtResource("2_effect")]([SubResource("Effect_schaden")])
 description = "{icon_dmg} {damage} Schaden"
+sound = "watschn"
 art = ExtResource("3_art")
 metadata/_custom_type_script = "uid://bedxkpm6a0xyk"
