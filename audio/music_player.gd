@@ -23,6 +23,22 @@ const FADE_TIME := 1.2
 ## getweent wird `volume_db`, und minus unendlich laesst sich nicht animieren.
 const SILENT_DB := -50.0
 
+## Volle Lautstaerke der Musik - und das ist mit Absicht nicht 0 dB.
+##
+## Die Stuecke von incompetech sind laut ausgesteuert, die Spielgeraeusche sind es
+## nicht. Ohne diesen Abschlag uebertoent der Soundtrack jede Watschn, und man
+## dreht den Musikregler immer weiter runter, bis er praktisch aus ist (Befund
+## bfn, 27.08.2026).
+##
+## Das gehoert hierher und nicht in den Standardwert von `Settings.music_volume`:
+## der greift nur beim allerersten Start, denn danach gewinnt die gespeicherte
+## `user://settings.cfg`. Hier gilt es immer. Der Regler in den Optionen bleibt
+## unberuehrt und skaliert weiterhin von diesem Punkt aus nach unten.
+##
+## Minus 12 dB ist rund ein Viertel der Amplitude. Ungehoert gewaehlt - falls es
+## zu leise ist, ist diese eine Zahl die Stellschraube.
+const FULL_DB := -12.0
+
 var _player: AudioStreamPlayer
 var _tween: Tween
 
@@ -99,7 +115,7 @@ func _crossfade(stream: AudioStream) -> void:
 	if _player.playing:
 		_tween.tween_property(_player, "volume_db", SILENT_DB, FADE_TIME * 0.5)
 	_tween.tween_callback(_start.bind(stream))
-	_tween.tween_property(_player, "volume_db", 0.0, FADE_TIME * 0.5)
+	_tween.tween_property(_player, "volume_db", FULL_DB, FADE_TIME * 0.5)
 
 
 func _start(stream: AudioStream) -> void:

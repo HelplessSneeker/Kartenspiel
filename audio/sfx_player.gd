@@ -68,6 +68,25 @@ const SFX_PATHS := {
 	"bier": ["res://assets/audio/sfx/bier.ogg"],
 }
 
+## Feineinstellung je Ereignis, in Dezibel. Was hier nicht steht, laeuft mit 0 -
+## also die Datei so, wie sie ist.
+##
+## Noetig, weil die Toene aus verschiedenen Quellen stammen und verschieden laut
+## ausgesteuert sind. Die Kenney-Sounds sind aufeinander abgestimmt, die
+## Freesound-Dateien sind es weder untereinander noch mit denen.
+##
+## Das ist etwas anderes als der SFX-Regler in den Optionen: der gilt fuer alles
+## zusammen und gehoert dem Spieler. Das hier gleicht *eine Datei* gegen die
+## anderen aus und gehoert ins Projekt - sonst muesste der Spieler mit seinem
+## Regler ausbaden, dass zwei Dateien unterschiedlich laut aufgenommen wurden.
+##
+## Ungehoert gewaehlt (Befund bfn "Karteneffekte zu leise", 27.08.2026). Knackst
+## oder scheppert es, ist die Zahl zu hoch - dann runter statt Datei tauschen.
+const SFX_GAIN_DB := {
+	"watschn": 5.0,
+	"bier": 5.0,
+}
+
 ## Wie viele Sounds gleichzeitig laufen duerfen. Ein einzelner Player wuerde den
 ## laufenden Sound abschneiden, sobald der naechste kommt - und beim Zugende
 ## kommen Mischen und Ziehen dicht hintereinander.
@@ -135,6 +154,10 @@ func play(sound_name: String) -> void:
 		return
 	var player := _take_player()
 	player.stream = variants[randi() % variants.size()]
+	# Jedes Mal setzen, nicht nur wenn ein Gain eingetragen ist: die Player werden
+	# reihum wiederverwendet, und ohne das Zuruecksetzen liefe der naechste Ton
+	# mit der Verstaerkung des vorigen.
+	player.volume_db = SFX_GAIN_DB.get(sound_name, 0.0)
 	player.play()
 
 

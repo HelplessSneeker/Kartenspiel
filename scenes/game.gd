@@ -184,10 +184,18 @@ func play_card(view: CardView) -> void:
 		Sfx.play("error")
 		return
 
-	# Das Legegeraeusch gehoert zum Verlassen der Hand, also hierher. Der eigene
-	# Ton einer Karte gehoert dagegen zum Einschlag und kommt weiter unten -
-	# eine Watschn soll klatschen, wenn sie ankommt, nicht wenn man sie wirft.
-	Sfx.play("card_play")
+	# Das Legegeraeusch nur fuer Karten ohne eigenen Ton.
+	#
+	# Vorher lief beides: hier das Legen, beim Einschlag der Kartenton. Gedacht war
+	# das als zwei Ereignisse - Karte verlaesst die Hand, Karte kommt an -, gehoert
+	# hat es sich aber nach Doppelung (Befund bfn, 27.08.2026). Bei einem
+	# Kartenflug von zwei Zehnteln liegen die beiden Geraeusche zu dicht
+	# beieinander, um als zwei gelesen zu werden.
+	#
+	# Der eigene Ton gewinnt, weil er mehr sagt: dass eine Watschn geflogen ist,
+	# ist die Information - dass dabei ein Stueck Karton bewegt wurde, nicht.
+	if card_data.sound.is_empty():
+		Sfx.play("card_play")
 	energy -= card_data.cost
 
 	# Die Karte verlaesst die Hand, *bevor* sie wirkt. Sonst zieht eine Karte mit
