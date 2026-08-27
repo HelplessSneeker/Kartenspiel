@@ -13,6 +13,35 @@ signal changed
 ## Feuert genau einmal, wenn das Leben auf 0 faellt.
 signal died
 
+## Die drei Signale unten sagen, *was* passiert ist - `changed` sagt nur, *dass*
+## etwas passiert ist.
+##
+## Der Unterschied ist der ganze Grund, warum es sie gibt. Zum Neuzeichnen
+## genuegt "irgendwas ist anders": die Anzeige liest danach einfach alle Werte
+## neu. Fuer Rueckmeldung genuegt das nicht - ein Balken, der von 42 auf 37
+## springt, zeigt nicht, dass gerade 5 Schaden angekommen sind, er zeigt nur den
+## Zustand danach. Die Zahl, die kurz aufsteigt, muss jemand mitliefern, und
+## kennen tut sie nur die Stelle, die gerechnet hat.
+##
+## Die Alternative waere gewesen, die Anzeige alte und neue Werte selbst
+## vergleichen zu lassen. Das haette funktioniert, aber sie muesste daraus
+## *erraten*, was passiert ist - und "Block ist um 5 gefallen" heisst je nach
+## Zusammenhang "getroffen" oder "Runde vorbei, Block verfaellt". Solche
+## Unterscheidungen gehoeren nicht in eine Anzeige.
+
+## Ein Treffer ist angekommen. `health_lost` ging ans Leben, `block_lost` hat
+## der Block geschluckt - getrennt, weil die Anzeige beides verschieden zeigt.
+## Feuert auch, wenn der Block alles abgefangen hat (health_lost == 0).
+signal damaged(health_lost: int, block_lost: int)
+
+## Leben zurueck. `amount` ist, was wirklich ankam, nicht was versucht wurde -
+## eine Heilung ueber das Maximum hinaus soll keine Zahl zeigen, die es nicht gab.
+signal healed(amount: int)
+
+## Block dazu. Nicht beim Verfallen - das ist keine Rueckmeldung auf eine
+## Handlung, sondern Rundenwechsel.
+signal blocked(amount: int)
+
 var max_health: int
 var health: int
 
@@ -39,9 +68,14 @@ func take_damage(amount: int) -> void:
 
 	var absorbed := mini(block, amount)
 	block -= absorbed
-	health = maxi(health - (amount - absorbed), 0)
+	var lost := amount - absorbed
+	health = maxi(health - lost, 0)
 
+	# changed zuerst: die Anzeige soll die neuen Werte schon stehen haben, wenn
+	# die Zahl darueber losfliegt. Sonst steigt eine -5 auf, waehrend der Balken
+	# noch den Stand von davor zeigt.
 	changed.emit()
+	damaged.emit(lost, absorbed)
 	if health == 0:
 		died.emit()
 
@@ -51,6 +85,7 @@ func add_block(amount: int) -> void:
 		return
 	block += amount
 	changed.emit()
+	blocked.emit(amount)
 
 
 ## Leben zurueck, aber nie ueber das Maximum.
@@ -63,8 +98,14 @@ func add_block(amount: int) -> void:
 func heal(amount: int) -> void:
 	if amount <= 0 or health == 0 or health == max_health:
 		return
-	health = mini(health + amount, max_health)
+	# Was wirklich ankommt, kann weniger sein als `amount`: bei 48 von 50 heilen
+	# 8 Punkte nur noch 2. Die Anzeige soll die 2 zeigen, nicht die 8 - eine
+	# Zahl, die groesser ist als der Ausschlag im Balken, macht die Anzeige
+	# unglaubwuerdig.
+	var gained := mini(amount, max_health - health)
+	health += gained
 	changed.emit()
+	healed.emit(gained)
 
 
 ## Wird zu Rundenbeginn gerufen: Block haelt nur eine Runde.
