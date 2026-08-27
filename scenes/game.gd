@@ -10,6 +10,15 @@ const MAX_ENERGY := 4
 ## teure Karten auskommt - waeren es vier, spielte man einfach die Hand leer.
 const HAND_SIZE := 5
 
+## Wie der Aktionsname ueber der Drohung gesetzt wird.
+##
+## Als BBCode und nicht als Theme-Variation, weil beides in *einem* Label steht:
+## Name und Zahlen sollen zusammen zentriert bleiben und zusammen verschwinden.
+## Zwei Labels waeren sauberer getrennt, muessten sich dafuer aber beide um
+## Sichtbarkeit und Ausrichtung kuemmern - fuer eine Zeile Kleingedrucktes ist
+## das der teurere Weg.
+const INTENT_NAME_FORMAT := "[font_size=14][color=#8f96ab]%s[/color][/font_size]"
+
 ## Wird im Inspector befuellt. Bleibt zur Laufzeit unangetastet -
 ## gezogen wird aus `deck`, das beim Start eine Kopie davon ist.
 @export var starting_deck: Array[CardData] = []
@@ -104,8 +113,11 @@ func _enemy_turn() -> void:
 	if action == null:
 		return
 
-	if action.is_attack():
-		Sfx.play("card_play")
+	# Die Aktion sagt selbst, wie sie klingt. Vorher stand hier is_attack() und
+	# lieh sich den Kartenlegeton - das war ein Behelf aus der Zeit, in der der
+	# Gegner nur schlagen oder blocken konnte.
+	if not action.sound.is_empty():
+		Sfx.play(action.sound)
 
 	# Dieselbe Schleife wie beim Kartenspielen, nur mit vertauschten Rollen.
 	# Genau das ist der Gewinn daran, dass beide Seiten CardEffect benutzen:
@@ -157,7 +169,8 @@ func play_card(view: CardView) -> void:
 		Sfx.play("error")
 		return
 
-	Sfx.play("card_play")
+	# Eigener Ton, wenn die Karte einen nennt - sonst der allgemeine Legeton.
+	Sfx.play(card_data.sound if not card_data.sound.is_empty() else "card_play")
 	energy -= card_data.cost
 
 	# Die Karte verlaesst die Hand, *bevor* sie wirkt. Sonst zieht eine Karte mit
@@ -352,15 +365,26 @@ func refresh_hud() -> void:
 ## verschwindende Zeile in einem VBoxContainer laesst die Lebensanzeige
 ## darunter springen.
 ## Der Text kommt jetzt aus der Aktion selbst, statt hier aus Symbol und Zahl
-## gebaut zu werden. Grund: "Papa, bitte!" hat keine Zahl und "Am Bein haengen"
-## zwei verschiedene - eine Regel, die fuer beide passt, gibt es nicht. Wie eine
-## Drohung formuliert ist, ist ohnehin Design und gehoert in die .tres.
+## gebaut zu werden. Grund: "Mama!" hat eine Zahl, die nichts erklaert, und "Am
+## Bein haengen" hat zwei verschiedene - eine Regel, die fuer beide passt, gibt
+## es nicht. Wie eine Drohung formuliert ist, ist ohnehin Design und gehoert in
+## die .tres.
+##
+## Ueber den Zahlen steht der Name der Aktion. Ohne ihn ist ein Herz mit einer 8
+## daneben nur eine Regel; mit ihm ist es ein Kind, das nach der Mama schreit -
+## und in einer Komoedie ist genau das der Inhalt. Der Name steht kleiner und
+## blasser als die Zahlen: er erklaert, entschieden wird nach der Zahl.
 func refresh_intent() -> void:
 	var action := brain.intent
 	if action == null or _game_over:
 		%IntentLabel.text = ""
 		return
-	%IntentLabel.text = "[center]%s[/center]" % Icons.fill(action.intent, action.intent_values())
+
+	var values := Icons.fill(action.intent, action.intent_values())
+	if action.action_name.is_empty():
+		%IntentLabel.text = "[center]%s[/center]" % values
+		return
+	%IntentLabel.text = "[center]%s\n%s[/center]" % [INTENT_NAME_FORMAT % action.action_name, values]
 
 
 # --- Signale ------------------------------------------------------------------

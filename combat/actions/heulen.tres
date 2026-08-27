@@ -11,5 +11,6 @@ amount = 5
 [resource]
 script = ExtResource("1_action")
 action_name = "Heulen"
+sound = "heulen"
 effects = Array[ExtResource("2_effect")]([SubResource("Effect_schaden")])
 intent = "{icon_dmg} {damage}"

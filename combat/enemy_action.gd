@@ -14,10 +14,27 @@ extends Resource
 ## ohne zu schlagen). Der alte Kommentar hier hat den Moment angekuendigt, an
 ## dem "dasselbe Effekt-System wie die Karten" faellig wird. Er ist da.
 
-## Nur fuer Menschen: taucht im Inspector und in Logs auf, nirgends im Spiel.
-## Eine .tres ohne Namen ist im Pattern-Array nicht von der naechsten zu
-## unterscheiden.
+## Wie die Aktion heisst - steht ueber der angekuendigten Drohung.
+##
+## War zuerst nur eine Inspector-Hilfe ("eine .tres ohne Namen ist im
+## Pattern-Array nicht von der naechsten zu unterscheiden"). Das reichte,
+## solange der Gegner schlug oder blockte und die Zahl alles sagte. Jetzt heult,
+## klammert, ruft und schmollt er - und ein Herz mit einer 8 daneben erklaert
+## nicht, dass das Kind gerade nach der Mama schreit. Der Name ist bei diesem
+## Gegner der halbe Inhalt.
 @export var action_name: String = ""
+
+## Welches Geraeusch die Aktion macht - ein Ereignisname fuer `Sfx.play()`,
+## kein Dateipfad.
+##
+## Die Trennung ist dieselbe wie ueberall hier: die .tres sagt, *was* passiert
+## ist, das Sfx-Autoload entscheidet, *wie* es klingt. Ein Tausch der Datei
+## beruehrt dann eine Zeile in sfx_player.gd statt jeder Aktion, die sie nutzt.
+##
+## Leer heisst stumm. Solange die Dateien fehlen, ist es das auch mit Eintrag -
+## und das ist die ehrlichere Anzeige als ein geliehenes Kartengeraeusch, das
+## klingt, als waere es gemeint.
+@export var sound: String = ""
 
 ## Wird der Reihe nach ausgefuehrt, wenn der Gegner am Zug ist.
 ## Was eine Wirkung *tut*, steht nicht hier, sondern in game.gd - siehe dort.
@@ -36,19 +53,6 @@ extends Resource
 ## baut: die Drohung ist das Erste, was der Spieler jede Runde liest, und
 ## Formulierung ist dort Design, keine Ableitung.
 @export_multiline var intent: String = ""
-
-
-## Ob bei dieser Aktion etwas zuschlaegt - nur fuer die Tonspur.
-##
-## Ein Kind, das sich verkriecht, soll nicht klingen wie eine Ohrfeige. Die
-## Alternative waere ein Ton pro Wirkung gewesen; bei "Schaden plus Entzug" sind
-## das dann zwei Geraeusche fuer einen Zug, und das eine Ereignis auf dem
-## Bildschirm zerfaellt akustisch in zwei.
-func is_attack() -> bool:
-	for effect in effects:
-		if effect != null and effect.kind == CardEffect.Kind.SCHADEN:
-			return true
-	return false
 
 
 ## Die Zahlen fuer die Platzhalter in `intent`.
