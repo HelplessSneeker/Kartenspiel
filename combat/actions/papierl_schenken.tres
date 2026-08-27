@@ -2,16 +2,16 @@
 
 [ext_resource type="Script" path="res://combat/enemy_action.gd" id="1_action"]
 [ext_resource type="Script" path="res://cards/data/card_effect.gd" id="2_effect"]
-[ext_resource type="Resource" path="res://cards/data/schlechtes_gewissen.tres" id="3_gewissen"]
+[ext_resource type="Resource" path="res://cards/data/papierl.tres" id="3_papierl"]
 
 [sub_resource type="Resource" id="Effect_zuschieben"]
 script = ExtResource("2_effect")
 kind = 7
 amount = 1
-card = ExtResource("3_gewissen")
+card = ExtResource("3_papierl")
 
 [resource]
 script = ExtResource("1_action")
-action_name = "Papa, bitte!"
+action_name = "Papierl schenken"
 effects = Array[ExtResource("2_effect")]([SubResource("Effect_zuschieben")])
-intent = "Schlechtes Gewissen"
+intent = "Papierl"

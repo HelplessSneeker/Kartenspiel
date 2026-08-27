@@ -9,7 +9,7 @@
 [ext_resource type="Script" path="res://combat/enemy_action.gd" id="7_action"]
 [ext_resource type="Resource" path="res://combat/actions/heulen.tres" id="8_heulen"]
 [ext_resource type="Resource" path="res://combat/actions/am_bein_haengen.tres" id="9_bein"]
-[ext_resource type="Resource" path="res://combat/actions/papa_bitte.tres" id="10_bitte"]
+[ext_resource type="Resource" path="res://combat/actions/papierl_schenken.tres" id="10_papierl"]
 [ext_resource type="Resource" path="res://combat/actions/schmollen.tres" id="21_schmollen"]
 [ext_resource type="PackedScene" path="res://ui/pile.tscn" id="11_pile"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="12_pause"]
@@ -26,7 +26,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_uwrxv")
 starting_deck = Array[ExtResource("2_lbhrr")]([ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("18_rachen"), ExtResource("18_rachen")])
-enemy_pattern = Array[ExtResource("7_action")]([ExtResource("8_heulen"), ExtResource("9_bein"), ExtResource("8_heulen"), ExtResource("10_bitte"), ExtResource("21_schmollen"), ExtResource("8_heulen")])
+enemy_pattern = Array[ExtResource("7_action")]([ExtResource("8_heulen"), ExtResource("9_bein"), ExtResource("8_heulen"), ExtResource("10_papierl"), ExtResource("21_schmollen"), ExtResource("8_heulen")])
 defeat_title = "Du bleibst daheim"
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1894322726]
