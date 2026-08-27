@@ -22,6 +22,14 @@ class_name CardData
 ## `playable`-Feld: unspielbar zu sein ist keine Eigenschaft, die man einer
 ## Angriffskarte ankreuzen wollen wuerde - es ist eine eigene Art von Karte, und
 ## Type entscheidet ohnehin schon, wie sie aussieht.
+##
+## ZUR ZEIT OHNE NUTZER. Gebaut fuer das Kind ("Papierl", eine Karte, die es
+## einem ins Deck schiebt) und wieder herausgenommen: eine Karte, die erst zwei
+## Mischvorgaenge spaeter auffaellt, hat keinen Moment, in dem der Witz landet -
+## und das Spiel lebt vom Sofortigen. Der Weg bleibt trotzdem stehen, weil das
+## Design-Doc ihn fuer die starken Biere vorsieht ("Doppelter Draggelsberger":
+## viel Block, dafuer Deck-Verschmutzung). Dort ist die Verzoegerung kein
+## Problem, sondern der Preis, den man selbst waehlt.
 enum Type { ANGRIFF, VERTEIDIGUNG, FERTIGKEIT, STATUS }
 
 @export var card_name: String = ""

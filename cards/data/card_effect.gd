@@ -48,7 +48,7 @@ enum Kind {
 	ENERGIE,           # Energie dazu, amount = Anzahl
 	SELBSTSCHADEN,     # Schaden an dem, der wirkt - der Preis starker Karten
 	ENERGIE_ENTZUG,    # amount Energie weniger im naechsten Spielerzug
-	KARTE_ZUSCHIEBEN,  # `card` amount-mal auf die Ablage des Spielers
+	KARTE_ZUSCHIEBEN,  # `card` amount-mal auf die Ablage des Spielers - z.Z. ungenutzt
 }
 
 @export var kind: Kind = Kind.SCHADEN
