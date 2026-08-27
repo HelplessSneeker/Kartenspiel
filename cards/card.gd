@@ -159,6 +159,32 @@ func animate_to(target_position: Vector2, target_scale: Vector2, duration: float
 	_tween.tween_property(self, "scale", target_scale, duration).set_delay(delay)
 
 
+## Wie gross die Karte im Moment des Einschlags ist.
+##
+## Ueber 1, damit die Bewegung nach *vorn* liest und nicht nur zur Seite. Der
+## Pivot sitzt auf Unterkante-Mitte, die Karte waechst also nach oben - genau
+## dorthin, wo bei der HealthView gleich die Zahl aufsteigt.
+const STRIKE_SCALE := 1.15
+
+
+## Der Weg zum Ziel: die Karte faehrt auf den Gegner (oder den Spieler) zu.
+##
+## Zwischenschritt vor fly_out(). Vorher ging eine gespielte Karte direkt zur
+## Ablage, waehrend der Schaden gleichzeitig irgendwo anders auf dem Bildschirm
+## abgezogen wurde - zwei Ereignisse, die zusammengehoeren, an zwei Orten. Jetzt
+## ist die Karte dort, wo es wehtut, wenn es wehtut.
+##
+## EASE_IN, im Gegensatz zu jeder anderen Bewegung in dieser Datei: eine
+## Bewegung, die beschleunigt, liest sich als Zuschlagen. EASE_OUT waere ein
+## Gleiten - richtig fuer Karten, die sich sortieren, falsch fuer eine Watschn.
+func strike(target_position: Vector2, duration: float) -> void:
+	_kill_tween()
+	_tween = create_tween().set_parallel()
+	_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	_tween.tween_property(self, "position", target_position, duration)
+	_tween.tween_property(self, "scale", Vector2.ONE * STRIKE_SCALE, duration)
+
+
 ## Letzte Reise: zur Ablage schrumpfen, ausblenden, sich selbst wegraeumen.
 ##
 ## Die Karte raeumt sich am Ende selbst weg, statt dass der Aufrufer einen Timer

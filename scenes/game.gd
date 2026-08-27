@@ -66,6 +66,18 @@ var brain: EnemyBrain
 ## setzen, statt dass jede Abfrage sich ihre eigene Bedingung zusammensucht.
 var _game_over := false
 
+## True, solange eine gespielte Karte zu ihrem Ziel unterwegs ist.
+##
+## Die Karte wirkt erst beim Einschlag, nicht beim Klick - genau darum geht es
+## bei diesem Schritt. Zwischen beidem liegt ein knapper Moment, in dem der
+## Zustand halb fertig ist: die Energie ist schon abgezogen, der Schaden noch
+## nicht angekommen. Wer da eine zweite Karte spielen duerfte, koennte mit
+## Energie bezahlen, die eine noch nicht gewirkte Karte gerade erst gibt.
+##
+## Zweite Sperre neben _game_over statt einer gemeinsamen: die beiden bedeuten
+## Verschiedenes. _game_over ist endgueltig, das hier dauert zwei Zehntel.
+var _resolving := false
+
 
 func _ready() -> void:
 	Music.play("battle")
@@ -93,7 +105,10 @@ func _ready() -> void:
 ## und der Schaden kaeme trotzdem voll durch. Block muss den Angriff ueberleben,
 ## gegen den er gespielt wurde, und erst danach verfallen.
 func end_turn() -> void:
-	if _game_over:
+	# Auch der Zugwechsel wartet, bis die Karte eingeschlagen ist. Sonst
+	# schluege der Gegner zu, waehrend die eigene Watschn noch fliegt - und der
+	# Block, den man gerade gespielt hat, waere noch nicht da, wenn er trifft.
+	if _game_over or _resolving:
 		return
 	_enemy_turn()
 	# Der Gegnerangriff kann den Spieler toeten. Dann darf kein neuer Zug mehr
@@ -159,7 +174,7 @@ func _start_player_turn() -> void:
 ## Bekommt die angeklickte View, nicht nur ihre Daten - weil am Ende genau
 ## diese Karte zur Ablage fliegen soll und nicht irgendeine mit denselben Werten.
 func play_card(view: CardView) -> void:
-	if _game_over:
+	if _game_over or _resolving:
 		return
 	var card_data := view.data
 	# Zwei Absagen, ein Geraeusch. Ein eigener Ton fuer "geht nie" waere ehrlicher,
@@ -169,8 +184,10 @@ func play_card(view: CardView) -> void:
 		Sfx.play("error")
 		return
 
-	# Eigener Ton, wenn die Karte einen nennt - sonst der allgemeine Legeton.
-	Sfx.play(card_data.sound if not card_data.sound.is_empty() else "card_play")
+	# Das Legegeraeusch gehoert zum Verlassen der Hand, also hierher. Der eigene
+	# Ton einer Karte gehoert dagegen zum Einschlag und kommt weiter unten -
+	# eine Watschn soll klatschen, wenn sie ankommt, nicht wenn man sie wirft.
+	Sfx.play("card_play")
 	energy -= card_data.cost
 
 	# Die Karte verlaesst die Hand, *bevor* sie wirkt. Sonst zieht eine Karte mit
@@ -182,7 +199,26 @@ func play_card(view: CardView) -> void:
 	# die Anzeige, und die bekommt die View direkt.
 	hand.erase(card_data)
 	discard.append(card_data)
-	%Hand.play_out(view)
+
+	# Zweimal anzeigen, einmal hier und einmal nach dem Einschlag. Die Energie
+	# ist *jetzt* weg, und die uebrigen Karten muessen sofort grau werden - eine
+	# Anzeige, die zwei Zehntel hinterherhinkt, liest sich als Ruckler.
+	refresh()
+
+	# Ab hier ist eine Karte unterwegs und das Spiel nimmt nichts mehr an.
+	_resolving = true
+	%Hand.play_out(view, _strike_target(card_data))
+	await %Hand.card_struck
+	_resolving = false
+
+	# Nach einem await ist nichts mehr selbstverstaendlich: in der Zwischenzeit
+	# kann die Szene gewechselt haben (Pausenmenue -> Hauptmenue), und dann
+	# haengt dieser Ablauf an einem Knoten, den es nicht mehr gibt.
+	if not is_inside_tree() or _game_over:
+		return
+
+	if not card_data.sound.is_empty():
+		Sfx.play(card_data.sound)
 
 	for effect in card_data.effects:
 		_apply_effect(effect, player, enemy)
@@ -192,6 +228,17 @@ func play_card(view: CardView) -> void:
 			break
 
 	refresh()
+
+
+## Wohin die gespielte Karte fliegt.
+##
+## game.gd sagt nur, *wer* getroffen wird, und liefert die Mitte von dessen
+## Anzeige; wo dieser Punkt in Hand-Koordinaten liegt, rechnet die Hand selbst
+## aus. Die Aufteilung ist dieselbe wie ueberall hier: die Spiellogik kennt die
+## Beteiligten, die Anzeige kennt ihre eigenen Koordinaten.
+func _strike_target(card_data: CardData) -> Vector2:
+	var target: Control = %EnemyView if card_data.hits_enemy() else %PlayerView
+	return target.get_global_rect().get_center()
 
 
 ## Fuehrt eine einzelne Wirkung aus.

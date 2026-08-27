@@ -23,6 +23,11 @@ extends Control
 ## gemeint ist - und genau die soll gleich zur Ablage fliegen.
 signal card_clicked(view: CardView)
 
+## Die gespielte Karte ist an ihrem Ziel angekommen. game.gd wartet darauf,
+## bevor es die Wirkungen ausfuehrt - damit die Zahl aufsteigt, wenn die Karte
+## einschlaegt, und nicht schon beim Klick.
+signal card_struck
+
 const CARD_SCENE := preload("res://cards/card.tscn")
 
 ## Abstand zwischen zwei Karten, solange genug Platz ist.
@@ -76,6 +81,30 @@ const CARD_SCENE := preload("res://cards/card.tscn")
 
 ## Groesse einer Karte, solange sie auf einem Stapel liegt.
 @export var pile_scale := 0.55
+
+## Wie lange die gespielte Karte zu ihrem Ziel unterwegs ist.
+##
+## Kurz gehalten, weil das Spiel in dieser Zeit keine Eingabe annimmt: die Karte
+## wirkt erst beim Einschlag, also muss bis dahin gewartet werden. Bei 0,18 s
+## liest sich das als Gewicht, ab etwa einer halben Sekunde als Haenger - und
+## wer drei Karten hintereinander spielt, merkt den Unterschied deutlich.
+## Auf 0 gesetzt wirkt die Karte praktisch sofort, der Flug bleibt sichtbar.
+@export var strike_time := 0.18
+
+## Wie lange die Karte am Ziel stehen bleibt, bevor sie zur Ablage weiterfliegt.
+##
+## Ohne diese Pause faellt der Einschlag mit dem Abflug zusammen, und das Auge
+## sieht nur eine durchgehende Bewegung quer ueber den Bildschirm. Das Spiel
+## nimmt waehrend der Pause bereits wieder Eingaben an - sie kostet also nichts.
+@export var strike_hold := 0.1
+
+## Feinjustierung des Zielpunkts, in Pixeln.
+##
+## game.gd sagt nur, *wer* getroffen wird, und liefert die Mitte von dessen
+## Anzeige. Ob die Karte etwas tiefer besser sitzt, ist eine Frage des Augenmasses
+## - und die kann ich nicht beantworten, weil ich das Spiel nie laufen sehe.
+## Deshalb steht die Zahl im Inspector und nicht im Code.
+@export var strike_offset := Vector2(0.0, 40.0)
 
 var _views: Array[CardView] = []
 var _hovered: CardView = null
@@ -174,10 +203,54 @@ func draw_in(cards: Array[CardData], energy: int) -> void:
 		_play_delayed("card_draw", lead_in + deal_delay * i)
 
 
-## Eine gespielte Karte geht zur Ablage.
-func play_out(view: CardView) -> void:
-	_send_to_discard(view)
+## Eine gespielte Karte fliegt zu ihrem Ziel und von dort auf die Ablage.
+##
+## `target_global` ist die Mitte dessen, was getroffen wird - in globalen
+## Koordinaten, weil die Lebensanzeigen ausserhalb der Hand im Szenenbaum
+## stehen. Wer das Ziel *ist*, entscheidet game.gd; wo dieser Punkt in
+## Hand-Koordinaten liegt, ist Sache dieser Datei.
+##
+## Der Einschlag wird ueber `card_struck` gemeldet und nicht, indem der Aufrufer
+## auf den Tween der Karte wartet. Das ist kein Stilempfinden: game.gd haelt bis
+## zu diesem Signal jede Eingabe an. Ein Tween kann jederzeit abgeraeumt werden -
+## dann kaeme sein `finished` nie, und das Spiel bliebe in einer Sperre stehen,
+## aus der kein Weg zurueckfuehrt. Ein SceneTreeTimer feuert immer.
+func play_out(view: CardView, target_global: Vector2) -> void:
+	_release(view)
+	# Die uebrigen Karten ruecken sofort zusammen, nicht erst beim Einschlag.
+	# Die Luecke waere sonst eine halbe Sekunde lang zu sehen und saehe aus, als
+	# haenge die Hand.
 	_apply_layout()
+
+	view.strike(_strike_position(target_global, view.size), strike_time)
+
+	# maxf, damit der Timer nicht auf 0 steht: bei strike_time = 0 wuerde er noch
+	# im selben Frame feuern - moeglicherweise bevor game.gd ueberhaupt auf das
+	# Signal wartet, und dann wartet es fuer immer.
+	get_tree().create_timer(maxf(strike_time, 0.01)).timeout.connect(
+		func() -> void:
+			card_struck.emit()
+			_after_strike(view)
+	)
+
+
+## Nach dem Einschlag: kurz stehen bleiben, dann zur Ablage.
+func _after_strike(view: CardView) -> void:
+	if strike_hold <= 0.0:
+		_to_discard(view)
+		return
+	get_tree().create_timer(strike_hold).timeout.connect(_to_discard.bind(view))
+
+
+## Der Zielpunkt in Hand-Koordinaten, umgerechnet auf die Kartenposition.
+##
+## Abgezogen wird halbe Breite und volle Hoehe, weil `position` die linke obere
+## Ecke ist, der Bezugspunkt der Karte aber ihre Unterkante-Mitte (pivot_offset,
+## siehe _make_view). Dieselbe Umrechnung wie in _pile_position - dort steht sie
+## ausfuehrlicher.
+func _strike_position(target_global: Vector2, card_size: Vector2) -> Vector2:
+	var anchor := _to_local_point(target_global) + strike_offset
+	return anchor - Vector2(card_size.x * 0.5, card_size.y)
 
 
 ## Zugende: die ganze Hand wandert auf die Ablage.
@@ -225,25 +298,37 @@ func _make_view(data: CardData, energy: int) -> CardView:
 	_views.append(view)
 	return view
 
-## Entlaesst eine Karte aus der Hand und schickt sie zur Ablage.
+## Entlaesst eine Karte aus der Hand, ohne sie schon wegzuschicken.
 ##
-## Sie fliegt zwar noch, gehoert aber ab sofort nicht mehr zur Hand: sie ist aus
-## `_views` raus, also rechnet das Layout nicht mehr mit ihr, und sie nimmt keine
-## Maus mehr an - sonst koennte man eine bereits gespielte Karte nochmal
-## anklicken, waehrend sie davonfliegt.
-func _send_to_discard(view: CardView) -> void:
+## Sie ist ab sofort keine Handkarte mehr: aus `_views` raus, also rechnet das
+## Layout nicht mehr mit ihr, und sie nimmt keine Maus mehr an - sonst koennte
+## man eine bereits gespielte Karte nochmal anklicken, waehrend sie unterwegs ist.
+##
+## Getrennt vom Wegschicken, seit eine gespielte Karte zwei Etappen hat: erst
+## zum Ziel, dann zur Ablage. Zwischen beiden gehoert sie niemandem mehr, fliegt
+## aber noch.
+func _release(view: CardView) -> void:
 	_views.erase(view)
 	if _hovered == view:
 		_hovered = null
 	view.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	# Ueber allen anderen, damit der Weg zur Ablage nicht hinter der Hand
-	# verschwindet.
+	# Ueber allen anderen, damit der Weg nicht hinter der Hand verschwindet.
 	view.z_index = 200
+
+
+## Letzte Etappe: ab auf die Ablage.
+func _to_discard(view: CardView) -> void:
 	view.fly_out(
 		_pile_position(discard_pile_path, size.x, view.size),
 		Vector2.ONE * pile_scale,
 		travel_time,
 	)
+
+
+## Beides auf einmal - fuer Karten, die kein Ziel anfliegen (Zugende).
+func _send_to_discard(view: CardView) -> void:
+	_release(view)
+	_to_discard(view)
 
 
 ## Wo eine Karte liegt, wenn sie auf einem Stapel liegt - in Hand-Koordinaten.
@@ -255,10 +340,21 @@ func _pile_position(path: NodePath, fallback_x: float, card_size: Vector2) -> Ve
 	var anchor := Vector2(fallback_x, size.y)
 	var pile := get_node_or_null(path) as Control
 	if pile != null:
-		anchor = get_global_transform().affine_inverse() * pile.get_global_rect().get_center()
+		anchor = _to_local_point(pile.get_global_rect().get_center())
 	# position ist die linke obere Ecke, gemeint ist aber der Punkt, um den
 	# skaliert wird - Unterkante-Mitte, siehe pivot_offset.
 	return anchor - Vector2(card_size.x * 0.5, card_size.y)
+
+
+## Rechnet einen globalen Punkt in Hand-Koordinaten um.
+##
+## Alles, was eine Karte anfliegt, steht ausserhalb der Hand im Szenenbaum -
+## die Stapel unten, die Lebensanzeigen oben. Ohne diese Umrechnung waeren die
+## Zielpunkte um die Position der Hand daneben, und weil die Hand sich beim
+## ersten Austeilen selbst nach oben zieht, waere der Fehler auch noch je nach
+## Zeitpunkt verschieden gross.
+func _to_local_point(global_point: Vector2) -> Vector2:
+	return get_global_transform().affine_inverse() * global_point
 
 
 ## Setzt jede Karte an ihren Platz.
