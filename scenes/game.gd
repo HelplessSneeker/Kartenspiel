@@ -24,10 +24,28 @@ const HAND_SIZE := 5
 @export var player_max_health := 50
 @export var enemy_max_health := 50
 
+## Was ueber dem Bildschirm steht, wenn der Spieler verliert.
+##
+## Steht hier, weil es zum Gegner gehoert und nicht zum Spieler: gegen das Kind
+## verliert man nicht, indem man stirbt, sondern indem man nachgibt. Solange es
+## nur einen Kampf gibt, ist ein @export der richtige Ort dafuer. Sobald die
+## Kaempfe eine Reihe bilden, zieht das Feld mit dem Gegner in dessen eigene
+## Resource um - zusammen mit Leben, Portraet und Muster.
+@export var defeat_title := "Du bist gefallen"
+
 var deck: Array[CardData] = []
 var hand: Array[CardData] = []
 var discard: Array[CardData] = []
 var energy: int = MAX_ENERGY
+
+## Wie viel Energie im *naechsten* Spielerzug fehlt. Wird beim Zugbeginn
+## verrechnet und dabei geleert.
+##
+## Warum nicht sofort von `energy` abziehen, wenn das Kind sich ans Bein haengt?
+## Weil der Gegner am Ende des Spielerzugs handelt - da ist die Energie ohnehin
+## verbraucht, ein Abzug waere folgenlos. Die Wirkung muss ankommen, wenn der
+## Spieler das naechste Mal etwas damit vorhat.
+var _energy_penalty := 0
 
 var player: Combatant
 var enemy: Combatant
@@ -86,17 +104,26 @@ func _enemy_turn() -> void:
 	if action == null:
 		return
 
-	match action.kind:
-		EnemyAction.Kind.BLOCK:
-			enemy.add_block(action.amount)
-		_:
-			player.take_damage(action.amount)
-			Sfx.play("card_play")
+	if action.is_attack():
+		Sfx.play("card_play")
+
+	# Dieselbe Schleife wie beim Kartenspielen, nur mit vertauschten Rollen.
+	# Genau das ist der Gewinn daran, dass beide Seiten CardEffect benutzen:
+	# "Gegner blockt" und "Spieler blockt" sind nicht mehr zwei Code-Wege, die
+	# man getrennt richtig halten muss.
+	for effect in action.effects:
+		_apply_effect(effect, enemy, player)
+		if _game_over:
+			break
 
 
 func _start_player_turn() -> void:
 	player.clear_block()
-	energy = MAX_ENERGY
+	# maxi(), damit ein zu gieriger Entzug nicht in negative Energie laeuft: bei
+	# -1 waere selbst eine Nullkosten-Karte gesperrt, und die Hand saehe aus, als
+	# waere sie kaputt statt teuer.
+	energy = maxi(MAX_ENERGY - _energy_penalty, 0)
+	_energy_penalty = 0
 
 	# Hand ablegen und neu ziehen, statt eine Karte nachzuziehen. Damit ist eine
 	# nicht gespielte Karte am Zugende verloren - und "hebe ich die
@@ -123,7 +150,10 @@ func play_card(view: CardView) -> void:
 	if _game_over:
 		return
 	var card_data := view.data
-	if card_data.cost > energy:
+	# Zwei Absagen, ein Geraeusch. Ein eigener Ton fuer "geht nie" waere ehrlicher,
+	# aber es gibt ihn noch nicht - und die Karte sagt es ohnehin selbst: grauer
+	# Rahmen, kein Preis, "Unspielbar" im Text.
+	if not card_data.is_playable() or card_data.cost > energy:
 		Sfx.play("error")
 		return
 
@@ -142,7 +172,7 @@ func play_card(view: CardView) -> void:
 	%Hand.play_out(view)
 
 	for effect in card_data.effects:
-		_apply_effect(effect)
+		_apply_effect(effect, player, enemy)
 		# Eine Karte kann beide Seiten toeten (Aderlass gegen einen Gegner mit
 		# 5 Leben). Was danach in der Liste steht, darf dann nicht mehr wirken.
 		if _game_over:
@@ -162,23 +192,75 @@ func play_card(view: CardView) -> void:
 ##
 ## Wer das Ziel ist, entscheidet weiterhin die Art der Wirkung, nicht die Karte.
 ## Sobald es mehrere Gegner gibt, kommt hier eine echte Zielauswahl dazu.
-func _apply_effect(effect: CardEffect) -> void:
+##
+## `actor` und `target` sind neu und der Grund, warum der Gegner ueberhaupt
+## Karteneffekte benutzen kann. Vorher stand hier `enemy.take_damage()` und
+## `player.add_block()` fest verdrahtet - das war dieselbe Annahme wie an vielen
+## Stellen im fruehen Code: es gibt nur eine Seite, die handelt. Jetzt sagt die
+## Wirkung, *was* passiert, und der Aufrufer, *wem*.
+##
+## SCHADEN geht ans Gegenueber, BLOCK/HEILEN/SELBSTSCHADEN an den Handelnden
+## selbst. Damit ist "Lecker Bierchen" beim Spieler und "Schmollen" beim Kind
+## exakt dieselbe Wirkung, nur mit anderen Rollen.
+func _apply_effect(effect: CardEffect, actor: Combatant, target: Combatant) -> void:
 	if effect == null:
 		return
 
 	match effect.kind:
 		CardEffect.Kind.SCHADEN:
-			enemy.take_damage(effect.amount)
+			target.take_damage(effect.amount)
 		CardEffect.Kind.BLOCK:
-			player.add_block(effect.amount)
+			actor.add_block(effect.amount)
 		CardEffect.Kind.HEILEN:
-			player.heal(effect.amount)
+			actor.heal(effect.amount)
 		CardEffect.Kind.SELBSTSCHADEN:
-			player.take_damage(effect.amount)
+			actor.take_damage(effect.amount)
+		# Energie und Ziehstapel hat nur der Spieler. Ein Gegner, der "ziehe 2"
+		# in seiner Liste haette, wuerde sonst stumm in die Hand des Spielers
+		# greifen - der Fehler faellt dann irgendwann im Spiel auf statt beim
+		# Bauen der .tres. Deshalb Warnung statt stiller Wirkung.
 		CardEffect.Kind.ENERGIE:
-			energy += effect.amount
+			if _is_player(actor, effect.kind):
+				energy += effect.amount
 		CardEffect.Kind.ZIEHEN:
-			_draw_into_hand(effect.amount)
+			if _is_player(actor, effect.kind):
+				_draw_into_hand(effect.amount)
+		# Entzug und Zuschieben treffen dagegen *immer* den Spieler, egal wer
+		# wirkt: es gibt nur eine Energie und nur eine Ablage. Eine Karte mit
+		# ENERGIE_ENTZUG waere also eine Karte, die sich selbst bestraft - die
+		# Sucht-Steuer aus dem Design-Doc genau in der Form, die dort steht.
+		CardEffect.Kind.ENERGIE_ENTZUG:
+			_energy_penalty += effect.amount
+		CardEffect.Kind.KARTE_ZUSCHIEBEN:
+			_push_card(effect.card as CardData, effect.amount)
+
+
+func _is_player(actor: Combatant, kind: CardEffect.Kind) -> bool:
+	if actor == player:
+		return true
+	push_warning("Wirkung %s wirkt nur beim Spieler und wurde uebergangen." % kind)
+	return false
+
+
+## Legt `count` Kopien einer Karte auf die Ablage des Spielers.
+##
+## Auf die Ablage und nicht in die Hand: eine Karte, die sofort in der Hand
+## landet, verdraengt nichts - die Hand ist zu dem Zeitpunkt ohnehin gleich
+## fertig. Auf der Ablage wandert sie beim naechsten Mischen in den Ziehstapel
+## und belegt von da an *irgendwann* einen Platz. Das ist die Wirkung, die
+## gemeint ist: nicht ein schlechter Zug, sondern ein schlechteres Deck.
+##
+## Dieselbe Resource mehrfach in die Liste, keine Kopie pro Stueck: Karten sind
+## hier durchgehend geteilte Daten (das Startdeck haelt Watschn ebenfalls
+## fuenfmal als denselben Verweis), und CardData wird zur Laufzeit nicht
+## veraendert. play_card() erase()t den ersten passenden Eintrag - welche der
+## identischen Karten das trifft, ist genau deshalb egal.
+func _push_card(card: CardData, count: int) -> void:
+	if card == null or count <= 0:
+		push_warning("KARTE_ZUSCHIEBEN ohne Karte oder ohne Anzahl.")
+		return
+	for i in count:
+		discard.append(card)
 
 
 ## Zieht mitten im Zug nach - Zustand und Anzeige in einem Schritt.
@@ -269,13 +351,16 @@ func refresh_hud() -> void:
 ## Das Label bleibt sichtbar und wird nur leer, statt versteckt zu werden: eine
 ## verschwindende Zeile in einem VBoxContainer laesst die Lebensanzeige
 ## darunter springen.
+## Der Text kommt jetzt aus der Aktion selbst, statt hier aus Symbol und Zahl
+## gebaut zu werden. Grund: "Papa, bitte!" hat keine Zahl und "Am Bein haengen"
+## zwei verschiedene - eine Regel, die fuer beide passt, gibt es nicht. Wie eine
+## Drohung formuliert ist, ist ohnehin Design und gehoert in die .tres.
 func refresh_intent() -> void:
 	var action := brain.intent
 	if action == null or _game_over:
 		%IntentLabel.text = ""
 		return
-	var icon := "block" if action.kind == EnemyAction.Kind.BLOCK else "dmg"
-	%IntentLabel.text = "[center]%s %d[/center]" % [Icons.bb(icon), action.amount]
+	%IntentLabel.text = "[center]%s[/center]" % Icons.fill(action.intent, action.intent_values())
 
 
 # --- Signale ------------------------------------------------------------------
@@ -295,7 +380,7 @@ func _on_enemy_died() -> void:
 
 
 func _on_player_died() -> void:
-	_end_game("Du bist gefallen")
+	_end_game(defeat_title)
 
 
 func _end_game(title: String) -> void:

@@ -3,13 +3,13 @@
 [ext_resource type="Script" path="res://combat/enemy_action.gd" id="1_action"]
 [ext_resource type="Script" path="res://cards/data/card_effect.gd" id="2_effect"]
 
-[sub_resource type="Resource" id="Effect_block"]
+[sub_resource type="Resource" id="Effect_heilen"]
 script = ExtResource("2_effect")
-kind = 1
+kind = 2
 amount = 8
 
 [resource]
 script = ExtResource("1_action")
-action_name = "Deckung"
-effects = Array[ExtResource("2_effect")]([SubResource("Effect_block")])
-intent = "{icon_block} {block}"
+action_name = "Mama!"
+effects = Array[ExtResource("2_effect")]([SubResource("Effect_heilen")])
+intent = "{icon_heal} {heal}"

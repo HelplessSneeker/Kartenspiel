@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="EnemyAction" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://combat/enemy_action.gd" id="1_action"]
+[ext_resource type="Script" path="res://cards/data/card_effect.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="Effect_schaden"]
+script = ExtResource("2_effect")
+kind = 0
+amount = 3
+
+[sub_resource type="Resource" id="Effect_entzug"]
+script = ExtResource("2_effect")
+kind = 6
+amount = 1
+
+[resource]
+script = ExtResource("1_action")
+action_name = "Am Bein haengen"
+effects = Array[ExtResource("2_effect")]([SubResource("Effect_schaden"), SubResource("Effect_entzug")])
+intent = "{icon_dmg} {damage}   {icon_energy} -{drain}"

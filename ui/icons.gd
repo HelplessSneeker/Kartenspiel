@@ -36,3 +36,25 @@ static func bb(icon_name: String) -> String:
 		push_warning("Unbekanntes Icon: %s" % icon_name)
 		return ""
 	return "[img height=1em color=%s]%s[/img]" % [TINTS[icon_name], PATHS[icon_name]]
+
+
+## Fuellt eine Textschablone: Zahlen vom Aufrufer, Symbole von hier.
+##
+## Die Trennung ist der Punkt. Was eine Karte tut, weiss nur sie selbst - wie
+## ein Schadenssymbol aussieht, ist Darstellung und hat in einer .tres nichts
+## verloren. Beides trifft sich erst in diesem einen Dictionary.
+##
+## Stand vorher als `_text_values()` in card.gd. Mit dem Gegner-Intent gab es
+## einen zweiten Aufrufer, der dieselben vier Zeilen gebraucht haette - und ein
+## Icon, das in card.gd nachgetragen wird, waere im Intent stumm geblieben.
+##
+## Die Liste der `{icon_*}` wird aus PATHS erzeugt statt abgetippt: ein neues
+## Icon eintragen genuegt, es steht sofort in jedem Text zur Verfuegung.
+##
+## `values` wird kopiert, nicht ergaenzt - der Aufrufer soll sein Dictionary
+## unveraendert wiederbekommen.
+static func fill(template: String, values: Dictionary) -> String:
+	var merged := values.duplicate()
+	for icon_name in PATHS:
+		merged["icon_%s" % icon_name] = bb(icon_name)
+	return template.format(merged)
