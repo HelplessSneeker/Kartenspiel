@@ -64,6 +64,12 @@ const BORDER_ANGRIFF := Color("b4553c")
 const BORDER_VERTEIDIGUNG := Color("4a7fb5")
 const BORDER_FERTIGKEIT := Color("8a7ab5")
 
+## Statuskarten sind absichtlich das einzige Grau in der Hand: sie sind der
+## einzige Kartentyp, der nichts anbietet, und sollen zwischen den vier bunten
+## auch so aussehen. Zusaetzlich haengt an ihnen dauerhaft UNPLAYABLE_TINT -
+## eine Statuskarte ist nie spielbar, also nie hell.
+const BORDER_STATUS := Color("5a5a62")
+
 
 var data: CardData
 
@@ -85,11 +91,13 @@ var _tween: Tween
 func setup(new_data: CardData) -> void:
 	data = new_data
 	%NameLabel.text = data.card_name
-	%CostLabel.text = "%s %d" % [Icons.bb("energy"), data.cost]
+	# Statuskarten kosten nichts und koennen nichts kosten - eine "0" davor waere
+	# ein Preis, der so aussieht, als koennte man dafuer etwas bekommen.
+	%CostLabel.text = "" if not data.is_playable() else "%s %d" % [Icons.bb("energy"), data.cost]
 	# Zahlen und Icons wandern im selben format()-Aufruf in den Text. Eine .tres
 	# schreibt also "{icon_dmg} {damage} Schaden" - Beschreibungen ohne
 	# Icon-Platzhalter funktionieren unveraendert weiter.
-	%TextLabel.text = data.description.format(_text_values())
+	%TextLabel.text = Icons.fill(data.description, data.description_values())
 	# Eine Karte ohne Bild soll keinen leeren 80-Pixel-Block zeigen. visible aus
 	# nimmt den Node aus der VBox-Rechnung heraus, die Karte wird entsprechend
 	# kuerzer - und weil hand.gd die Hoehe abfragt statt sie zu kennen, darf sie
@@ -99,20 +107,6 @@ func setup(new_data: CardData) -> void:
 	# Der Style haengt an `data`, und in _ready() gibt es die noch nicht -
 	# deshalb hier und nicht dort.
 	_apply_style()
-
-
-## Zahlen kommen aus den Kartendaten, Symbole von hier.
-##
-## Die Trennung ist der Punkt: was eine Karte tut, weiss nur sie selbst; wie ein
-## Schadenssymbol aussieht, ist eine Frage der Darstellung und hat in einer
-## .tres nichts verloren. Beides trifft sich erst in diesem Dictionary.
-func _text_values() -> Dictionary:
-	var values := data.description_values()
-	values["icon_dmg"] = Icons.bb("dmg")
-	values["icon_block"] = Icons.bb("block")
-	values["icon_energy"] = Icons.bb("energy")
-	values["icon_heal"] = Icons.bb("heal")
-	return values
 
 
 ## Holt den StyleBox aus dem Theme und faerbt nur den Rahmen um.
@@ -141,6 +135,8 @@ func _border_color() -> Color:
 			return BORDER_VERTEIDIGUNG
 		CardData.Type.FERTIGKEIT:
 			return BORDER_FERTIGKEIT
+		CardData.Type.STATUS:
+			return BORDER_STATUS
 		_:
 			return BORDER_ANGRIFF
 

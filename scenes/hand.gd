@@ -192,7 +192,17 @@ func discard_all() -> void:
 ## Faerbt um, welche Karten bezahlbar sind. Baut nichts neu.
 func set_energy(energy: int) -> void:
 	for view in _views:
-		view.playable = view.data.cost <= energy
+		view.playable = _is_playable(view.data, energy)
+
+
+## Ob eine Karte gerade *hell* aussehen darf.
+##
+## Zwei Gruende, dunkel zu sein, und sie sind verschiedener Natur: zu teuer ist
+## voruebergehend und aendert sich mit jeder gespielten Karte, unspielbar ist
+## fuer immer. Der Spieler sieht denselben Grauton - das ist Absicht, "damit
+## kann ich jetzt nichts anfangen" ist dieselbe Aussage.
+static func _is_playable(data: CardData, energy: int) -> bool:
+	return data.is_playable() and data.cost <= energy
 
 
 # --- Innenleben ---------------------------------------------------------------
@@ -203,7 +213,7 @@ func _make_view(data: CardData, energy: int) -> CardView:
 	var view: CardView = CARD_SCENE.instantiate()
 	add_child(view)
 	view.setup(data)
-	view.playable = data.cost <= energy
+	view.playable = _is_playable(data, energy)
 	# Ohne Container muss die Karte ihre Groesse selbst annehmen.
 	view.size = view.get_combined_minimum_size()
 	# Skaliert wird um die Unterkante-Mitte: die Karte waechst nach oben

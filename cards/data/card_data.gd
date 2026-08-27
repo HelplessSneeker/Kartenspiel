@@ -8,14 +8,21 @@ class_name CardData
 ## haette ein weiteres Feld gebraucht, das bei fast jeder Karte 0 ist. Die Liste
 ## kostet dafuer etwas mehr Umstand pro .tres, traegt aber alles, was noch kommt.
 
-## Wofuer die Karte da ist. Faerbt den Rahmen, sonst (noch) ohne Regelwirkung.
+## Wofuer die Karte da ist. Faerbt den Rahmen - und seit STATUS auch eine Regel.
 ##
 ## Hiess vorher `Category { AKTION, REAKTION }` und stammte aus dem reaktiven
 ## Stack-Modell: Karte legen, Gegner antwortet darauf. Gebaut ist ein Zugmodell
 ## nach Slay-the-Spire-Art, in dem es keine Reaktion gibt - das Feld beschrieb
 ## also eine Regel, die es nicht gibt, und "Reaktion" auf einer Karte war eine
 ## Zusage, die das Spiel nicht einhaelt.
-enum Type { ANGRIFF, VERTEIDIGUNG, FERTIGKEIT }
+##
+## STATUS ist die Karte, die einem *zugeschoben* wird und nichts tut. Sie kostet
+## keine Energie und laesst sich nicht spielen; ihr ganzer Effekt ist, dass sie
+## einen der fuenf Handplaetze belegt. Warum ein Kartentyp und kein zusaetzliches
+## `playable`-Feld: unspielbar zu sein ist keine Eigenschaft, die man einer
+## Angriffskarte ankreuzen wollen wuerde - es ist eine eigene Art von Karte, und
+## Type entscheidet ohnehin schon, wie sie aussieht.
+enum Type { ANGRIFF, VERTEIDIGUNG, FERTIGKEIT, STATUS }
 
 @export var card_name: String = ""
 @export var cost: int = 0
@@ -39,58 +46,27 @@ enum Type { ANGRIFF, VERTEIDIGUNG, FERTIGKEIT }
 @export var art: Texture2D
 
 
+## Ob die Karte ueberhaupt gespielt werden kann.
+##
+## Steht als eigene Methode da und nicht als `type != Type.STATUS` an den drei
+## Stellen, die es wissen wollen (game.gd beim Klick, hand.gd zweimal beim
+## Einfaerben). Sobald es einen zweiten Grund gibt, unspielbar zu sein -
+## "verbrannt", "eingefroren" -, ist das hier eine Zeile statt einer Suche.
+func is_playable() -> bool:
+	return type != Type.STATUS
+
+
 ## Die Zahlen fuer die Platzhalter im Kartentext.
 ##
 ## Der Text auf der Karte ist eine Schablone ("{icon_dmg} {damage} Schaden"),
 ## keine abgetippte Zahl - dadurch koennen Text und Regel nicht auseinander
-## laufen. Frueher zog die Anzeige `damage` und `block` einfach aus zwei
-## Feldern; jetzt gibt es die Felder nicht mehr, also muss jemand sagen, welche
-## Zahl hinter `{damage}` steckt. Das gehoert hierher: nur die Karte weiss, was
-## sie tut. Wie ein Schadenssymbol aussieht, geht sie dagegen nichts an - die
-## `{icon_*}` legt die Anzeige dazu (card.gd).
+## laufen. Nur die Karte weiss, was sie tut; wie ein Schadenssymbol aussieht,
+## geht sie dagegen nichts an - die `{icon_*}` legt die Anzeige dazu
+## (Icons.fill).
 ##
-## Bei mehreren Wirkungen derselben Art gewinnt die erste. Eine Karte, die
-## zweimal auf verschiedene Weise Schaden macht, braucht ohnehin einen eigenen
-## Text und keinen Platzhalter.
-##
-## Alle Schluessel sind immer da, notfalls mit 0: ein Platzhalter, den niemand
-## fuellt, laesst format() sonst als rohes "{damage}" auf der Karte stehen.
+## Das Zusammensammeln selbst liegt seit dem Kind-Moveset in CardEffect: der
+## Gegner-Intent fuellt dieselben Platzhalter aus derselben Art Liste. Die
+## Methode hier bleibt trotzdem stehen, damit die Anzeige weiterhin die *Karte*
+## nach ihren Zahlen fragt und nicht deren Innereien auseinandernimmt.
 func description_values() -> Dictionary:
-	var values := {
-		"damage": 0,
-		"block": 0,
-		"heal": 0,
-		"draw": 0,
-		"energy": 0,
-		"self_damage": 0,
-	}
-	var filled := {}
-	for effect in effects:
-		if effect == null:
-			continue
-		var key := _value_key(effect.kind)
-		if key == "" or filled.has(key):
-			continue
-		filled[key] = true
-		values[key] = effect.amount
-	return values
-
-
-## Welcher Platzhalter im Kartentext welche Wirkung meint. Die Namen hier sind
-## das, was in den .tres in geschweiften Klammern steht.
-static func _value_key(kind: CardEffect.Kind) -> String:
-	match kind:
-		CardEffect.Kind.SCHADEN:
-			return "damage"
-		CardEffect.Kind.BLOCK:
-			return "block"
-		CardEffect.Kind.HEILEN:
-			return "heal"
-		CardEffect.Kind.ZIEHEN:
-			return "draw"
-		CardEffect.Kind.ENERGIE:
-			return "energy"
-		CardEffect.Kind.SELBSTSCHADEN:
-			return "self_damage"
-		_:
-			return ""
+	return CardEffect.values_from(effects)
