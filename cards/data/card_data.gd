@@ -42,6 +42,15 @@ enum Type { ANGRIFF, VERTEIDIGUNG, FERTIGKEIT, STATUS }
 
 @export_multiline var description: String = ""
 
+## Welches Geraeusch das Ausspielen macht - ein Ereignisname fuer `Sfx.play()`,
+## kein Dateipfad. Leer laesst es beim allgemeinen Kartenlegeton.
+##
+## Steht hier bereit, ist aber noch bei keiner Karte gesetzt: das Legegeraeusch
+## passt zu allem, was einfach eine Karte ist. Interessant wird das Feld bei
+## denen, die etwas Bestimmtes *tun* - eine Watschn sollte nach Watschn klingen
+## und nicht nach Karton.
+@export var sound: String = ""
+
 ## Das Bild auf der Karte. Darf leer bleiben - Karten ohne Bild zeigen einfach
 ## keins, statt ein Loch im Layout zu lassen (siehe card.gd).
 ##

@@ -35,6 +35,22 @@ const SFX_PATHS := {
 	"click": [
 		"res://assets/audio/sfx/card-place-2.ogg",
 	],
+
+	# --- Kampfgeraeusche: Slots stehen, Dateien fehlen noch --------------------
+	#
+	# Dieselbe Abmachung wie bei der Musik: das System steht, die Toene sucht bfn
+	# aus - ich kann nichts anhoeren und waere der falsche, der das entscheidet.
+	# Fehlt eine Datei, bleibt es an der Stelle still, es warnt einmal beim
+	# Start, und alles andere laeuft weiter.
+	#
+	# Ein Slot je Gegneraktion und nicht ein allgemeines "enemy_attack": in
+	# einer Komoedie ist das Geraeusch die halbe Pointe, und ein Kind, das heult,
+	# klingt nicht wie ein Kind, das sich ans Bein haengt. Welche Aktion welchen
+	# Ton ruft, steht in ihrer .tres - hier steht nur, welche Datei dahinter liegt.
+	"heulen": ["res://assets/audio/sfx/heulen.ogg"],
+	"bein": ["res://assets/audio/sfx/bein.ogg"],
+	"mama": ["res://assets/audio/sfx/mama.ogg"],
+	"schmollen": ["res://assets/audio/sfx/schmollen.ogg"],
 }
 
 ## Wie viele Sounds gleichzeitig laufen duerfen. Ein einzelner Player wuerde den
@@ -60,10 +76,20 @@ func _ready() -> void:
 
 ## Einmal beim Start laden statt per preload in der Konstanten: so faellt ein
 ## fehlender Pfad als Warnung auf, statt das ganze Skript am Parsen zu hindern.
+##
+## Erst fragen, dann laden - dieselbe Regel wie im Music-Autoload. `load()` auf
+## einen Pfad, den es nicht gibt, schreibt einen harten Ladefehler in die
+## Konsole, und solange noch nicht jeder Ton im Projekt liegt, waere das ein
+## Schwall roter Zeilen bei jedem Start. Die Warnung hier kommt genau einmal
+## beim Hochfahren und liest sich als das, was sie ist: eine Liste dessen, was
+## noch fehlt.
 func _load_streams() -> void:
 	for key: String in SFX_PATHS:
 		var loaded: Array[AudioStream] = []
 		for path: String in SFX_PATHS[key]:
+			if not ResourceLoader.exists(path):
+				push_warning("Soundeffekt fehlt (noch): %s" % path)
+				continue
 			var stream := load(path) as AudioStream
 			if stream == null:
 				push_warning("Sound nicht ladbar: %s" % path)

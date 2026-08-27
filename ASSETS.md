@@ -17,8 +17,8 @@ Download**, nicht später. Wer das nachträglich rekonstruieren will, hat verlor
 | `assets/fonts/Oswald.ttf` | Schrift für Kartennamen | [google/fonts `ofl/oswald`](https://github.com/google/fonts/tree/main/ofl/oswald) | Vernon Adams, Kalapi Gajjar, Cyreal | OFL 1.1 (`OFL-Oswald.txt`) | 08.08.2026 |
 | `assets/fonts/Inter.ttf` | Schrift für Fließtext & UI | [google/fonts `ofl/inter`](https://github.com/google/fonts/tree/main/ofl/inter) | Rasmus Andersson | OFL 1.1 (`OFL-Inter.txt`) | 08.08.2026 |
 
-| `assets/icons/damage.svg` | Schaden | [game-icons `skoll/gladius`](https://game-icons.net/1x1/skoll/gladius.html) | **Skoll** | **CC BY 3.0** | 08.08.2026 |
-| `assets/icons/block.svg` | Block | [game-icons `sbed/shield`](https://game-icons.net/1x1/sbed/shield.html) | **sbed** | **CC BY 3.0** | 08.08.2026 |
+| `assets/icons/damage.svg` | Schaden | [game-icons `lorc/slap`](https://game-icons.net/1x1/lorc/slap.html) | **Lorc** | **CC BY 3.0** | 27.08.2026 |
+| `assets/icons/block.svg` | Block | [game-icons `lorc/beer-stein`](https://game-icons.net/1x1/lorc/beer-stein.html) | **Lorc** | **CC BY 3.0** | 27.08.2026 |
 | `assets/icons/energy.svg` | Energie | [game-icons `lorc/power-lightning`](https://game-icons.net/1x1/lorc/power-lightning.html) | **Lorc** | **CC BY 3.0** | 08.08.2026 |
 | `assets/icons/heal.svg` | Heilung | [game-icons `sbed/health-normal`](https://game-icons.net/1x1/sbed/health-normal.html) | **sbed** | **CC BY 3.0** | 08.08.2026 |
 
@@ -101,6 +101,13 @@ Kommt später ein drittes Stück dazu, kommt es auch in die Credits.
 das schwarze Hintergrund-Rechteck der Originale wurde entfernt (auf dunklen Karten
 wäre es ein schwarzer Klotz), und `width`/`height` auf 64 gesetzt, damit Godot die
 SVGs nicht auf 512×512 rastert. Die Icon-Pfade selbst sind unverändert.
+
+**Getauscht am 27.08.2026:** Schaden war `skoll/gladius` (ein Gladius), Block war
+`sbed/shield`. Beides Fantasy-Vokabular in einem Spiel, in dem man Watschn austeilt
+und Bier trinkt — die Icons erzählten eine andere Geschichte als die Karten.
+Jetzt zeigen sie die Fiktion statt der Mechanik: die offene Hand *ist* die Watschn,
+der Krug *ist* das Bierchen, das den Block gibt. Die Originaldateien liegen in der
+Git-Historie, falls jemand zurück will.
 
 Beides **Variable Fonts** mit Weight-Achse — eine Datei deckt alle Schnitte ab.
 OFL verlangt, dass der Lizenztext mitgeliefert wird; deshalb liegen die `OFL-*.txt`

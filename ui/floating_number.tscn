@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/floating_number.gd" id="1_floatnum"]
+
+[node name="FloatingNumber" type="Label"]
+mouse_filter = 2
+theme_type_variation = &"FloatingNumber"
+horizontal_alignment = 1
+script = ExtResource("1_floatnum")

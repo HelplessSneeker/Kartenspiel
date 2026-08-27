@@ -11,5 +11,6 @@ amount = 8
 [resource]
 script = ExtResource("1_action")
 action_name = "Schmollen"
+sound = "schmollen"
 effects = Array[ExtResource("2_effect")]([SubResource("Effect_block")])
 intent = "{icon_block} {block}"
