@@ -99,10 +99,9 @@ func _ready() -> void:
 	# sofort durch, weil Kinder vor ihrem Elternknoten bereit sind.
 	%EnemyView.title = foe.display_name
 	%EnemyView.portrait = foe.portrait
-	# Ohne Bild bleibt der Verlauf darunter sichtbar, statt dass ein leerer
-	# TextureRect eine Flaeche belegt.
-	%SceneRect.texture = foe.background
-	%SceneRect.visible = foe.background != null
+	# Ohne Bild bleibt der Verlauf darunter sichtbar - das entscheidet die
+	# Hintergrund-Szene selbst, hier wird nur gesagt, welcher Raum es ist.
+	%Background.image = foe.background
 	%PlayerView.show_combatant(player)
 	%EnemyView.show_combatant(enemy)
 	%FightLabel.text = "Kampf %d/%d" % [Run.fight_number(), Run.fight_count()]

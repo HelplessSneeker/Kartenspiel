@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://d3oa0iuc5kmga" path="res://scenes/ui/main_menu.gd" id="1_sl1te"]
 [ext_resource type="PackedScene" path="res://scenes/ui/options_panel.tscn" id="2_options"]
+[ext_resource type="PackedScene" path="res://ui/room_background.tscn" id="3_room"]
+[ext_resource type="Texture2D" path="res://assets/art/bg/stube.jpg" id="4_stube"]
 
 [node name="MainMenu" type="Control" unique_id=90338667]
 layout_mode = 3
@@ -11,6 +13,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_sl1te")
+
+[node name="Background" parent="." instance=ExtResource("3_room")]
+image = ExtResource("4_stube")
+dim = Color(0.34, 0.34, 0.4, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=1646585688]
 layout_mode = 1
