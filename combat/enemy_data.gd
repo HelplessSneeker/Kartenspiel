@@ -36,7 +36,7 @@ extends Resource
 
 ## Und was dort steht, wenn er den Spieler erledigt.
 ##
-## Gehoert zum Gegner und nicht zum Spieler: gegen das Balg verliert man nicht,
+## Gehoert zum Gegner und nicht zum Spieler: gegen den Sohn verliert man nicht,
 ## indem man stirbt, sondern indem man nachgibt ("Du bleibst daheim"). Ein
 ## anderer Gegner nimmt einem etwas anderes.
 @export var defeat_title: String = "Du bist gefallen"

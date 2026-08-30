@@ -191,7 +191,7 @@ theme_override_constants/separation = 20
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"DialogTitle"
-text = "Balg besiegt"
+text = "Kampf vorbei"
 horizontal_alignment = 1
 
 [node name="NextButton" type="Button" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer"]

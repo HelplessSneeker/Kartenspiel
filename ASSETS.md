@@ -53,7 +53,7 @@ Länge raus (4–9 s; für einen Kartenton zu lang).
 | `assets/art/tschick.jpg` | Kartenbild „Ane rachen" | [Commons `Cigarette-s x`](https://commons.wikimedia.org/wiki/File:Cigarette-s_x.jpeg) | Tomasz Sienicki | Public domain | 26.08.2026 |
 | `assets/art/watschn.jpg` | Kartenbild „Watschn" | [Commons `FiveFingersFaceHighandMightyTrailerScreenshot1954`](https://commons.wikimedia.org/wiki/File:FiveFingersFaceHighandMightyTrailerScreenshot1954.jpg) | Trailer-Screenshot, *The High and the Mighty* (1954) | Public domain (**nur US** — siehe unten) | 26.08.2026 |
 | `assets/art/spieler.jpg` | Porträt Spieler | von bfn beigesteuert | — | **ungeklärt — Platzhalter** | 26.08.2026 |
-| `assets/art/balg.jpg` | Porträt Balg | von bfn beigesteuert | — | **ungeklärt — Platzhalter** | 26.08.2026 |
+| `assets/art/balg.jpg` | Porträt Sohn (beide Kämpfe) | von bfn beigesteuert | — | **ungeklärt — Platzhalter** | 26.08.2026 |
 
 ### ⚠️ Die beiden Porträts sind Platzhalter
 
