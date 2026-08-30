@@ -111,6 +111,9 @@ func _ready() -> void:
 	# steht sie hier und nicht in refresh_hud(). Interessant wird sie, sobald ein
 	# Run Karten dazugibt: dann sieht man sein Deck wachsen.
 	%DeckTotalLabel.text = str(Run.deck.size())
+	# Wie viele Abschnitte der Ring hat, steht fest, sobald die Energie feststeht.
+	# Nur der Fuellstand aendert sich im Zug, und der kommt aus refresh_hud().
+	%EnergyOrb.maximum = MAX_ENERGY
 
 	brain = EnemyBrain.new(foe.pattern)
 	%Hand.card_clicked.connect(play_card)
@@ -433,9 +436,10 @@ func refresh() -> void:
 
 
 func refresh_hud() -> void:
-	# Nur noch die Zahlen. Das Symbol ist die Kugel selbst: ein goldener Ring
-	# unten links, in derselben Farbe wie die Preisplakette auf jeder Karte.
-	# Ein Blitz *in* der Kugel waere das Symbol im Symbol.
+	# Zwei Anzeigen fuer dasselbe, mit Absicht: der Ring sagt *wie viel* ohne
+	# Lesen, die Zahl sagt *wie genau*. Beim Ueberlegen, ob die naechste Karte
+	# noch geht, schaut man auf den Ring; beim Abzaehlen auf die Zahl.
+	%EnergyOrb.filled = energy
 	%EnergyLabel.text = "%d/%d" % [energy, MAX_ENERGY]
 	%DeckPile.count = deck.size()
 	%DiscardPile.count = discard.size()

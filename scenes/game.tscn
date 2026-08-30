@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="12_pause"]
 [ext_resource type="Texture2D" path="res://assets/art/spieler.jpg" id="19_spieler"]
 [ext_resource type="PackedScene" path="res://ui/room_background.tscn" id="22_room"]
+[ext_resource type="Script" path="res://ui/energy_orb.gd" id="23_orb"]
 
 [node name="Game" type="Control" unique_id=139426249]
 layout_mode = 3
@@ -120,7 +121,7 @@ grow_vertical = 2
 [node name="PlayerView" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer" instance=ExtResource("6_health")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 4
+size_flags_vertical = 0
 title = "Spieler"
 portrait = ExtResource("19_spieler")
 
@@ -131,7 +132,7 @@ mouse_filter = 2
 
 [node name="EnemySide" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 4
+size_flags_vertical = 0
 theme_override_constants/separation = 6
 
 [node name="IntentLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer/EnemySide"]
@@ -178,45 +179,6 @@ grow_horizontal = 0
 grow_vertical = 0
 title = "Ablage"
 
-[node name="EnergyOrb" type="PanelContainer" parent="."]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = -206.0
-offset_right = 92.0
-offset_bottom = -134.0
-grow_vertical = 0
-mouse_filter = 2
-theme_type_variation = &"EnergyOrb"
-
-[node name="EnergyLabel" type="Label" parent="EnergyOrb"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 4
-mouse_filter = 2
-theme_type_variation = &"EnergyValue"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="EndTurnButton" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -196.0
-offset_top = -204.0
-offset_right = -16.0
-offset_bottom = -142.0
-grow_horizontal = 0
-grow_vertical = 0
-theme_type_variation = &"PrimaryButton"
-text = "Zug beenden"
-
 [node name="Hand" type="Control" parent="." unique_id=173045572]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 22)
@@ -230,6 +192,49 @@ grow_vertical = 0
 script = ExtResource("5_iywne")
 deck_pile_path = NodePath("../DeckPile")
 discard_pile_path = NodePath("../DiscardPile")
+
+[node name="EnergyOrb" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -212.0
+offset_right = 92.0
+offset_bottom = -140.0
+grow_vertical = 0
+mouse_filter = 2
+script = ExtResource("23_orb")
+
+[node name="EnergyLabel" type="Label" parent="EnergyOrb"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"EnergyValue"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndTurnButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -196.0
+offset_top = -210.0
+offset_right = -16.0
+offset_bottom = -148.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_type_variation = &"PrimaryButton"
+text = "Zug beenden"
 
 [node name="OverlayLayer" type="CanvasLayer" parent="." unique_id=173045580]
 layer = 10

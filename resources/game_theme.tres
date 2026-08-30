@@ -127,20 +127,6 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_orb"]
-bg_color = Color(0.0784314, 0.0862745, 0.121569, 0.92)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.941176, 0.815686, 0.439216, 1)
-corner_radius_top_left = 36
-corner_radius_top_right = 36
-corner_radius_bottom_right = 36
-corner_radius_bottom_left = 36
-shadow_color = Color(0, 0, 0, 0.45)
-shadow_size = 8
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_prim_normal"]
 content_margin_left = 24.0
 content_margin_top = 12.0
@@ -360,8 +346,6 @@ DialogTitle/base_type = &"Label"
 DialogTitle/colors/font_color = Color(0.921569, 0.929412, 0.960784, 1)
 DialogTitle/font_sizes/font_size = 30
 DialogTitle/fonts/font = ExtResource("2_oswald")
-EnergyOrb/base_type = &"PanelContainer"
-EnergyOrb/styles/panel = SubResource("StyleBoxFlat_orb")
 EnergyValue/base_type = &"Label"
 EnergyValue/colors/font_color = Color(0.941176, 0.815686, 0.439216, 1)
 EnergyValue/font_sizes/font_size = 26
