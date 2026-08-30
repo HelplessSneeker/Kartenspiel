@@ -2,44 +2,46 @@
 
 [ext_resource type="Script" path="res://combat/health_view.gd" id="1_hview"]
 
-[node name="HealthView" type="PanelContainer"]
-theme_type_variation = &"HealthPanel"
+[node name="HealthView" type="VBoxContainer"]
+theme_override_constants/separation = 4
 script = ExtResource("1_hview")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="PortraitFrame" type="PanelContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 4
+size_flags_horizontal = 4
+mouse_filter = 2
+theme_type_variation = &"Portrait"
 
-[node name="PortraitRect" type="TextureRect" parent="VBoxContainer"]
+[node name="PortraitRect" type="TextureRect" parent="PortraitFrame"]
 unique_name_in_owner = true
 clip_contents = true
 custom_minimum_size = Vector2(120, 140)
 layout_mode = 2
-size_flags_horizontal = 4
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
 
-[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"HealthTitle"
 horizontal_alignment = 1
 
-[node name="Bar" type="ProgressBar" parent="VBoxContainer"]
+[node name="Bar" type="ProgressBar" parent="."]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(220, 18)
 layout_mode = 2
 theme_type_variation = &"HealthBar"
 show_percentage = false
 
-[node name="ValueLabel" type="Label" parent="VBoxContainer"]
+[node name="ValueLabel" type="Label" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"HealthValue"
 horizontal_alignment = 1
 
-[node name="BlockLabel" type="RichTextLabel" parent="VBoxContainer"]
+[node name="BlockLabel" type="RichTextLabel" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2

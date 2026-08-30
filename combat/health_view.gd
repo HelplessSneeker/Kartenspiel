@@ -1,5 +1,5 @@
 class_name HealthView
-extends PanelContainer
+extends VBoxContainer
 
 ## Zeigt einen Combatant an: Name, Lebensbalken, Zahl, Block.
 ##
@@ -7,6 +7,18 @@ extends PanelContainer
 ## dieses Skript seine Kinder selbst und trug seine Farben als Konstanten - das
 ## war richtig, solange es kein Theme gab. Jetzt gibt es eins, und Farben an
 ## zwei Orten zu pflegen ist genau der Zustand, den Session 1 aufgeraeumt hat.
+##
+## KEIN PanelContainer mehr (30.08.2026). Solange der Hintergrund eine flache
+## Farbe war, gab der Rahmen der Anzeige ueberhaupt erst eine Form. Seit hinter
+## dem Kampf ein Raum liegt, tut er das Gegenteil: zwei umrandete Kaesten auf
+## einem Foto lesen sich wie aufgeklebte Karteikarten, nicht wie zwei Figuren,
+## die einander gegenueberstehen. Jetzt steht die Figur frei, und nur das
+## Portraet hat noch einen Rahmen - das ist der Unterschied zwischen "eine
+## Person im Raum" und "ein Kasten mit einer Person drin".
+##
+## Der Preis dafuer: die Schrift liegt jetzt direkt auf dem Bild. Deshalb haben
+## HealthTitle, HealthValue und HealthBlock im Theme eine Kontur bekommen. Ohne
+## sie verschwindet ein heller Name auf einer hellen Wand.
 ##
 ## Seit dem Juice-Durchgang hat die Anzeige zwei Aufgaben, die man nicht
 ## verwechseln sollte: den *Zustand* zeigen (_refresh, haengt an `changed`) und
@@ -63,7 +75,7 @@ const SPLIT_DRIFT := 26.0
 ## Das Bild ueber der Beschriftung. Wie `title` im Inspector gesetzt, aus dem
 ## gleichen Grund: eine Szene, zwei Kaempfer, kein zweites Skript.
 ##
-## Ohne Bild bleibt das PortraitRect unsichtbar und die Anzeige sieht aus wie
+## Ohne Bild bleibt der ganze Rahmen unsichtbar und die Anzeige sieht aus wie
 ## vorher - eine HealthView ohne Portraet ist also weiterhin gueltig.
 @export var portrait: Texture2D:
 	set(value):
@@ -92,9 +104,11 @@ func _ready() -> void:
 	_refresh()
 
 
+## Versteckt wird der *Rahmen*, nicht das Bild darin: ohne Portraet soll auch
+## kein leerer Rahmen mit Schatten dastehen.
 func _apply_portrait() -> void:
 	%PortraitRect.texture = portrait
-	%PortraitRect.visible = portrait != null
+	%PortraitFrame.visible = portrait != null
 
 
 ## Haengt die Anzeige an einen Kaempfer. Ab hier meldet sich der Kaempfer selbst,
@@ -181,7 +195,7 @@ func _pop(value_text: String, color: Color, drift: float) -> void:
 ## Ohne Portraet die Mitte der ganzen Anzeige - eine HealthView ohne Bild ist
 ## weiterhin gueltig, und die Zahl soll dann nicht im Nichts starten.
 func _pop_origin() -> Vector2:
-	var anchor: Control = %PortraitRect if %PortraitRect.visible else self
+	var anchor: Control = %PortraitFrame if %PortraitFrame.visible else self
 	return anchor.global_position + Vector2(anchor.size.x * 0.5, anchor.size.y * 0.3)
 
 
@@ -195,7 +209,7 @@ func _punch() -> void:
 
 
 func _flash() -> void:
-	if not %PortraitRect.visible:
+	if not %PortraitFrame.visible:
 		return
 	_kill(_flash_tween)
 	%PortraitRect.modulate = FLASH_COLOR

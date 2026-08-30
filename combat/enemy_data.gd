@@ -17,8 +17,8 @@ extends Resource
 ## Wie er ueber seiner Lebensanzeige heisst.
 @export var display_name: String = "Gegner"
 
-## Das Bild ueber der Anzeige. Darf leer bleiben - HealthView blendet das
-## PortraitRect dann aus und sieht aus wie vor den Portraets.
+## Das Bild ueber der Anzeige. Darf leer bleiben - HealthView blendet den
+## Portraetrahmen dann aus und sieht aus wie vor den Portraets.
 @export var portrait: Texture2D
 
 ## Der Ort, an dem dieser Kampf stattfindet - das Bild ganz hinten.
