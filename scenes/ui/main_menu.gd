@@ -28,7 +28,7 @@ func _on_start_button_pressed() -> void:
 	# weiterlaufen - mit angeschlagenem Leben und beim dritten Gegner. Ein
 	# Fortsetzen-Knopf waere ein eigener Knopf und eine eigene Entscheidung.
 	Run.start_new()
-	get_tree().change_scene_to_file("res://scenes/game.tscn")
+	Fade.change_scene("res://scenes/game.tscn")
 
 
 func _on_options_button_pressed() -> void:
@@ -38,7 +38,7 @@ func _on_options_button_pressed() -> void:
 
 func _on_credits_button_pressed() -> void:
 	Sfx.play("click")
-	get_tree().change_scene_to_file("res://scenes/ui/credits.tscn")
+	Fade.change_scene("res://scenes/ui/credits.tscn")
 
 
 func _on_quit_button_pressed() -> void:

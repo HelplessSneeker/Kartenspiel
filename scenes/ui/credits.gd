@@ -34,4 +34,4 @@ func _on_back_button_pressed() -> void:
 
 func _back() -> void:
 	Sfx.play("click")
-	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	Fade.change_scene("res://scenes/ui/main_menu.tscn")

@@ -26,6 +26,10 @@ Music="*res://audio/music_player.gd"
 ; Run haelt den Durchlauf (Deck, Leben, welcher Kampf) ueber den Szenenwechsel
 ; hinweg. Haengt an keinem der drei oben, die Position ist deshalb frei.
 Run="*res://run/run_state.gd"
+; Fade blendet zwischen den Bildschirmen. Muss der letzte sein: sein
+; CanvasLayer soll ueber allem liegen, und bei gleicher layer-Nummer
+; entscheidet die Reihenfolge im Baum - die haengt an der Autoload-Reihenfolge.
+Fade="*res://ui/scene_fade.gd"
 
 [display]
 

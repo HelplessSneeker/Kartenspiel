@@ -516,7 +516,7 @@ func _end_game(title: String, has_next: bool) -> void:
 ## einen Punkt vergisst - und der faellt dann drei Kaempfe spaeter auf.
 func _on_next_button_pressed() -> void:
 	Sfx.play("click")
-	get_tree().change_scene_to_file("res://scenes/game.tscn")
+	Fade.change_scene("res://scenes/game.tscn")
 
 
 ## "Nochmal" heisst jetzt: neuer Run, nicht derselbe Kampf noch einmal.
@@ -528,11 +528,11 @@ func _on_next_button_pressed() -> void:
 func _on_retry_button_pressed() -> void:
 	Sfx.play("click")
 	Run.start_new()
-	get_tree().change_scene_to_file("res://scenes/game.tscn")
+	Fade.change_scene("res://scenes/game.tscn")
 
 
 ## Nach Sieg oder Niederlage war der einzige Weg weiter der Neustart. Ein
 ## Endzustand, aus dem nur eine Tuer fuehrt, ist eine Sackgasse mit Aussicht.
 func _on_menu_button_pressed() -> void:
 	Sfx.play("click")
-	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	Fade.change_scene("res://scenes/ui/main_menu.tscn")
