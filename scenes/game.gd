@@ -19,29 +19,17 @@ const HAND_SIZE := 5
 ## das der teurere Weg.
 const INTENT_NAME_FORMAT := "[font_size=14][color=#8f96ab]%s[/color][/font_size]"
 
-## Wird im Inspector befuellt. Bleibt zur Laufzeit unangetastet -
-## gezogen wird aus `deck`, das beim Start eine Kopie davon ist.
-@export var starting_deck: Array[CardData] = []
-
-## Was der Gegner tut, der Reihe nach und dann wieder von vorn.
-@export var enemy_pattern: Array[EnemyAction] = []
-
-## Beide Zahlen sind geraten, nicht gerechnet - ich kann das Spiel nicht spielen.
-## Der Gegner ist hochgesetzt und der Spieler heruntergezogen worden, weil bei
-## 60 zu 40 die Verteidigungskarten alles abgefangen haetten, was er austeilt:
-## ein Gegner, der zuschlaegt und trotzdem egal ist, ist kein Fortschritt.
-@export var player_max_health := 50
-@export var enemy_max_health := 50
-
-## Was ueber dem Bildschirm steht, wenn der Spieler verliert.
+## Der Gegner dieses Kampfes.
 ##
-## Steht hier, weil es zum Gegner gehoert und nicht zum Spieler: gegen das Kind
-## verliert man nicht, indem man stirbt, sondern indem man nachgibt. Solange es
-## nur einen Kampf gibt, ist ein @export der richtige Ort dafuer. Sobald die
-## Kaempfe eine Reihe bilden, zieht das Feld mit dem Gegner in dessen eigene
-## Resource um - zusammen mit Leben, Portraet und Muster.
-@export var defeat_title := "Du bist gefallen"
+## Kommt aus dem Run, nicht aus dem Inspector. Bis zum Run-Umbau standen Leben,
+## Muster und Niederlagentext als @export hier und wurden in game.tscn
+## ausgefuellt - also am Kampfplatz statt am Gegner. Das ging, solange es einen
+## Kampf gab; bei zweien haette game.tscn wissen muessen, wer gerade dran ist.
+## Jetzt weiss es der Run, und die Szene fragt nach.
+var foe: EnemyData
 
+## Der Ziehstapel *dieses Kampfes* - eine Kopie von Run.deck, die beim Ziehen
+## schrumpft. Das Deck des Runs bleibt davon unberuehrt.
 var deck: Array[CardData] = []
 var hand: Array[CardData] = []
 var discard: Array[CardData] = []
@@ -81,17 +69,44 @@ var _resolving := false
 
 func _ready() -> void:
 	Music.play("battle")
-	player = Combatant.new(player_max_health)
-	enemy = Combatant.new(enemy_max_health)
+
+	# Wer game.tscn direkt aus dem Editor startet (F6), kommt ohne Run hier an.
+	# Dann faengt hier einer an, statt dass die Szene mit leerem Deck und ohne
+	# Gegner dasteht. Sonst waere der Kampf nur noch ueber das Hauptmenue zu
+	# erreichen - und eine Szene, die man nicht mehr einzeln starten kann, ist im
+	# Alltag deutlich unangenehmer, als diese drei Zeilen kosten.
+	if not Run.is_active() or Run.current_enemy() == null:
+		Run.start_new()
+
+	foe = Run.current_enemy()
+	if foe == null:
+		push_error("Kein Gegner fuer Kampf %d - run_config.tres pruefen." % Run.fight_number())
+		# Sperren statt nur aussteigen. Ohne Gegner gibt es keinen `enemy`, und
+		# der erste Klick auf "Zug beenden" liefe in einen Nullwert - ein zweiter
+		# Fehler, der den ersten in der Konsole nach oben schiebt.
+		_game_over = true
+		return
+
+	# Der Spieler tritt mit dem Leben an, das ihm der letzte Kampf gelassen hat.
+	# Der Gegner faengt immer voll an - er ist neu, der Spieler nicht.
+	player = Combatant.new(Run.max_health, Run.health)
+	enemy = Combatant.new(foe.max_health)
 	player.died.connect(_on_player_died)
 	enemy.died.connect(_on_enemy_died)
+
+	# Name und Bild erst jetzt, statt in game.tscn: die Anzeige gehoert zwar der
+	# Szene, wen sie zeigt aber dem Run. Die Setter in HealthView schreiben
+	# sofort durch, weil Kinder vor ihrem Elternknoten bereit sind.
+	%EnemyView.title = foe.display_name
+	%EnemyView.portrait = foe.portrait
 	%PlayerView.show_combatant(player)
 	%EnemyView.show_combatant(enemy)
+	%FightLabel.text = "Kampf %d/%d" % [Run.fight_number(), Run.fight_count()]
 
-	brain = EnemyBrain.new(enemy_pattern)
+	brain = EnemyBrain.new(foe.pattern)
 	%Hand.card_clicked.connect(play_card)
 
-	deck = starting_deck.duplicate()
+	deck = Run.deck.duplicate()
 	deck.shuffle()
 	_start_player_turn()
 
@@ -268,7 +283,7 @@ func _strike_target(card_data: CardData) -> Vector2:
 ## Wirkung, *was* passiert, und der Aufrufer, *wem*.
 ##
 ## SCHADEN geht ans Gegenueber, BLOCK/HEILEN/SELBSTSCHADEN an den Handelnden
-## selbst. Damit ist "Lecker Bierchen" beim Spieler und "Schmollen" beim Kind
+## selbst. Damit ist "Lecker Bierchen" beim Spieler und "WIESOOOO!" beim Sohn
 ## exakt dieselbe Wirkung, nur mit anderen Rollen.
 func _apply_effect(effect: CardEffect, actor: Combatant, target: Combatant) -> void:
 	if effect == null:
@@ -454,23 +469,59 @@ func _on_end_turn_button_pressed() -> void:
 ## statt nur in der Konsole zu landen. Das Overlay liegt ueber allem und faengt
 ## Klicks ab; die Sperre in play_card() bleibt trotzdem, denn die Regel gehoert
 ## in die Logik und nicht in die Anzeige.
+## Kampf gewonnen - und damit entweder der Run oder nur eine Etappe.
+##
+## Das uebrige Leben geht hier an den Run zurueck. Genau dieser Uebertrag ist
+## der Unterschied zwischen einer Reihe Einzelkaempfe und einem Durchlauf: ohne
+## ihn waere jeder Treffer, den man kassiert hat, ab dem Siegbildschirm
+## folgenlos - man koennte sich durch jeden Kampf pruegeln lassen, solange man
+## ihn am Ende gewinnt.
 func _on_enemy_died() -> void:
-	_end_game("Balg besiegt")
+	Run.win_fight(player.health)
+	if Run.is_finished():
+		_end_game(Run.victory_title(), false)
+		return
+	_end_game(foe.victory_title, true)
 
 
 func _on_player_died() -> void:
-	_end_game(defeat_title)
+	_end_game(foe.defeat_title, false)
 
 
-func _end_game(title: String) -> void:
+## `has_next` sagt, ob der Run weitergeht. Danach richtet sich, welcher Knopf im
+## Overlay steht: mitten im Run ist "Weiter" die einzige sinnvolle Fortsetzung,
+## am Ende ist es "Nochmal". Beide gleichzeitig zu zeigen hiesse, den Spieler zu
+## fragen, ob er den gerade gewonnenen Kampf lieber nochmal von vorn haette.
+func _end_game(title: String, has_next: bool) -> void:
 	_game_over = true
 	%EndTitle.text = title
+	%NextButton.visible = has_next
+	%RetryButton.visible = not has_next
 	%EndOverlay.show()
 
 
+## Der naechste Kampf ist dieselbe Szene neu geladen. Wer der Gegner ist, steht
+## im Run - win_fight() ist dort schon einen weitergerueckt.
+##
+## Neu laden statt die Szene im Betrieb umzuruesten: ein Kampf hinterlaesst
+## laufende Tweens, Karten auf dem Weg zur Ablage und ein Dutzend verbundene
+## Signale. Die einzeln zurueckzusetzen ist eine Liste, von der man immer genau
+## einen Punkt vergisst - und der faellt dann drei Kaempfe spaeter auf.
+func _on_next_button_pressed() -> void:
+	Sfx.play("click")
+	get_tree().change_scene_to_file("res://scenes/game.tscn")
+
+
+## "Nochmal" heisst jetzt: neuer Run, nicht derselbe Kampf noch einmal.
+##
+## Vorher stand hier reload_current_scene(), und das war richtig, solange ein
+## Kampf das ganze Spiel war. Jetzt waere es eine Falle: die Szene laedt neu,
+## der Run-Zustand bleibt aber stehen - man traete den verlorenen Kampf mit dem
+## Leben an, mit dem man gerade gestorben ist, also mit null.
 func _on_retry_button_pressed() -> void:
 	Sfx.play("click")
-	get_tree().reload_current_scene()
+	Run.start_new()
+	get_tree().change_scene_to_file("res://scenes/game.tscn")
 
 
 ## Nach Sieg oder Niederlage war der einzige Weg weiter der Neustart. Ein

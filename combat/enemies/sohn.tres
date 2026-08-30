@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://combat/enemy_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://combat/enemy_action.gd" id="2_action"]
+[ext_resource type="Resource" path="res://combat/actions/heulen_stark.tres" id="3_heulen"]
+[ext_resource type="Resource" path="res://combat/actions/am_bein_haengen_stark.tres" id="4_bein"]
+[ext_resource type="Resource" path="res://combat/actions/mama_rufen_stark.tres" id="5_mama"]
+[ext_resource type="Resource" path="res://combat/actions/schmollen_stark.tres" id="6_schmollen"]
+[ext_resource type="Texture2D" path="res://assets/art/balg.jpg" id="7_portrait"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "Sohn"
+portrait = ExtResource("7_portrait")
+max_health = 60
+pattern = Array[ExtResource("2_action")]([ExtResource("3_heulen"), ExtResource("4_bein"), ExtResource("3_heulen"), ExtResource("5_mama"), ExtResource("6_schmollen"), ExtResource("3_heulen")])
+victory_title = "Sohn besiegt"
+defeat_title = "Du bleibst daheim"

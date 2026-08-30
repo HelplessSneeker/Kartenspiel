@@ -26,24 +26,19 @@ Download**, nicht später. Wer das nachträglich rekonstruieren will, hat verlor
 | `assets/audio/sfx/click_001.ogg` | Menü-Klick | [Kenney Interface Sounds](https://kenney.nl/assets/interface-sounds) | Kenney | CC0 | 08.08.2026 |
 | `assets/audio/sfx/error_002.ogg` | Zu wenig Energie | [Kenney Interface Sounds](https://kenney.nl/assets/interface-sounds) | Kenney | CC0 | 08.08.2026 |
 
-| `assets/audio/sfx/watschn-1.ogg` | Watschn (Variante 1) | [Freesound 72490](https://freesound.org/people/rockwehrmann/sounds/72490/) | rockwehrmann | CC0 | 27.08.2026 |
-| `assets/audio/sfx/watschn-2.ogg` | Watschn (Variante 2) | [Freesound 72491](https://freesound.org/people/rockwehrmann/sounds/72491/) | rockwehrmann | CC0 | 27.08.2026 |
-| `assets/audio/sfx/bier.ogg` | Lecker Bierchen | [Freesound 534336](https://freesound.org/people/Defaultv/sounds/534336/) | Defaultv | CC0 | 27.08.2026 |
+| `assets/audio/sfx/watschn.ogg` | Watschn | ❓ **von bfn einzutragen** | ❓ | ❓ | 30.08.2026 |
+| `assets/audio/sfx/bier.ogg` | Lecker Bierchen | ❓ **von bfn einzutragen** | ❓ | ❓ | 30.08.2026 |
 
-**⚠️ Die drei Kartengeräusche sind Platzhalter.** Zwei Vermerke dazu:
+**⚠️ Herkunft dieser zwei Dateien ist ungeklärt.** Bis 27.08. lagen hier drei ungehört
+ausgesuchte Freesound-Previews (Watschn = 72490/72491 von rockwehrmann, Bier = 534336 von
+Defaultv, alle CC0). bfn hat sie am 27./30.08. durch eigene Dateien ersetzt — welche das
+sind und unter welcher Lizenz, weiß nur er. **Vor einem Release muss hier Quelle, Urheber
+und Lizenz stehen**, sonst ist der Release-Rechtsstand unbekannt. Sind es wieder CC0- oder
+CC-BY-Dateien, gehört die Namensnennung geprüft; sind sie selbst aufgenommen, genügt
+„eigene Aufnahme".
 
-1. **Ungehört ausgesucht.** Ludicator hat auf primus kein Audio. Die Auswahl lief über
-   Titel, Lizenz und Länge (Watschn 0,54 s / 0,34 s, Bier 1,04 s) — nicht über den Klang.
-   Ob das nach Ohrfeige und nach Bier klingt, muss bfn gegenhören.
-2. **Es sind Freesound-*Previews*, nicht die Originaldateien.** Der Download der
-   Originale verlangt ein Konto; genommen wurde die frei abrufbare HQ-Preview
-   (`cdn.freesound.org/previews/…-hq.ogg`), also eine transcodierte Fassung.
-   Lizenzrechtlich egal — CC0 kennt keine Einschränkungen —, qualitativ ein Abstrich.
-   Beim Ersetzen: Original ziehen oder gleich einen anderen Sound nehmen.
-
-Lizenz beider Quellen einzeln auf der Freesound-Seite geprüft (nicht nur dem
-Suchfilter geglaubt): alle drei **CC0**, keine Namensnennung nötig. Sie stehen trotzdem
-hier, weil die Tabelle vollständig sein soll.
+**Verworfene Kandidaten von damals** (falls doch wieder gesucht wird): die alten
+Freesound-Previews sind über die IDs oben weiter erreichbar.
 
 **Verworfene Kandidaten** (falls neu gesucht wird): OpenGameArt
 [„Punch, slap, n' kick"](https://opengameart.org/content/punch-slap-n-kick) wäre inhaltlich
@@ -58,7 +53,7 @@ Länge raus (4–9 s; für einen Kartenton zu lang).
 | `assets/art/tschick.jpg` | Kartenbild „Ane rachen" | [Commons `Cigarette-s x`](https://commons.wikimedia.org/wiki/File:Cigarette-s_x.jpeg) | Tomasz Sienicki | Public domain | 26.08.2026 |
 | `assets/art/watschn.jpg` | Kartenbild „Watschn" | [Commons `FiveFingersFaceHighandMightyTrailerScreenshot1954`](https://commons.wikimedia.org/wiki/File:FiveFingersFaceHighandMightyTrailerScreenshot1954.jpg) | Trailer-Screenshot, *The High and the Mighty* (1954) | Public domain (**nur US** — siehe unten) | 26.08.2026 |
 | `assets/art/spieler.jpg` | Porträt Spieler | von bfn beigesteuert | — | **ungeklärt — Platzhalter** | 26.08.2026 |
-| `assets/art/balg.jpg` | Porträt Balg | von bfn beigesteuert | — | **ungeklärt — Platzhalter** | 26.08.2026 |
+| `assets/art/balg.jpg` | Porträt Sohn (beide Kämpfe) | von bfn beigesteuert | — | **ungeklärt — Platzhalter** | 26.08.2026 |
 
 ### ⚠️ Die beiden Porträts sind Platzhalter
 
