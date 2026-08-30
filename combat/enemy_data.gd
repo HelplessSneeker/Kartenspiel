@@ -21,6 +21,16 @@ extends Resource
 ## PortraitRect dann aus und sieht aus wie vor den Portraets.
 @export var portrait: Texture2D
 
+## Der Ort, an dem dieser Kampf stattfindet - das Bild ganz hinten.
+##
+## Am Gegner und nicht am Run, weil jeder Gegner woanders steht: das Kind im
+## Vorzimmer, der naechste in der Kueche. Ein Run-weites Bild waere ein
+## Bildschirmhintergrund, kein Schauplatz.
+##
+## Darf leer bleiben. Dann bleibt der Verlauf darunter stehen, und das ist
+## genau der Zustand, in dem das Spiel bisher war - nur nicht mehr flach.
+@export var background: Texture2D
+
 @export var max_health: int = 40
 
 ## Was er tut, der Reihe nach und dann wieder von vorn. Leer heisst: er tut
