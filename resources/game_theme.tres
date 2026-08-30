@@ -320,5 +320,7 @@ Portrait/base_type = &"PanelContainer"
 Portrait/styles/panel = SubResource("StyleBoxFlat_portrait")
 Title/base_type = &"Label"
 Title/colors/font_color = Color(0.921569, 0.929412, 0.960784, 1)
+Title/colors/font_outline_color = Color(0.0470588, 0.0509804, 0.0705882, 1)
+Title/constants/outline_size = 8
 Title/font_sizes/font_size = 44
 Title/fonts/font = ExtResource("2_oswald")
