@@ -105,6 +105,12 @@ func _ready() -> void:
 	%PlayerView.show_combatant(player)
 	%EnemyView.show_combatant(enemy)
 	%FightLabel.text = "Kampf %d/%d" % [Run.fight_number(), Run.fight_count()]
+	# Wie viele Karten das Deck *insgesamt* hat - nicht, wie viele noch im
+	# Ziehstapel liegen. Das steht unten links auf dem Stapel und aendert sich
+	# staendig; diese Zahl aendert sich waehrend eines Kampfes gar nicht, deshalb
+	# steht sie hier und nicht in refresh_hud(). Interessant wird sie, sobald ein
+	# Run Karten dazugibt: dann sieht man sein Deck wachsen.
+	%DeckTotalLabel.text = str(Run.deck.size())
 
 	brain = EnemyBrain.new(foe.pattern)
 	%Hand.card_clicked.connect(play_card)
@@ -427,11 +433,10 @@ func refresh() -> void:
 
 
 func refresh_hud() -> void:
-	# Symbol statt des Wortes "Energie". Auf jeder Karte steht der Preis seit der
-	# Plakette als dasselbe Symbol in derselben Farbe - Vorrat und Preis sagen
-	# damit dasselbe, ohne dass es jemand erklaeren muss. Ein Wort daneben waere
-	# die Beschriftung eines Symbols, das man ohnehin schon gelernt hat.
-	%EnergyLabel.text = "%s %d/%d" % [Icons.bb("energy"), energy, MAX_ENERGY]
+	# Nur noch die Zahlen. Das Symbol ist die Kugel selbst: ein goldener Ring
+	# unten links, in derselben Farbe wie die Preisplakette auf jeder Karte.
+	# Ein Blitz *in* der Kugel waere das Symbol im Symbol.
+	%EnergyLabel.text = "%d/%d" % [energy, MAX_ENERGY]
 	%DeckPile.count = deck.size()
 	%DiscardPile.count = discard.size()
 

@@ -40,36 +40,70 @@ theme_override_constants/separation = 12
 layout_mode = 2
 theme_type_variation = &"Hud"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TopBar" unique_id=480580605]
+[node name="Bar" type="Control" parent="MarginContainer/VBoxContainer/TopBar"]
+custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
-theme_override_constants/separation = 18
+mouse_filter = 2
 
-[node name="EnergyLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=1294135581]
+[node name="FightLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar/Bar"]
 unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"HudLabel"
+text = "Kampf 1/1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DeckBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TopBar/Bar"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 150.0
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="DeckIcon" type="Control" parent="MarginContainer/VBoxContainer/TopBar/Bar/DeckBox"]
+custom_minimum_size = Vector2(28, 34)
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 2
-theme_type_variation = &"HudEnergy"
-bbcode_enabled = true
-fit_content = true
-scroll_active = false
-autowrap_mode = 0
 
-[node name="FightLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer"]
+[node name="Back" type="Panel" parent="MarginContainer/VBoxContainer/TopBar/Bar/DeckBox/DeckIcon"]
+layout_mode = 0
+offset_left = 8.0
+offset_right = 28.0
+offset_bottom = 26.0
+mouse_filter = 2
+theme_type_variation = &"DeckCard"
+
+[node name="Middle" type="Panel" parent="MarginContainer/VBoxContainer/TopBar/Bar/DeckBox/DeckIcon"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 24.0
+offset_bottom = 30.0
+mouse_filter = 2
+theme_type_variation = &"DeckCard"
+
+[node name="Front" type="Panel" parent="MarginContainer/VBoxContainer/TopBar/Bar/DeckBox/DeckIcon"]
+layout_mode = 0
+offset_top = 8.0
+offset_right = 20.0
+offset_bottom = 34.0
+mouse_filter = 2
+theme_type_variation = &"DeckCard"
+
+[node name="DeckTotalLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar/Bar/DeckBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 theme_type_variation = &"HudLabel"
-text = "Kampf 1/1"
-
-[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=480580606]
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 2
-
-[node name="EndTurnButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=1757884632]
-layout_mode = 2
-text = "Zug beenden"
 
 [node name="Battelfield" type="Control" parent="MarginContainer/VBoxContainer" unique_id=262212546]
 layout_mode = 2
@@ -143,6 +177,45 @@ offset_bottom = -16.0
 grow_horizontal = 0
 grow_vertical = 0
 title = "Ablage"
+
+[node name="EnergyOrb" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -206.0
+offset_right = 92.0
+offset_bottom = -134.0
+grow_vertical = 0
+mouse_filter = 2
+theme_type_variation = &"EnergyOrb"
+
+[node name="EnergyLabel" type="Label" parent="EnergyOrb"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_type_variation = &"EnergyValue"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndTurnButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -196.0
+offset_top = -204.0
+offset_right = -16.0
+offset_bottom = -142.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_type_variation = &"PrimaryButton"
+text = "Zug beenden"
 
 [node name="Hand" type="Control" parent="." unique_id=173045572]
 unique_name_in_owner = true
@@ -267,7 +340,7 @@ layer = 20
 
 [node name="PauseMenu" parent="PauseLayer" instance=ExtResource("12_pause")]
 
-[connection signal="pressed" from="MarginContainer/VBoxContainer/TopBar/HBoxContainer/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
+[connection signal="pressed" from="EndTurnButton" to="." method="_on_end_turn_button_pressed"]
 [connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/NextButton" to="." method="_on_next_button_pressed"]
 [connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/RetryButton" to="." method="_on_retry_button_pressed"]
 [connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
