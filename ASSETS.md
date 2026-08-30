@@ -54,6 +54,18 @@ Länge raus (4–9 s; für einen Kartenton zu lang).
 | `assets/art/watschn.jpg` | Kartenbild „Watschn" | [Commons `FiveFingersFaceHighandMightyTrailerScreenshot1954`](https://commons.wikimedia.org/wiki/File:FiveFingersFaceHighandMightyTrailerScreenshot1954.jpg) | Trailer-Screenshot, *The High and the Mighty* (1954) | Public domain (**nur US** — siehe unten) | 26.08.2026 |
 | `assets/art/spieler.jpg` | Porträt Spieler | von bfn beigesteuert | — | **ungeklärt — Platzhalter** | 26.08.2026 |
 | `assets/art/balg.jpg` | Porträt Sohn (beide Kämpfe) | von bfn beigesteuert | — | **ungeklärt — Platzhalter** | 26.08.2026 |
+| `assets/art/bg/stube.jpg` | Schauplatz Kampf 1 | [Commons `Stamserhaus Stube`](https://commons.wikimedia.org/wiki/File:Stamserhaus_Stube.jpg) | Chris Walch | **CC BY-SA 4.0** | 30.08.2026 |
+| `assets/art/bg/kuechl.jpg` | Schauplatz Kampf 2 | [Commons `AT-114822 Strutzenbauer, Steinbach am Ziehberg 002`](https://commons.wikimedia.org/wiki/File:AT-114822_Strutzenbauer,_Steinbach_am_Ziehberg_002.jpg) | Hubertl | **CC BY-SA 4.0** | 30.08.2026 |
+
+Beide Hintergründe sind **bearbeitet**: mittig auf 16:9 beschnitten, auf 1280×720 skaliert
+und mit einem Gaußschen Weichzeichner (Radius 3) versehen. Die Unschärfe ist bewusst in
+die Datei gebacken statt als Shader — der Hintergrund bewegt sich nie, ein Shader würde
+das Bild in jedem Frame neu rechnen. Abgedunkelt wird dagegen erst in der Engine
+(`SceneRect.modulate` in `game.tscn`), damit die Zahl ohne Neubearbeitung verstellbar ist.
+
+**⚠️ CC BY-SA ist nicht dasselbe wie CC BY** — siehe Backlog. Bei einem Release muss
+außerdem der Bearbeitungshinweis mit in die Namensnennung („zugeschnitten und
+weichgezeichnet").
 
 ### ⚠️ Die beiden Porträts sind Platzhalter
 

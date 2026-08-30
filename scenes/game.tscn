@@ -7,6 +7,29 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="12_pause"]
 [ext_resource type="Texture2D" path="res://assets/art/spieler.jpg" id="19_spieler"]
 
+[sub_resource type="Gradient" id="Gradient_base"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.109804, 0.121569, 0.168627, 1, 0.0431373, 0.0470588, 0.0666667, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_base"]
+gradient = SubResource("Gradient_base")
+width = 8
+height = 256
+fill_from = Vector2(0, 0)
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_vignette"]
+offsets = PackedFloat32Array(0, 0.45, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.55)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vignette"]
+gradient = SubResource("Gradient_vignette")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
 [node name="Game" type="Control" unique_id=139426249]
 layout_mode = 3
 anchors_preset = 15
@@ -15,6 +38,52 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_uwrxv")
+
+[node name="Background" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BaseRect" type="TextureRect" parent="Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_base")
+expand_mode = 1
+
+[node name="SceneRect" type="TextureRect" parent="Background"]
+unique_name_in_owner = true
+visible = false
+clip_contents = true
+modulate = Color(0.5, 0.5, 0.55, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Vignette" type="TextureRect" parent="Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_vignette")
+expand_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1894322726]
 layout_mode = 1
