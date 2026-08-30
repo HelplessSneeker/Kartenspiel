@@ -10,7 +10,7 @@ amount = 8
 
 [resource]
 script = ExtResource("1_action")
-action_name = "Mama!"
+action_name = "MAMA!"
 sound = "mama"
 effects = Array[ExtResource("2_effect")]([SubResource("Effect_heilen")])
 intent = "{icon_heal} {heal}"
