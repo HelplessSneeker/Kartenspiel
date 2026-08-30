@@ -54,17 +54,16 @@ const SFX_PATHS := {
 
 	# --- Kartengeraeusche -----------------------------------------------------
 	#
-	# PLATZHALTER, ungehoert ausgesucht. Ich habe auf primus kein Audio - die
-	# Auswahl lief ueber Titel, Lizenz und Laenge, nicht ueber den Klang. Beides
-	# gehoert gegengehoert und faellt vermutlich wieder raus.
+	# Von bfn ausgesucht (30.08.2026) und damit erstmals *gehoert* gewaehlt - die
+	# vorherigen zwei Watschn-Varianten und das Bier waren meine ungehoerten
+	# Platzhalter aus Freesound und sind raus.
 	#
-	# Zwei Watschn-Varianten aus demselben Grund wie beim Ziehen: der Schlag
-	# kommt oft, und zweimal exakt dieselbe Wellenform klingt nach Knopfdruck
-	# statt nach Ohrfeige.
-	"watschn": [
-		"res://assets/audio/sfx/watschn-1.ogg",
-		"res://assets/audio/sfx/watschn-2.ogg",
-	],
+	# Wieder eine Datei statt zwei Varianten fuer die Watschn. Der Grund fuer
+	# Varianten bleibt gueltig (der Schlag kommt oft, zweimal dieselbe Wellenform
+	# klingt nach Knopfdruck), aber eine gute Datei schlaegt zwei zweifelhafte.
+	# Kommt eine zweite dazu, gehoert sie schlicht hier in die Liste - der
+	# Zufallsgriff darueber funktioniert unveraendert.
+	"watschn": ["res://assets/audio/sfx/watschn.ogg"],
 	"bier": ["res://assets/audio/sfx/bier.ogg"],
 }
 
@@ -80,12 +79,16 @@ const SFX_PATHS := {
 ## anderen aus und gehoert ins Projekt - sonst muesste der Spieler mit seinem
 ## Regler ausbaden, dass zwei Dateien unterschiedlich laut aufgenommen wurden.
 ##
-## Ungehoert gewaehlt (Befund bfn "Karteneffekte zu leise", 27.08.2026). Knackst
-## oder scheppert es, ist die Zahl zu hoch - dann runter statt Datei tauschen.
-const SFX_GAIN_DB := {
-	"watschn": 5.0,
-	"bier": 5.0,
-}
+## Aktuell leer, und das ist eine Entscheidung: die +5 dB fuer "watschn" und
+## "bier" waren eine blinde Korrektur an *meinen* Platzhaltern (Befund bfn
+## "Karteneffekte zu leise", 27.08.2026). Am 30.08. hat bfn beide Dateien
+## getauscht - damit ist die Zahl nicht mehr auf das gemuenzt, was sie korrigiert
+## hat. Eine geerbte Verstaerkung auf einer unbekannten Datei kann uebersteuern,
+## und Uebersteuerung ist der unangenehmere Fehler als "zu leise".
+##
+## Also zurueck auf 0 und neu beurteilen. Sind die Toene wieder zu leise, ist es
+## eine Zeile: "watschn": 5.0 hier rein.
+const SFX_GAIN_DB := {}
 
 ## Wie viele Sounds gleichzeitig laufen duerfen. Ein einzelner Player wuerde den
 ## laufenden Sound abschneiden, sobald der naechste kommt - und beim Zugende
