@@ -23,6 +23,9 @@ config/icon="res://icon.svg"
 Settings="*res://settings/settings.gd"
 Sfx="*res://audio/sfx_player.gd"
 Music="*res://audio/music_player.gd"
+; Run haelt den Durchlauf (Deck, Leben, welcher Kampf) ueber den Szenenwechsel
+; hinweg. Haengt an keinem der drei oben, die Position ist deshalb frei.
+Run="*res://run/run_state.gd"
 
 [display]
 

@@ -23,6 +23,11 @@ func _on_start_button_pressed() -> void:
 	# Der Sound ueberlebt den Szenenwechsel: Sfx ist ein Autoload und haengt
 	# damit am Root, nicht an dieser Szene.
 	Sfx.play("click")
+	# "Spielen" heisst hier immer *neuer* Durchlauf. Ohne diese Zeile wuerde ein
+	# Run, den man ueber das Pausenmenue verlassen hat, beim naechsten Klick
+	# weiterlaufen - mit angeschlagenem Leben und beim dritten Gegner. Ein
+	# Fortsetzen-Knopf waere ein eigener Knopf und eine eigene Entscheidung.
+	Run.start_new()
 	get_tree().change_scene_to_file("res://scenes/game.tscn")
 
 

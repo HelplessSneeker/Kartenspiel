@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://combat/enemy_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://combat/enemy_action.gd" id="2_action"]
+[ext_resource type="Resource" path="res://combat/actions/hieb.tres" id="3_hieb"]
+[ext_resource type="Resource" path="res://combat/actions/deckung.tres" id="4_deckung"]
+[ext_resource type="Resource" path="res://combat/actions/wuchtschlag.tres" id="5_wucht"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "Der Nachbar"
+max_health = 60
+pattern = Array[ExtResource("2_action")]([ExtResource("3_hieb"), ExtResource("3_hieb"), ExtResource("4_deckung"), ExtResource("5_wucht")])
+victory_title = "Nachbar besiegt"
+defeat_title = "Du kommst nicht am Nachbarn vorbei"

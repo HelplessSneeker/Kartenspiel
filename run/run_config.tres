@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RunConfig" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://run/run_config.gd" id="1_config"]
+[ext_resource type="Script" path="res://cards/data/card_data.gd" id="2_card"]
+[ext_resource type="Resource" path="res://cards/data/watschn.tres" id="3_watschn"]
+[ext_resource type="Resource" path="res://cards/data/lecker_bierchen.tres" id="4_bier"]
+[ext_resource type="Resource" path="res://cards/data/ane_rachen.tres" id="5_rachen"]
+[ext_resource type="Script" path="res://combat/enemy_data.gd" id="6_enemy"]
+[ext_resource type="Resource" path="res://combat/enemies/balg.tres" id="7_balg"]
+[ext_resource type="Resource" path="res://combat/enemies/nachbar.tres" id="8_nachbar"]
+
+[resource]
+script = ExtResource("1_config")
+starting_deck = Array[ExtResource("2_card")]([ExtResource("3_watschn"), ExtResource("3_watschn"), ExtResource("3_watschn"), ExtResource("3_watschn"), ExtResource("3_watschn"), ExtResource("4_bier"), ExtResource("4_bier"), ExtResource("4_bier"), ExtResource("4_bier"), ExtResource("5_rachen"), ExtResource("5_rachen")])
+enemies = Array[ExtResource("6_enemy")]([ExtResource("7_balg"), ExtResource("8_nachbar")])
+player_max_health = 50
+victory_title = "Du bist draussen"

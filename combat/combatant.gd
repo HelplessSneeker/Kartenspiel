@@ -51,9 +51,16 @@ var health: int
 var block: int = 0
 
 
-func _init(new_max_health: int) -> void:
+## `starting_health` ist fuer den Spieler im zweiten Kampf eines Runs da: er
+## tritt mit dem an, was ihm vom ersten geblieben ist, nicht wieder voll.
+##
+## Warum -1 als "nicht angegeben" und nicht 0? Weil 0 ein gueltiger Wert ist -
+## ein Kaempfer mit 0 Leben ist tot, und das soll man bauen koennen (und sei es
+## nur, um zu sehen, dass das Spiel es merkt). Eine Vorgabe muss ausserhalb des
+## Wertebereichs liegen, sonst verschluckt sie einen echten Fall.
+func _init(new_max_health: int, starting_health := -1) -> void:
 	max_health = maxi(new_max_health, 1)
-	health = max_health
+	health = max_health if starting_health < 0 else clampi(starting_health, 0, max_health)
 
 
 ## Schaden geht erst gegen den Block, der Rest ans Leben.

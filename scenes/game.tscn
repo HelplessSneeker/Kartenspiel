@@ -1,21 +1,11 @@
 [gd_scene format=3 uid="uid://hbbrcjlhmgb7"]
 
 [ext_resource type="Script" uid="uid://bagxjnrr5co0e" path="res://scenes/game.gd" id="1_uwrxv"]
-[ext_resource type="Script" uid="uid://bedxkpm6a0xyk" path="res://cards/data/card_data.gd" id="2_lbhrr"]
-[ext_resource type="Resource" uid="uid://bklpwgppsi6du" path="res://cards/data/watschn.tres" id="3_iywne"]
-[ext_resource type="Resource" uid="uid://bgkw4eya0hy42" path="res://cards/data/lecker_bierchen.tres" id="4_p57ef"]
 [ext_resource type="Script" uid="uid://d3pd0u6pwdqs0" path="res://scenes/hand.gd" id="5_iywne"]
 [ext_resource type="PackedScene" path="res://combat/health_view.tscn" id="6_health"]
-[ext_resource type="Script" path="res://combat/enemy_action.gd" id="7_action"]
-[ext_resource type="Resource" path="res://combat/actions/heulen.tres" id="8_heulen"]
-[ext_resource type="Resource" path="res://combat/actions/am_bein_haengen.tres" id="9_bein"]
-[ext_resource type="Resource" path="res://combat/actions/mama_rufen.tres" id="10_mama"]
-[ext_resource type="Resource" path="res://combat/actions/schmollen.tres" id="21_schmollen"]
 [ext_resource type="PackedScene" path="res://ui/pile.tscn" id="11_pile"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="12_pause"]
-[ext_resource type="Resource" path="res://cards/data/ane_rachen.tres" id="18_rachen"]
 [ext_resource type="Texture2D" path="res://assets/art/spieler.jpg" id="19_spieler"]
-[ext_resource type="Texture2D" path="res://assets/art/balg.jpg" id="20_balg"]
 
 [node name="Game" type="Control" unique_id=139426249]
 layout_mode = 3
@@ -25,9 +15,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_uwrxv")
-starting_deck = Array[ExtResource("2_lbhrr")]([ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("3_iywne"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("4_p57ef"), ExtResource("18_rachen"), ExtResource("18_rachen")])
-enemy_pattern = Array[ExtResource("7_action")]([ExtResource("8_heulen"), ExtResource("9_bein"), ExtResource("8_heulen"), ExtResource("10_mama"), ExtResource("21_schmollen"), ExtResource("8_heulen")])
-defeat_title = "Du bleibst daheim"
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1894322726]
 layout_mode = 1
@@ -58,6 +45,13 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 theme_type_variation = &"HudEnergy"
+
+[node name="FightLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"HudLabel"
+text = "Kampf 1/1"
 
 [node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=480580606]
 layout_mode = 2
@@ -110,8 +104,7 @@ scroll_active = false
 [node name="EnemyView" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer/EnemySide" instance=ExtResource("6_health")]
 unique_name_in_owner = true
 layout_mode = 2
-title = "Balg"
-portrait = ExtResource("20_balg")
+title = "Gegner"
 
 [node name="DeckPile" parent="." instance=ExtResource("11_pile")]
 unique_name_in_owner = true
@@ -201,7 +194,14 @@ theme_type_variation = &"DialogTitle"
 text = "Balg besiegt"
 horizontal_alignment = 1
 
+[node name="NextButton" type="Button" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Weiter"
+
 [node name="RetryButton" type="Button" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer" unique_id=173045579]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Nochmal"
 
@@ -215,5 +215,6 @@ layer = 20
 [node name="PauseMenu" parent="PauseLayer" instance=ExtResource("12_pause")]
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/TopBar/HBoxContainer/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
+[connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/NextButton" to="." method="_on_next_button_pressed"]
 [connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/RetryButton" to="." method="_on_retry_button_pressed"]
 [connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
