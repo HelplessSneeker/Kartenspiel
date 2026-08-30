@@ -80,13 +80,13 @@ func _on_resume_button_pressed() -> void:
 func _on_restart_button_pressed() -> void:
 	Sfx.play("click")
 	get_tree().paused = false
-	get_tree().reload_current_scene()
+	Fade.reload_scene()
 
 
 func _on_menu_button_pressed() -> void:
 	Sfx.play("click")
 	get_tree().paused = false
-	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	Fade.change_scene("res://scenes/ui/main_menu.tscn")
 
 
 func _on_options_closed() -> void:
