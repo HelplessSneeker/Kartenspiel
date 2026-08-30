@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="12_pause"]
 [ext_resource type="Texture2D" path="res://assets/art/spieler.jpg" id="19_spieler"]
 [ext_resource type="PackedScene" path="res://ui/room_background.tscn" id="22_room"]
+[ext_resource type="Script" path="res://ui/energy_orb.gd" id="23_orb"]
 
 [node name="Game" type="Control" unique_id=139426249]
 layout_mode = 3
@@ -40,36 +41,70 @@ theme_override_constants/separation = 12
 layout_mode = 2
 theme_type_variation = &"Hud"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TopBar" unique_id=480580605]
+[node name="Bar" type="Control" parent="MarginContainer/VBoxContainer/TopBar"]
+custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
-theme_override_constants/separation = 18
+mouse_filter = 2
 
-[node name="EnergyLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=1294135581]
+[node name="FightLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar/Bar"]
 unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"HudLabel"
+text = "Kampf 1/1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DeckBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TopBar/Bar"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 150.0
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="DeckIcon" type="Control" parent="MarginContainer/VBoxContainer/TopBar/Bar/DeckBox"]
+custom_minimum_size = Vector2(28, 34)
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 2
-theme_type_variation = &"HudEnergy"
-bbcode_enabled = true
-fit_content = true
-scroll_active = false
-autowrap_mode = 0
 
-[node name="FightLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer"]
+[node name="Back" type="Panel" parent="MarginContainer/VBoxContainer/TopBar/Bar/DeckBox/DeckIcon"]
+layout_mode = 0
+offset_left = 8.0
+offset_right = 28.0
+offset_bottom = 26.0
+mouse_filter = 2
+theme_type_variation = &"DeckCard"
+
+[node name="Middle" type="Panel" parent="MarginContainer/VBoxContainer/TopBar/Bar/DeckBox/DeckIcon"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 24.0
+offset_bottom = 30.0
+mouse_filter = 2
+theme_type_variation = &"DeckCard"
+
+[node name="Front" type="Panel" parent="MarginContainer/VBoxContainer/TopBar/Bar/DeckBox/DeckIcon"]
+layout_mode = 0
+offset_top = 8.0
+offset_right = 20.0
+offset_bottom = 34.0
+mouse_filter = 2
+theme_type_variation = &"DeckCard"
+
+[node name="DeckTotalLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar/Bar/DeckBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 theme_type_variation = &"HudLabel"
-text = "Kampf 1/1"
-
-[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=480580606]
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 2
-
-[node name="EndTurnButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/HBoxContainer" unique_id=1757884632]
-layout_mode = 2
-text = "Zug beenden"
 
 [node name="Battelfield" type="Control" parent="MarginContainer/VBoxContainer" unique_id=262212546]
 layout_mode = 2
@@ -86,7 +121,7 @@ grow_vertical = 2
 [node name="PlayerView" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer" instance=ExtResource("6_health")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 4
+size_flags_vertical = 0
 title = "Spieler"
 portrait = ExtResource("19_spieler")
 
@@ -97,7 +132,7 @@ mouse_filter = 2
 
 [node name="EnemySide" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 4
+size_flags_vertical = 0
 theme_override_constants/separation = 6
 
 [node name="IntentLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Battelfield/HBoxContainer/EnemySide"]
@@ -158,6 +193,49 @@ script = ExtResource("5_iywne")
 deck_pile_path = NodePath("../DeckPile")
 discard_pile_path = NodePath("../DiscardPile")
 
+[node name="EnergyOrb" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -212.0
+offset_right = 92.0
+offset_bottom = -140.0
+grow_vertical = 0
+mouse_filter = 2
+script = ExtResource("23_orb")
+
+[node name="EnergyLabel" type="Label" parent="EnergyOrb"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"EnergyValue"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndTurnButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -196.0
+offset_top = -210.0
+offset_right = -16.0
+offset_bottom = -148.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_type_variation = &"PrimaryButton"
+text = "Zug beenden"
+
 [node name="OverlayLayer" type="CanvasLayer" parent="." unique_id=173045580]
 layer = 10
 
@@ -194,13 +272,57 @@ theme_type_variation = &"Dialog"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog" unique_id=173045577]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 14
 
 [node name="EndTitle" type="Label" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer" unique_id=173045578]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"DialogTitle"
 text = "Kampf vorbei"
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="RichTextLabel" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"Body"
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="NextBox" type="VBoxContainer" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="NextLabel" type="Label" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/NextBox"]
+layout_mode = 2
+theme_type_variation = &"PileTitle"
+text = "Als Nächstes"
+horizontal_alignment = 1
+
+[node name="NextPortraitFrame" type="PanelContainer" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/NextBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+theme_type_variation = &"Portrait"
+
+[node name="NextPortrait" type="TextureRect" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/NextBox/NextPortraitFrame"]
+unique_name_in_owner = true
+clip_contents = true
+custom_minimum_size = Vector2(78, 92)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="NextName" type="Label" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/NextBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HealthTitle"
 horizontal_alignment = 1
 
 [node name="NextButton" type="Button" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer"]
@@ -223,7 +345,7 @@ layer = 20
 
 [node name="PauseMenu" parent="PauseLayer" instance=ExtResource("12_pause")]
 
-[connection signal="pressed" from="MarginContainer/VBoxContainer/TopBar/HBoxContainer/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
+[connection signal="pressed" from="EndTurnButton" to="." method="_on_end_turn_button_pressed"]
 [connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/NextButton" to="." method="_on_next_button_pressed"]
 [connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/RetryButton" to="." method="_on_retry_button_pressed"]
 [connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]

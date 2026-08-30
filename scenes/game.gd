@@ -105,6 +105,15 @@ func _ready() -> void:
 	%PlayerView.show_combatant(player)
 	%EnemyView.show_combatant(enemy)
 	%FightLabel.text = "Kampf %d/%d" % [Run.fight_number(), Run.fight_count()]
+	# Wie viele Karten das Deck *insgesamt* hat - nicht, wie viele noch im
+	# Ziehstapel liegen. Das steht unten links auf dem Stapel und aendert sich
+	# staendig; diese Zahl aendert sich waehrend eines Kampfes gar nicht, deshalb
+	# steht sie hier und nicht in refresh_hud(). Interessant wird sie, sobald ein
+	# Run Karten dazugibt: dann sieht man sein Deck wachsen.
+	%DeckTotalLabel.text = str(Run.deck.size())
+	# Wie viele Abschnitte der Ring hat, steht fest, sobald die Energie feststeht.
+	# Nur der Fuellstand aendert sich im Zug, und der kommt aus refresh_hud().
+	%EnergyOrb.maximum = MAX_ENERGY
 
 	brain = EnemyBrain.new(foe.pattern)
 	%Hand.card_clicked.connect(play_card)
@@ -427,11 +436,11 @@ func refresh() -> void:
 
 
 func refresh_hud() -> void:
-	# Symbol statt des Wortes "Energie". Auf jeder Karte steht der Preis seit der
-	# Plakette als dasselbe Symbol in derselben Farbe - Vorrat und Preis sagen
-	# damit dasselbe, ohne dass es jemand erklaeren muss. Ein Wort daneben waere
-	# die Beschriftung eines Symbols, das man ohnehin schon gelernt hat.
-	%EnergyLabel.text = "%s %d/%d" % [Icons.bb("energy"), energy, MAX_ENERGY]
+	# Zwei Anzeigen fuer dasselbe, mit Absicht: der Ring sagt *wie viel* ohne
+	# Lesen, die Zahl sagt *wie genau*. Beim Ueberlegen, ob die naechste Karte
+	# noch geht, schaut man auf den Ring; beim Abzaehlen auf die Zahl.
+	%EnergyOrb.filled = energy
+	%EnergyLabel.text = "%d/%d" % [energy, MAX_ENERGY]
 	%DeckPile.count = deck.size()
 	%DiscardPile.count = discard.size()
 
@@ -499,12 +508,55 @@ func _on_player_died() -> void:
 ## Overlay steht: mitten im Run ist "Weiter" die einzige sinnvolle Fortsetzung,
 ## am Ende ist es "Nochmal". Beide gleichzeitig zu zeigen hiesse, den Spieler zu
 ## fragen, ob er den gerade gewonnenen Kampf lieber nochmal von vorn haette.
+##
+## Zwischen zwei Kaempfen stand hier bisher nur ein Titel. Das war der einzige
+## Bildschirm, auf dem der Run *stattfindet* - und er sagte nichts ueber ihn.
+## Jetzt stehen dort die zwei Zahlen, nach denen man an dieser Stelle
+## entscheidet: was ist mir geblieben, und was kommt als Naechstes. Beides weiss
+## der Run, keins davon stand vorher irgendwo.
 func _end_game(title: String, has_next: bool) -> void:
 	_game_over = true
 	%EndTitle.text = title
+
+	# Das Leben nur zeigen, solange es eins gibt. "0/50" ueber "Du bleibst
+	# daheim" ist keine Auskunft, sondern eine zweite Art, dasselbe zu sagen.
+	%StatusLabel.visible = player.is_alive()
+	if player.is_alive():
+		%StatusLabel.text = "[center]%s %d/%d[/center]" % [
+			Icons.bb("heal"), player.health, player.max_health,
+		]
+
+	_show_next_enemy(has_next)
+
 	%NextButton.visible = has_next
 	%RetryButton.visible = not has_next
 	%EndOverlay.show()
+
+
+## Zeigt, wer nach diesem Kampf kommt.
+##
+## Mit Portraet und nicht nur mit Namen: ein Gesicht macht aus "es geht weiter"
+## ein "der da wartet". Genau das ist der Unterschied zwischen einer Reihe von
+## Kaempfen und einem Durchlauf, und dieser Bildschirm ist die einzige Stelle,
+## an der man ihn zeigen kann.
+##
+## Run.current_enemy() steht hier schon auf dem *naechsten* - win_fight() hat
+## vorher weitergerueckt.
+func _show_next_enemy(has_next: bool) -> void:
+	%NextBox.visible = has_next
+	if not has_next:
+		return
+
+	var next := Run.current_enemy()
+	if next == null:
+		%NextBox.visible = false
+		return
+
+	%NextName.text = next.display_name
+	%NextPortrait.texture = next.portrait
+	# Dieselbe Regel wie in HealthView: ohne Bild verschwindet der Rahmen mit,
+	# sonst steht dort ein leerer Kasten mit Schatten.
+	%NextPortraitFrame.visible = next.portrait != null
 
 
 ## Der naechste Kampf ist dieselbe Szene neu geladen. Wer der Gegner ist, steht
