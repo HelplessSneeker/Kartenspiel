@@ -499,12 +499,55 @@ func _on_player_died() -> void:
 ## Overlay steht: mitten im Run ist "Weiter" die einzige sinnvolle Fortsetzung,
 ## am Ende ist es "Nochmal". Beide gleichzeitig zu zeigen hiesse, den Spieler zu
 ## fragen, ob er den gerade gewonnenen Kampf lieber nochmal von vorn haette.
+##
+## Zwischen zwei Kaempfen stand hier bisher nur ein Titel. Das war der einzige
+## Bildschirm, auf dem der Run *stattfindet* - und er sagte nichts ueber ihn.
+## Jetzt stehen dort die zwei Zahlen, nach denen man an dieser Stelle
+## entscheidet: was ist mir geblieben, und was kommt als Naechstes. Beides weiss
+## der Run, keins davon stand vorher irgendwo.
 func _end_game(title: String, has_next: bool) -> void:
 	_game_over = true
 	%EndTitle.text = title
+
+	# Das Leben nur zeigen, solange es eins gibt. "0/50" ueber "Du bleibst
+	# daheim" ist keine Auskunft, sondern eine zweite Art, dasselbe zu sagen.
+	%StatusLabel.visible = player.is_alive()
+	if player.is_alive():
+		%StatusLabel.text = "[center]%s %d/%d[/center]" % [
+			Icons.bb("heal"), player.health, player.max_health,
+		]
+
+	_show_next_enemy(has_next)
+
 	%NextButton.visible = has_next
 	%RetryButton.visible = not has_next
 	%EndOverlay.show()
+
+
+## Zeigt, wer nach diesem Kampf kommt.
+##
+## Mit Portraet und nicht nur mit Namen: ein Gesicht macht aus "es geht weiter"
+## ein "der da wartet". Genau das ist der Unterschied zwischen einer Reihe von
+## Kaempfen und einem Durchlauf, und dieser Bildschirm ist die einzige Stelle,
+## an der man ihn zeigen kann.
+##
+## Run.current_enemy() steht hier schon auf dem *naechsten* - win_fight() hat
+## vorher weitergerueckt.
+func _show_next_enemy(has_next: bool) -> void:
+	%NextBox.visible = has_next
+	if not has_next:
+		return
+
+	var next := Run.current_enemy()
+	if next == null:
+		%NextBox.visible = false
+		return
+
+	%NextName.text = next.display_name
+	%NextPortrait.texture = next.portrait
+	# Dieselbe Regel wie in HealthView: ohne Bild verschwindet der Rahmen mit,
+	# sonst steht dort ein leerer Kasten mit Schatten.
+	%NextPortraitFrame.visible = next.portrait != null
 
 
 ## Der naechste Kampf ist dieselbe Szene neu geladen. Wer der Gegner ist, steht
