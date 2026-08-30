@@ -99,6 +99,22 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cost"]
+content_margin_left = 9.0
+content_margin_top = 1.0
+content_margin_right = 9.0
+content_margin_bottom = 1.0
+bg_color = Color(0.0784314, 0.0862745, 0.121569, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.941176, 0.815686, 0.439216, 0.45)
+corner_radius_top_left = 11
+corner_radius_top_right = 11
+corner_radius_bottom_right = 11
+corner_radius_bottom_left = 11
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog"]
 content_margin_left = 32.0
 content_margin_top = 24.0
@@ -228,8 +244,9 @@ Button/styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
 Card/base_type = &"PanelContainer"
 Card/styles/panel = SubResource("StyleBoxFlat_card")
 CardCost/base_type = &"RichTextLabel"
-CardCost/colors/default_color = Color(0.658824, 0.694118, 0.807843, 1)
-CardCost/font_sizes/normal_font_size = 13
+CardCost/colors/default_color = Color(0.941176, 0.815686, 0.439216, 1)
+CardCost/font_sizes/normal_font_size = 14
+CardCost/fonts/normal_font = ExtResource("2_oswald")
 CardName/base_type = &"Label"
 CardName/colors/font_color = Color(0.921569, 0.929412, 0.960784, 1)
 CardName/font_sizes/font_size = 18
@@ -237,6 +254,8 @@ CardName/fonts/font = ExtResource("2_oswald")
 CardText/base_type = &"RichTextLabel"
 CardText/colors/default_color = Color(0.788235, 0.807843, 0.870588, 1)
 CardText/font_sizes/normal_font_size = 13
+CostBadge/base_type = &"PanelContainer"
+CostBadge/styles/panel = SubResource("StyleBoxFlat_cost")
 Dialog/base_type = &"PanelContainer"
 Dialog/styles/panel = SubResource("StyleBoxFlat_dialog")
 DialogTitle/base_type = &"Label"
