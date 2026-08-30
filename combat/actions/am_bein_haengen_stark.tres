@@ -15,7 +15,7 @@ amount = 2
 
 [resource]
 script = ExtResource("1_action")
-action_name = "Am Bein hängen"
+action_name = "PAPA BITTE!"
 sound = "bein"
 effects = Array[ExtResource("2_effect")]([SubResource("Effect_schaden"), SubResource("Effect_entzug")])
 intent = "{icon_dmg} {damage}   {icon_energy} -{drain}"

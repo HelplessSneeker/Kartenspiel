@@ -283,7 +283,7 @@ func _strike_target(card_data: CardData) -> Vector2:
 ## Wirkung, *was* passiert, und der Aufrufer, *wem*.
 ##
 ## SCHADEN geht ans Gegenueber, BLOCK/HEILEN/SELBSTSCHADEN an den Handelnden
-## selbst. Damit ist "Lecker Bierchen" beim Spieler und "Schmollen" beim Kind
+## selbst. Damit ist "Lecker Bierchen" beim Spieler und "WIESOOOO!" beim Sohn
 ## exakt dieselbe Wirkung, nur mit anderen Rollen.
 func _apply_effect(effect: CardEffect, actor: Combatant, target: Combatant) -> void:
 	if effect == null:

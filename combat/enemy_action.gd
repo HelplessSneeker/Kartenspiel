@@ -44,10 +44,11 @@ extends Resource
 ## abgetippte Zahl ("{icon_dmg} {damage}").
 ##
 ## Frueher baute game.gd diesen Text selbst zusammen, weil er immer "Symbol
-## Zahl" war. Das stimmt nicht mehr: "Papa, bitte!" hat gar keine Zahl, "Am Bein
-## haengen" hat zwei verschiedene. Welche Zahlen eine Aktion zeigt, weiss nur
-## sie - wie ein Schadenssymbol aussieht, geht sie dagegen nichts an. Das legt
-## die Anzeige dazu (Icons.fill).
+## Zahl" war. Das stimmt nicht mehr: "MAMA!" zeigt eine Zahl, die nichts ueber
+## den Spieler sagt (der Gegner heilt sich), "PAPA BITTE!" zeigt zwei
+## verschiedene. Welche Zahlen eine Aktion zeigt, weiss nur sie - wie ein
+## Schadenssymbol aussieht, geht sie dagegen nichts an. Das legt die Anzeige
+## dazu (Icons.fill).
 ##
 ## Absichtlich kein Vorschau-Automatismus, der aus der Effektliste einen Satz
 ## baut: die Drohung ist das Erste, was der Spieler jede Runde liest, und
