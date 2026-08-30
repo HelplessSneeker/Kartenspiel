@@ -21,6 +21,14 @@ Nichts davon hindert am Weiterbauen. Alles davon hindert an einer Veröffentlich
       ersetzen.
 - [ ] **`assets/art/bier.jpg` und `tschick.jpg` gegenprüfen.** Commons-Bilder, aber
       dieselbe „Public domain heißt oft nur US-gemeinfrei"-Falle wie bei `watschn.jpg`.
+- [ ] **Die zwei Hintergründe sind CC BY-SA 4.0 — das ist der schwerste Punkt hier.**
+      `assets/art/bg/stube.jpg` (Chris Walch) und `bg/kuechl.jpg` (Hubertl). Namensnennung
+      allein reicht bei **ShareAlike nicht**: die Lizenz verlangt, dass Bearbeitungen
+      unter derselben Lizenz weitergegeben werden. Wie weit das auf ein Spiel durchschlägt,
+      in dem das Bild nur eine Textur unter vielen ist, ist eine juristische Frage und
+      keine, die man im Repo beantwortet. **Für einen kommerziellen Release ersetzen** —
+      am saubersten durch ein eigenes Foto, dann ist die Frage komplett weg.
+      Zum Bauen sind sie in Ordnung, deshalb liegen sie drin.
 
 Namensnennung ist dagegen **erledigt**: game-icons.net (Lorc, sbed) und incompetech
 (Kevin MacLeod, mit dem vorgeschriebenen Wortlaut pro Titel) stehen im Credits-Screen,
