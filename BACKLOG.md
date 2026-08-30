@@ -1,0 +1,48 @@
+# Backlog
+
+Was liegen bleibt, bis es dran ist. Details zu allem Rechtlichen stehen ausführlich
+in [ASSETS.md](ASSETS.md) — hier steht nur, was zu tun ist.
+
+## Blocker vor dem ersten Release (rechtlich)
+
+Nichts davon hindert am Weiterbauen. Alles davon hindert an einer Veröffentlichung.
+
+- [ ] **`assets/art/spieler.jpg` und `assets/art/balg.jpg` ersetzen.** Herkunft und Lizenz
+      ungeklärt, und beide zeigen erkennbare reale Personen. Das ist zweimal ein Problem:
+      Urheberrecht am Bild *und* Persönlichkeitsrecht der Abgebildeten — Letzteres deckt
+      keine Bildlizenz ab, auch CC0 nicht.
+- [ ] **`assets/art/watschn.jpg` ersetzen.** Trailer-Screenshot von 1954, „Public domain"
+      gilt nur nach **US**-Regel (vor 1978 ohne Copyright-Vermerk veröffentlicht). Für
+      einen Release aus Österreich zählt EU-Recht: 70 Jahre nach Tod des Urhebers. Plus
+      erkennbare Person.
+- [ ] **Quelle und Lizenz für `assets/audio/sfx/watschn.ogg` und `bier.ogg` klären.**
+      Von bfn beigesteuert, Herkunft ist nirgends dokumentiert. In `ASSETS.md` stehen
+      dort Fragezeichen. Entweder eintragen (falls CC0/CC-BY: Namensnennung prüfen) oder
+      ersetzen.
+- [ ] **`assets/art/bier.jpg` und `tschick.jpg` gegenprüfen.** Commons-Bilder, aber
+      dieselbe „Public domain heißt oft nur US-gemeinfrei"-Falle wie bei `watschn.jpg`.
+
+Namensnennung ist dagegen **erledigt**: game-icons.net (Lorc, sbed) und incompetech
+(Kevin MacLeod, mit dem vorgeschriebenen Wortlaut pro Titel) stehen im Credits-Screen,
+Kenney ebenfalls.
+
+## Housekeeping
+
+- [ ] **`.import`-Dateien committen** für `assets/art/balg.jpg`, `bier.jpg`,
+      `spieler.jpg`, `tschick.jpg` — nur `watschn.jpg` hat eine. Godot legt sie beim
+      Öffnen des Projekts an; ignoriert gehören laut Godot-Doc nur `.godot/`,
+      `*.translation` und `export_presets.cfg`.
+- [ ] **`.uid`-Dateien** für die neuen Skripte (`combat/enemy_data.gd`,
+      `run/run_config.gd`, `run/run_state.gd`) — gleiche Sache, entstehen beim Öffnen.
+- [ ] `combat/actions/hieb.tres`, `deckung.tres`, `wuchtschlag.tres` sind ungenutzt,
+      seit der zweite Gegner sein eigenes Moveset hat. Aufräumen oder als Vorlage
+      behalten — bewusst noch nicht entschieden.
+
+## Fehlende Sound-Dateien
+
+Die Slots stehen in `audio/sfx_player.gd`, die Dateien fehlen. Bis dahin bleibt es an
+der Stelle still (eine Warnung beim Start, sonst läuft alles):
+
+- [ ] `heulen.ogg`, `bein.ogg`, `mama.ogg`, `schmollen.ogg` — je ein Ton pro
+      Gegneraktion. Ein allgemeines „Gegner greift an" wäre der falsche Zuschnitt: in
+      einer Komödie ist das Geräusch die halbe Pointe.
