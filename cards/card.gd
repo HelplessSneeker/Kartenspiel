@@ -33,6 +33,26 @@ extends PanelContainer
 ## dessen Mitte gezeigt - einen Zuschnitt pro Karte gibt es nicht, der gehoert
 ## ins Bild selbst.
 ##
+## Die Kosten sitzen seit 30.08.2026 in einer Plakette (CostBadge, Theme-
+## Variation "CostBadge") statt als nackte Textzeile im Fluss. Beim Ueberfliegen
+## der Hand sucht man zwei Dinge: was kostet es und was tut es - der Preis muss
+## also als eigenes Ding lesbar sein und nicht als erste Zeile Text.
+##
+## Warum kein Kreis in der Ecke, wie in den meisten Kartenspielen? Weil er das
+## Breitenverhaeltnis oben brechen wuerde. Neben den Namen gestellt, muesste
+## NameLabel schmaler werden (110 minus Plakette minus Abstand) - und damit
+## bricht jeder laengere Kartenname frueher um. Darueber gelegt, kollidiert er
+## mit genau diesen umgebrochenen Namen. Beides sind Aenderungen, deren Ergebnis
+## man *sehen* muss, und genau das kann ich nicht. Die Plakette im Fluss braucht
+## dagegen keine einzige Breitenzahl: size_flags_horizontal = SHRINK_BEGIN, sie
+## ist so breit wie ihr Inhalt und sonst nichts.
+##
+## CostLabel steht auf autowrap_mode = OFF. Das ist hier kein Detail: die
+## Plakette zieht ihre Breite aus dem Label, und ein Label mit Umbruch meldet
+## als Mindestbreite fast nichts - dieselbe Falle wie oben beim Namen, nur
+## andersherum. Ohne Umbruch meldet es die volle Zeilenbreite, und die Plakette
+## legt sich genau darum.
+##
 ## CostLabel und TextLabel sind RichTextLabel, weil dort Icons per BBCode im
 ## Fliesstext stehen. Drei Properties sind dabei Pflicht:
 ##
@@ -92,8 +112,12 @@ func setup(new_data: CardData) -> void:
 	data = new_data
 	%NameLabel.text = data.card_name
 	# Statuskarten kosten nichts und koennen nichts kosten - eine "0" davor waere
-	# ein Preis, der so aussieht, als koennte man dafuer etwas bekommen.
-	%CostLabel.text = "" if not data.is_playable() else "%s %d" % [Icons.bb("energy"), data.cost]
+	# ein Preis, der so aussieht, als koennte man dafuer etwas bekommen. Frueher
+	# stand hier ein leerer Text; jetzt verschwindet die ganze Plakette, sonst
+	# saesse auf einer Statuskarte ein leerer Ring.
+	%CostBadge.visible = data.is_playable()
+	if data.is_playable():
+		%CostLabel.text = "%s %d" % [Icons.bb("energy"), data.cost]
 	# Zahlen und Icons wandern im selben format()-Aufruf in den Text. Eine .tres
 	# schreibt also "{icon_dmg} {damage} Schaden" - Beschreibungen ohne
 	# Icon-Platzhalter funktionieren unveraendert weiter.
