@@ -427,7 +427,11 @@ func refresh() -> void:
 
 
 func refresh_hud() -> void:
-	%EnergyLabel.text = "Energie: %d/%d" % [energy, MAX_ENERGY]
+	# Symbol statt des Wortes "Energie". Auf jeder Karte steht der Preis seit der
+	# Plakette als dasselbe Symbol in derselben Farbe - Vorrat und Preis sagen
+	# damit dasselbe, ohne dass es jemand erklaeren muss. Ein Wort daneben waere
+	# die Beschriftung eines Symbols, das man ohnehin schon gelernt hat.
+	%EnergyLabel.text = "%s %d/%d" % [Icons.bb("energy"), energy, MAX_ENERGY]
 	%DeckPile.count = deck.size()
 	%DiscardPile.count = discard.size()
 
