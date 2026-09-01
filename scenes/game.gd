@@ -44,6 +44,21 @@ var energy: int = MAX_ENERGY
 ## Spieler das naechste Mal etwas damit vorhat.
 var _energy_penalty := 0
 
+## Wie viel eine Karte ueber ihren Grundpreis hinaus kostet, weil sie in diesem
+## Kampf schon gespielt wurde. Schluessel ist die CardData, Wert der Aufschlag.
+##
+## Der Schluessel ist die *Karte*, nicht die einzelne Kopie - und das ist eine
+## Design-Entscheidung, keine Bequemlichkeit. Zwei Schem Schem im Deck werden
+## gemeinsam teurer. Anders ginge es auch gar nicht: alle Kopien einer Karte
+## sind im ganzen Projekt dieselbe Resource (das Startdeck haelt Watschn
+## fuenfmal als denselben Verweis), es gibt also nichts, woran sich "diese eine"
+## festmachen liesse. Spielerisch ist es ohnehin das erwartbare: teurer wird die
+## Angewohnheit, nicht das Stueck Karton.
+##
+## Leert sich von selbst, weil jeder Kampf die Szene neu laedt - siehe
+## cost_growth in card_data.gd.
+var _extra_cost: Dictionary = {}
+
 var player: Combatant
 var enemy: Combatant
 var brain: EnemyBrain
@@ -117,6 +132,14 @@ func _ready() -> void:
 
 	brain = EnemyBrain.new(foe.pattern)
 	%Hand.card_clicked.connect(play_card)
+	# Was eine Karte gerade kostet, ist eine Regel und gehoert damit hierher -
+	# die Hand faerbt danach nur ein. Sie bekommt deshalb keine Kopie der Zahl,
+	# sondern den Weg, sie zu erfragen: bei einer Karte, die im Zug teurer wird,
+	# waere jede kopierte Zahl ab dem naechsten Ausspielen falsch.
+	#
+	# Ein Callable statt eines Signals, weil hier eine Antwort gebraucht wird
+	# und nicht eine Benachrichtigung. Signale in Godot geben nichts zurueck.
+	%Hand.cost_lookup = cost_of
 
 	deck = Run.deck.duplicate()
 	deck.shuffle()
@@ -204,10 +227,14 @@ func play_card(view: CardView) -> void:
 	if _game_over or _resolving:
 		return
 	var card_data := view.data
+	# Der Preis kommt aus cost_of() und nicht aus card_data.cost: eine Karte mit
+	# cost_growth kostet beim zweiten Mal mehr, und geprueft werden muss genau
+	# der Preis, der gleich auch abgezogen wird.
+	var cost := cost_of(card_data)
 	# Zwei Absagen, ein Geraeusch. Ein eigener Ton fuer "geht nie" waere ehrlicher,
 	# aber es gibt ihn noch nicht - und die Karte sagt es ohnehin selbst: grauer
 	# Rahmen, kein Preis, "Unspielbar" im Text.
-	if not card_data.is_playable() or card_data.cost > energy:
+	if not card_data.is_playable() or cost > energy:
 		Sfx.play("error")
 		return
 
@@ -223,7 +250,14 @@ func play_card(view: CardView) -> void:
 	# ist die Information - dass dabei ein Stueck Karton bewegt wurde, nicht.
 	if card_data.sound.is_empty():
 		Sfx.play("card_play")
-	energy -= card_data.cost
+	energy -= cost
+
+	# Der Aufschlag faellt beim Ausspielen an, nicht beim Wirken - also hier und
+	# nicht nach dem await weiter unten. Sonst zeigte die Hand fuer die zwei
+	# Zehntel des Kartenflugs noch den alten Preis, und wer in dieser Zeit eine
+	# zweite Kopie anklickt, kaeme zum alten Tarif durch.
+	if card_data.cost_growth != 0:
+		_extra_cost[card_data] = _extra_cost.get(card_data, 0) + card_data.cost_growth
 
 	# Die Karte verlaesst die Hand, *bevor* sie wirkt. Sonst zieht eine Karte mit
 	# "ziehe 2" Karten in eine Hand, in der sie selbst noch liegt - und die
@@ -263,6 +297,37 @@ func play_card(view: CardView) -> void:
 			break
 
 	refresh()
+
+
+## Was die Karte *jetzt gerade* kostet: Grundpreis plus der Aufschlag, den sie
+## sich in diesem Kampf erspielt hat.
+##
+## Oeffentlich, weil die Hand danach einfaerbt (siehe _ready). Das ist die
+## einzige Stelle, an der ein Kartenpreis entsteht - card_data.cost direkt
+## abzufragen ist ab hier ein Fehler, denn er ignoriert cost_growth.
+func cost_of(card: CardData) -> int:
+	if card == null:
+		return 0
+	return card.cost + int(_extra_cost.get(card, 0))
+
+
+## Wie oft `card` gerade noch auf der Hand liegt - die Zahl hinter
+## SCHADEN_PRO_KARTE.
+##
+## Verglichen wird ueber Identitaet, nicht ueber den Namen: alle Watschn im Deck
+## sind dieselbe Resource, deshalb trifft count() genau die richtigen. Wer
+## spaeter eine Karte per duplicate() ins Deck legt, bricht das - dann zaehlt
+## die Kopie hier nicht mit, und der Fehler sieht aus wie ein Balancing-Problem.
+##
+## Gezaehlt wird *nach* dem Ausspielen der Karte selbst: play_card() nimmt sie
+## vorher aus der Hand. Bei einer Karte, die sich selbst zaehlen wuerde, waere
+## das der Unterschied zwischen "je Watschn" und "je Watschn plus eins" - hier
+## faellt es nicht auf, weil Watschen Bam keine Watschn ist.
+func _count_in_hand(card: CardData) -> int:
+	if card == null:
+		push_warning("SCHADEN_PRO_KARTE ohne Karte - es wird nichts gezaehlt.")
+		return 0
+	return hand.count(card)
 
 
 ## Wohin die gespielte Karte fliegt.
@@ -328,6 +393,13 @@ func _apply_effect(effect: CardEffect, actor: Combatant, target: Combatant) -> v
 			_energy_penalty += effect.amount
 		CardEffect.Kind.KARTE_ZUSCHIEBEN:
 			_push_card(effect.card as CardData, effect.amount)
+		# Gezaehlt wird immer die Spielerhand, egal wer wirkt - dieselbe
+		# Ueberlegung wie bei ENERGIE_ENTZUG: es gibt nur eine Hand. Ein Gegner
+		# mit dieser Wirkung schluege also haerter zu, je mehr der Spieler
+		# haelt. Das ist eine brauchbare Drohung ("er wartet, bis du voll bist")
+		# und keine, die stillschweigend ins Leere laeuft.
+		CardEffect.Kind.SCHADEN_PRO_KARTE:
+			target.take_damage(effect.amount * _count_in_hand(effect.card as CardData))
 
 
 func _is_player(actor: Combatant, kind: CardEffect.Kind) -> bool:

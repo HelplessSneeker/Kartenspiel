@@ -34,6 +34,24 @@ enum Type { ANGRIFF, VERTEIDIGUNG, FERTIGKEIT, STATUS }
 
 @export var card_name: String = ""
 @export var cost: int = 0
+
+## Um wie viel die Karte nach jedem Ausspielen teurer wird. 0 heisst: sie kostet
+## immer dasselbe, also bei allen ausser Schem Schem.
+##
+## Der *Aufschlag* steht bewusst nicht hier, sondern in game.gd. Grund: eine
+## CardData ist im ganzen Projekt geteilt und zur Laufzeit unveraendert - das
+## Startdeck haelt Watschn fuenfmal als denselben Verweis, und play_card()
+## verlaesst sich darauf. Wuerde eine gespielte Karte ihr eigenes `cost`
+## hochzaehlen, waere das der erste Ort, an dem eine Resource sich im Spiel
+## veraendert; der Aufschlag ueberlebte den Kampf, das Hauptmenue und einen
+## Neustart des Runs, denn Godot laedt eine .tres genau einmal.
+##
+## Also: die Karte sagt, *dass* sie teurer wird und um wie viel pro Mal. Wie oft
+## das schon passiert ist, weiss der laufende Kampf - und vergisst es, wenn er
+## endet. Damit ist der Aufschlag automatisch pro Kampf und nicht pro Run, weil
+## jeder Kampf die Szene neu laedt.
+@export var cost_growth: int = 0
+
 @export var type: Type = Type.ANGRIFF
 
 ## Wird der Reihe nach ausgefuehrt, wenn die Karte gespielt wird.
@@ -89,7 +107,16 @@ func is_playable() -> bool:
 ## der Selbstschaden ist der Preis, nicht der Punkt.
 func hits_enemy() -> bool:
 	for effect in effects:
-		if effect != null and effect.kind == CardEffect.Kind.SCHADEN:
+		if effect == null:
+			continue
+		if effect.kind == CardEffect.Kind.SCHADEN:
+			return true
+		# Auch dann, wenn die Zahl gerade 0 ergibt: Watschen Bam ohne Watschn auf
+		# der Hand macht keinen Schaden, ist aber trotzdem ein Schlag und fliegt
+		# zum Gegner. Wohin eine Karte zielt, darf nicht davon abhaengen, wie die
+		# Hand in diesem Moment aussieht - sonst landet dieselbe Karte mal links
+		# und mal rechts, und das liest sich als Fehler.
+		if effect.kind == CardEffect.Kind.SCHADEN_PRO_KARTE:
 			return true
 	return false
 

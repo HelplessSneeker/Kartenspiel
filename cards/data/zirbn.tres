@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=5 format=3]
+
+[ext_resource type="Script" uid="uid://bedxkpm6a0xyk" path="res://cards/data/card_data.gd" id="1_card"]
+[ext_resource type="Script" path="res://cards/data/card_effect.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="Effect_selbst"]
+script = ExtResource("2_effect")
+kind = 5
+amount = 1
+
+[sub_resource type="Resource" id="Effect_block"]
+script = ExtResource("2_effect")
+kind = 1
+amount = 10
+
+[resource]
+script = ExtResource("1_card")
+card_name = "Zirbn"
+cost = 1
+type = 1
+effects = Array[ExtResource("2_effect")]([SubResource("Effect_selbst"), SubResource("Effect_block")])
+description = "{icon_block} {block} Block\nKostet {self_damage} Leben"
+metadata/_custom_type_script = "uid://bedxkpm6a0xyk"

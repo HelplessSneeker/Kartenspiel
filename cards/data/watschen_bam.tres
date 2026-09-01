@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=5 format=3]
+
+[ext_resource type="Script" uid="uid://bedxkpm6a0xyk" path="res://cards/data/card_data.gd" id="1_card"]
+[ext_resource type="Script" path="res://cards/data/card_effect.gd" id="2_effect"]
+[ext_resource type="Resource" uid="uid://bklpwgppsi6du" path="res://cards/data/watschn.tres" id="3_watschn"]
+
+[sub_resource type="Resource" id="Effect_pro_watschn"]
+script = ExtResource("2_effect")
+kind = 8
+amount = 5
+card = ExtResource("3_watschn")
+
+[resource]
+script = ExtResource("1_card")
+card_name = "Watschen Bam"
+cost = 2
+type = 0
+effects = Array[ExtResource("2_effect")]([SubResource("Effect_pro_watschn")])
+description = "{icon_dmg} {damage} Schaden\nje Watschn auf der Hand"
+sound = "watschn"
+metadata/_custom_type_script = "uid://bedxkpm6a0xyk"

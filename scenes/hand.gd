@@ -106,6 +106,14 @@ const CARD_SCENE := preload("res://cards/card.tscn")
 ## Deshalb steht die Zahl im Inspector und nicht im Code.
 @export var strike_offset := Vector2(0.0, 40.0)
 
+## Wie die Hand herausfindet, was eine Karte kostet. Wird von game.gd gesetzt.
+##
+## Die Hand kennt keine Spielregeln, und "was kostet das gerade" ist eine -
+## seit es Karten gibt, die im Kampf teurer werden, steht die Antwort nicht mehr
+## in der CardData. Ohne gesetzten Wert faellt _card_cost() auf den Grundpreis
+## zurueck, damit die Szene auch allein geoeffnet noch etwas Vernuenftiges zeigt.
+var cost_lookup: Callable
+
 var _views: Array[CardView] = []
 var _hovered: CardView = null
 
@@ -262,9 +270,17 @@ func discard_all() -> void:
 	_apply_layout()
 
 
-## Faerbt um, welche Karten bezahlbar sind. Baut nichts neu.
+## Schreibt Preis und Faerbung neu. Baut nichts neu.
+##
+## Hiess frueher nur "faerbt um". Seit eine Karte im Kampf teurer werden kann,
+## muss zum selben Zeitpunkt auch die Plakette nachgezogen werden: game.gd ruft
+## das nach jeder Zustandsaenderung, und genau dann hat sich der Preis
+## moeglicherweise geaendert. Zwei getrennte Aufrufe waeren zwei Gelegenheiten,
+## einen zu vergessen - und die Karte zeigte einen Preis, zu dem sie nicht mehr
+## zu haben ist.
 func set_energy(energy: int) -> void:
 	for view in _views:
+		view.cost = _card_cost(view.data)
 		view.playable = _is_playable(view.data, energy)
 
 
@@ -274,8 +290,16 @@ func set_energy(energy: int) -> void:
 ## voruebergehend und aendert sich mit jeder gespielten Karte, unspielbar ist
 ## fuer immer. Der Spieler sieht denselben Grauton - das ist Absicht, "damit
 ## kann ich jetzt nichts anfangen" ist dieselbe Aussage.
-static func _is_playable(data: CardData, energy: int) -> bool:
-	return data.is_playable() and data.cost <= energy
+##
+## Nicht mehr static: der Preis haengt jetzt am Kampf, nicht nur an der Karte.
+func _is_playable(data: CardData, energy: int) -> bool:
+	return data.is_playable() and _card_cost(data) <= energy
+
+
+func _card_cost(data: CardData) -> int:
+	if cost_lookup.is_valid():
+		return cost_lookup.call(data)
+	return data.cost
 
 
 # --- Innenleben ---------------------------------------------------------------
@@ -286,6 +310,10 @@ func _make_view(data: CardData, energy: int) -> CardView:
 	var view: CardView = CARD_SCENE.instantiate()
 	add_child(view)
 	view.setup(data)
+	# Nach setup(), das den Grundpreis eingesetzt hat, und vor der Groessen-
+	# rechnung darunter: eine zweistellige Zahl auf der Plakette macht die Karte
+	# minimal breiter, und view.size wird gleich einmalig festgeschrieben.
+	view.cost = _card_cost(data)
 	view.playable = _is_playable(data, energy)
 	# Ohne Container muss die Karte ihre Groesse selbst annehmen.
 	view.size = view.get_combined_minimum_size()

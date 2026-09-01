@@ -14,10 +14,19 @@ extends Resource
 ## jede Wirkung bringt ihre eigenen Felder mit -, kostet dafuer pro Wirkung eine
 ## Datei, und das Ausfuehren verteilt sich ueber all diese Dateien.
 ##
-## UMSTELLUNGS-VERSPRECHEN EINGELOEST? Noch nicht. Hier stand: "Umgestellt wird,
-## sobald eine Wirkung Felder braucht, die die anderen nicht haben." Mit
-## KARTE_ZUSCHIEBEN ist dieser Fall da - die Wirkung braucht `card`, alle anderen
-## nicht. Trotzdem bleibt das Enum, und das ist eine bewusste Abweichung:
+## UMSTELLUNGS-VERSPRECHEN EINGELOEST? Noch nicht - und der Ausloeser ist seit
+## SCHADEN_PRO_KARTE sogar ein Stueck weiter weg. Hier stand: "Umgestellt wird,
+## sobald eine *zweite* Wirkung eigene Felder will." Genau das ist nicht
+## passiert: SCHADEN_PRO_KARTE braucht `card` - dasselbe Feld, das
+## KARTE_ZUSCHIEBEN schon hat, nur in anderer Bedeutung ("welche Karte zaehle
+## ich" statt "welche Karte schiebe ich"). Damit hat `card` zwei Nutzer statt
+## einem und ist kein Sonderfall mehr, sondern das zweite regulaere Feld neben
+## `amount`.
+##
+## Der naechste echte Ausloeser bleibt stehen, nur praeziser formuliert: eine
+## Wirkung, die etwas braucht, das weder eine Zahl noch eine Karte ist.
+##
+## Trotzdem bleibt das Enum, und das ist eine bewusste Abweichung:
 ##
 ## Der eigentliche Gewinn der Klassen-Loesung waere, dass jede Wirkung sich
 ## selbst ausfuehrt. Dafuer braeuchte sie Zugriff auf den ganzen Kampf (beide
@@ -36,6 +45,13 @@ extends Resource
 ## 1x9 ebenfalls 7. Mehrfachangriffe sind hier also *rechnerisch identisch* zum
 ## Einzelschlag, das Feld waere ein Regler ohne Wirkung. Es lohnt sich erst mit
 ## Staerke (addiert pro Treffer) oder Verwundbar (multipliziert pro Treffer).
+##
+## SCHADEN_PRO_KARTE ist genau deshalb *ein* Schlag mit variabler Hoehe und
+## nicht N Schlaege hintereinander ("Watschen Bam trifft einmal je Watschn").
+## Rechnerisch ist das dasselbe - siehe oben -, und der eine Schlag kostet
+## weder eine Animationsschleife noch eine Sperre, die N Einschlaege lang haelt.
+## Sobald es Staerke gibt, wird daraus ein echter Unterschied und die Wirkung
+## muss wirklich mehrfach ausgefuehrt werden.
 
 ## Die Reihenfolge ist Datenformat, nicht Geschmack: in den .tres steht die Zahl,
 ## nicht der Name. Neue Wirkungen kommen deshalb immer *hinten* dazu - wer
@@ -49,15 +65,19 @@ enum Kind {
 	SELBSTSCHADEN,     # Schaden an dem, der wirkt - der Preis starker Karten
 	ENERGIE_ENTZUG,    # amount Energie weniger im naechsten Spielerzug
 	KARTE_ZUSCHIEBEN,  # `card` amount-mal auf die Ablage des Spielers - z.Z. ungenutzt
+	SCHADEN_PRO_KARTE, # amount Schaden je `card`, die noch auf der Hand liegt
 }
 
 @export var kind: Kind = Kind.SCHADEN
 
 ## Wie viel. Punkte bei SCHADEN/BLOCK/HEILEN/SELBSTSCHADEN, Anzahl bei ZIEHEN,
-## ENERGIE, ENERGIE_ENTZUG und KARTE_ZUSCHIEBEN.
+## ENERGIE, ENERGIE_ENTZUG und KARTE_ZUSCHIEBEN. Bei SCHADEN_PRO_KARTE sind es
+## Punkte *je gezaehlter Karte*, nicht insgesamt.
 @export var amount: int = 0
 
-## Nur fuer KARTE_ZUSCHIEBEN: welche Karte zugeschoben wird.
+## Welche Karte gemeint ist. Zwei Wirkungen benutzen das Feld, mit verschiedener
+## Frage: KARTE_ZUSCHIEBEN schiebt sie zu, SCHADEN_PRO_KARTE zaehlt sie auf der
+## Hand.
 ##
 ## Warum `Resource` und nicht `CardData`? Weil CardData bereits
 ## `Array[CardEffect]` haelt. Ein Typ-Verweis zurueck auf CardData waere ein
@@ -127,5 +147,12 @@ static func _value_key(kind_value: Kind) -> String:
 			return "drain"
 		Kind.KARTE_ZUSCHIEBEN:
 			return "push"
+		# Auf denselben Platzhalter wie SCHADEN, mit Absicht: auf der Karte steht
+		# eine Schadenszahl, und dass sie sich vervielfacht, sagt der Satz
+		# drumherum ("je Watschn auf der Hand"). Ein eigener {damage_per_card}
+		# waere ein zweiter Name fuer dieselbe Sache - und Karten, die beides
+		# haben, gibt es nicht: dann braucht der Text ohnehin eigene Zeilen.
+		Kind.SCHADEN_PRO_KARTE:
+			return "damage"
 		_:
 			return ""
