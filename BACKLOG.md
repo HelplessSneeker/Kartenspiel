@@ -46,6 +46,21 @@ Kenney ebenfalls.
       seit der zweite Gegner sein eigenes Moveset hat. Aufräumen oder als Vorlage
       behalten — bewusst noch nicht entschieden.
 
+## Fehlende Kartenbilder
+
+Zirbn, Watschen Bam und Schem Schem haben kein `art` — die Karten zeigen dann
+einfach keins, das Layout bleibt heil (siehe `card.gd`). Bilder sind auf 220×160
+zugeschnitten, also das Doppelte des Rahmens.
+
+- [ ] **Schem Schem: „Baggy Koks"** (bfns Ansage). Das ist die heikelste
+      Bildsuche im Projekt bisher — nicht technisch, sondern weil Wikimedia
+      Commons bei dem Motiv fast nur Polizei-Beweisfotos führt, und die tragen
+      neben der Bildlizenz oft noch Behörden-Rechte. Vor der Suche klären, ob es
+      wirklich das Motiv sein soll oder eine harmlosere Andeutung.
+- [ ] **Zirbn** — Zirbenschnaps im Glas, sollte auf Commons unproblematisch sein.
+- [ ] **Watschen Bam** — hat aktuell keins; `watschn.jpg` ist bereits bei der
+      Watschn im Einsatz und steht ohnehin auf der Ersetzen-Liste oben.
+
 ## Fehlende Sound-Dateien
 
 Die Slots stehen in `audio/sfx_player.gd`, die Dateien fehlen. Bis dahin bleibt es an
