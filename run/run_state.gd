@@ -93,6 +93,42 @@ func win_fight(remaining_health: int) -> void:
 	_index += 1
 
 
+## Zieht die Karten, die nach einem Sieg zur Auswahl stehen.
+##
+## Ohne Doppelte, weil eine Auswahl zwischen zweimal derselben Karte keine ist.
+## Ueber eine gemischte Kopie des Pools statt per Zufallsindex mit Nachziehen:
+## das ist dieselbe Ziehung, nur ohne die Schleife, die bei einem Pool aus drei
+## Karten sonst immer wieder danebengreift.
+##
+## Gibt weniger als `reward_choices` zurueck, wenn der Pool kleiner ist - und
+## eine leere Liste, wenn er leer ist. Beides ist gueltig; game.gd zeigt dann
+## einfach keine Belohnung an.
+func draw_rewards() -> Array[CardData]:
+	if _config == null:
+		return []
+	var pool := _config.reward_pool.duplicate()
+	pool.shuffle()
+
+	# Von Hand umgefuellt statt slice(), damit der Rueckgabetyp garantiert
+	# Array[CardData] ist. Godot leitet den Typ eines Slice zwar meist richtig
+	# ab, und "meist" ist bei einer typisierten Signatur zu wenig - ein
+	# untypisiertes Array faellt hier erst zur Laufzeit auf.
+	var picked: Array[CardData] = []
+	for i in mini(maxi(_config.reward_choices, 0), pool.size()):
+		picked.append(pool[i])
+	return picked
+
+
+## Eine gewaehlte Belohnung wandert ins Deck.
+##
+## Ans Ende und nicht an eine bestimmte Stelle: der Kampf mischt sich ohnehin
+## eine eigene Kopie, die Reihenfolge hier ist also nirgends sichtbar.
+func add_card(card: CardData) -> void:
+	if card == null:
+		return
+	deck.append(card)
+
+
 ## Alle Gegner gefallen.
 func is_finished() -> bool:
 	return _config != null and _index >= _config.enemies.size()

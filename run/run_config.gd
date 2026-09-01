@@ -22,6 +22,25 @@ extends Resource
 ## Die Gegner in der Reihenfolge, in der sie drankommen.
 @export var enemies: Array[EnemyData] = []
 
+## Woraus die Belohnung nach einem gewonnenen Kampf gezogen wird.
+##
+## Getrennt vom Startdeck, obwohl beides Listen von Karten sind: das Startdeck
+## sagt, womit man anfaengt, der Pool, was man werden kann. Eine Karte darf in
+## beiden stehen - dann bekommt man eine zweite davon - oder nur hier. Zirbn,
+## Watschen Bam und Schem Schem sind genau dieser Fall und sonst nirgends
+## erreichbar.
+##
+## Leer heisst: keine Belohnung, der Endbildschirm sieht aus wie vorher. Das ist
+## kein Fehlerfall, sondern der Weg, das Ganze abzuschalten.
+@export var reward_pool: Array[CardData] = []
+
+## Wie viele Karten nach einem Sieg zur Auswahl stehen.
+##
+## Drei, weil zwei keine Entscheidung sind - man nimmt die bessere - und vier
+## den Endbildschirm breiter machen, als ein 720p-Fenster vertraegt. Steht
+## trotzdem im Inspector: was sich ohne Code aendern laesst, gehoert in die .tres.
+@export var reward_choices := 3
+
 @export var player_max_health := 50
 
 ## Was ueber dem Bildschirm steht, wenn *alle* Gegner gefallen sind.

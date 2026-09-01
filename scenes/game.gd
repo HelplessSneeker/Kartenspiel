@@ -19,6 +19,16 @@ const HAND_SIZE := 5
 ## das der teurere Weg.
 const INTENT_NAME_FORMAT := "[font_size=14][color=#8f96ab]%s[/color][/font_size]"
 
+## Fuer die Belohnungsauswahl. Dieselbe Szene, die auch die Hand benutzt - eine
+## Karte sieht auf dem Endbildschirm aus wie auf dem Tisch, sonst muesste man
+## beim Aussuchen umlernen.
+##
+## Zweites preload derselben Szene neben dem in hand.gd, und das bleibt vorerst
+## so: die Hand baut Karten, die fliegen und angeklickt werden koennen, hier
+## haengen drei in einem Container. Das ist wenig genug Gemeinsamkeit, um sie
+## nicht in eine dritte Datei zu ziehen, die dann beide kennen muessten.
+const CARD_SCENE := preload("res://cards/card.tscn")
+
 ## Der Gegner dieses Kampfes.
 ##
 ## Kommt aus dem Run, nicht aus dem Inspector. Bis zum Run-Umbau standen Leben,
@@ -576,6 +586,44 @@ func _on_player_died() -> void:
 	_end_game(foe.defeat_title, false)
 
 
+## Eine Belohnung ist gewaehlt: ab ins Deck, dann die Bilanz zeigen.
+##
+## Die Karte geht an Run.deck und nicht an `deck` - der Ziehstapel dieses
+## Kampfes ist vorbei, und was hier hineinliefe, waere die Belohnung wieder los,
+## sobald die Szene neu laedt. Der Unterschied zwischen beiden Listen ist genau
+## dieser, und das ist die Stelle, an der er zaehlt.
+func _on_reward_chosen(view: CardView) -> void:
+	Sfx.play("card_play")
+	Run.add_card(view.data)
+	_clear_rewards()
+	_show_summary(true)
+
+
+## "Keine davon" - eine gueltige Antwort, kein Abbruch.
+##
+## Ein Deck wird nicht nur besser, indem es waechst: jede Karte mehr ist eine
+## Karte weniger Wahrscheinlichkeit auf jede andere. Ohne diesen Knopf waere
+## "das Deck schlank halten" keine Strategie, sondern unmoeglich.
+func _on_skip_button_pressed() -> void:
+	Sfx.play("click")
+	_clear_rewards()
+	_show_summary(true)
+
+
+## Raeumt die Auswahlkarten weg.
+##
+## Muss sein, obwohl die ganze Szene gleich neu laedt: bei "Hauptmenue" statt
+## "Weiter" bleibt diese Szene noch einen Moment stehen, und drei Karten hinter
+## einem ausgeblendeten Container zu lassen, waere genau die Art Rest, die man
+## spaeter in einem anderen Zusammenhang wiederfindet.
+##
+## queue_free() statt sofortigem free(): der Klick, der hierher gefuehrt hat,
+## wird gerade noch von einer dieser Karten verarbeitet.
+func _clear_rewards() -> void:
+	for child in %RewardCards.get_children():
+		child.queue_free()
+
+
 ## `has_next` sagt, ob der Run weitergeht. Danach richtet sich, welcher Knopf im
 ## Overlay steht: mitten im Run ist "Weiter" die einzige sinnvolle Fortsetzung,
 ## am Ende ist es "Nochmal". Beide gleichzeitig zu zeigen hiesse, den Spieler zu
@@ -586,9 +634,70 @@ func _on_player_died() -> void:
 ## Jetzt stehen dort die zwei Zahlen, nach denen man an dieser Stelle
 ## entscheidet: was ist mir geblieben, und was kommt als Naechstes. Beides weiss
 ## der Run, keins davon stand vorher irgendwo.
+## Der Endbildschirm hat seit der Belohnung zwei Zustaende, und man sieht immer
+## nur einen: erst die Auswahl, nach der Wahl die Bilanz. Nacheinander und nicht
+## untereinander, aus zwei Gruenden. Der eine ist Platz - drei Karten, eine
+## Lebenszeile, ein Gegnerportraet und drei Knoepfe passen zusammen nicht in ein
+## 720p-Fenster. Der andere wiegt schwerer: eine Auswahl neben einem
+## "Weiter"-Knopf laedt dazu ein, an ihr vorbeizuklicken, und eine uebersehene
+## Belohnung merkt man erst zwei Kaempfe spaeter.
+##
+## Belohnung gibt es nur, wenn der Run weitergeht: nach dem letzten Kampf ist
+## eine neue Karte eine Auszeichnung fuer ein Deck, das nie wieder gemischt
+## wird, und nach einer Niederlage waere sie Hohn.
 func _end_game(title: String, has_next: bool) -> void:
 	_game_over = true
 	%EndTitle.text = title
+
+	# Zwei Zeilen statt eines Ternaers: ein leeres Literal im else-Zweig waere ein
+	# untypisiertes Array und die Zuweisung an eine Array[CardData]-Variable
+	# damit ein Fehler, den erst die Laufzeit meldet.
+	var rewards: Array[CardData] = []
+	if has_next:
+		rewards = Run.draw_rewards()
+
+	if rewards.is_empty():
+		_show_summary(has_next)
+	else:
+		_show_rewards(rewards)
+
+	%EndOverlay.show()
+
+
+## Erster Zustand: drei Karten zur Auswahl, sonst nichts.
+func _show_rewards(rewards: Array[CardData]) -> void:
+	%RewardBox.show()
+	%StatusLabel.hide()
+	%NextBox.hide()
+	%NextButton.hide()
+	%RetryButton.hide()
+
+	for data in rewards:
+		var view: CardView = CARD_SCENE.instantiate()
+		%RewardCards.add_child(view)
+		view.setup(data)
+		# Der Preis ist hier der Grundpreis - was die Karte in *diesem* Kampf
+		# gekostet haette, ist auf einem Bildschirm nach dem Kampf keine
+		# nuetzliche Auskunft. setup() hat ihn bereits gesetzt, es steht nur
+		# hier, damit die Auslassung als Absicht lesbar ist.
+		#
+		# Alle Karten starten gedaempft, die unter dem Cursor wird hell. Das ist
+		# dieselbe Mechanik wie in der ruhenden Hand und fuehrt den Blick, ohne
+		# dass hier eine zweite Art von Hover-Effekt gebaut werden muesste - in
+		# einem Container waere Vergroessern ohnehin heikel, weil der Container
+		# die Groesse bestimmt und scale sie nicht mitteilt.
+		view.dimmed = true
+		view.mouse_entered.connect(func() -> void: view.dimmed = false)
+		view.mouse_exited.connect(func() -> void: view.dimmed = true)
+		view.clicked.connect(_on_reward_chosen)
+
+
+## Zweiter Zustand: was mir geblieben ist und wer als Naechstes kommt.
+##
+## Der Inhalt ist derselbe wie vor der Belohnung, nur liegt er jetzt hinter
+## einem eigenen Aufruf statt am Ende von _end_game().
+func _show_summary(has_next: bool) -> void:
+	%RewardBox.hide()
 
 	# Das Leben nur zeigen, solange es eins gibt. "0/50" ueber "Du bleibst
 	# daheim" ist keine Auskunft, sondern eine zweite Art, dasselbe zu sagen.
@@ -602,7 +711,6 @@ func _end_game(title: String, has_next: bool) -> void:
 
 	%NextButton.visible = has_next
 	%RetryButton.visible = not has_next
-	%EndOverlay.show()
 
 
 ## Zeigt, wer nach diesem Kampf kommt.
