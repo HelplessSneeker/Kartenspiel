@@ -59,10 +59,6 @@ Kenney ebenfalls.
       `game.gd`, der `card`-Zweig) bleibt stehen: aus dem Enum entfernen ginge nicht
       ohne die Indizes zu verschieben, und die stehen als Zahlen in jeder `.tres`.
       Gleiche Lage wie bei `KARTE_ZUSCHIEBEN`.
-- [ ] `cards/data/adrenalin.tres` ist wieder ungenutzt (Entscheidung bfn,
-      01.09.2026): Name passt nicht ins Setting, und Schem Schem besetzt die
-      Rolle „mehr Energie" bereits. Datei liegt noch da — löschen oder als
-      Vorlage behalten, gleiche Frage wie oben.
 
 ## Kartenbilder — erledigt am 02.09.2026
 
