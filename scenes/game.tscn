@@ -281,6 +281,28 @@ theme_type_variation = &"DialogTitle"
 text = "Kampf vorbei"
 horizontal_alignment = 1
 
+[node name="RewardBox" type="VBoxContainer" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RewardLabel" type="Label" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/RewardBox"]
+layout_mode = 2
+theme_type_variation = &"PileTitle"
+text = "Such dir eine Karte aus"
+horizontal_alignment = 1
+
+[node name="RewardCards" type="HBoxContainer" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/RewardBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="SkipButton" type="Button" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/RewardBox"]
+layout_mode = 2
+text = "Keine davon"
+
 [node name="StatusLabel" type="RichTextLabel" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -346,6 +368,7 @@ layer = 20
 [node name="PauseMenu" parent="PauseLayer" instance=ExtResource("12_pause")]
 
 [connection signal="pressed" from="EndTurnButton" to="." method="_on_end_turn_button_pressed"]
+[connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/RewardBox/SkipButton" to="." method="_on_skip_button_pressed"]
 [connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/NextButton" to="." method="_on_next_button_pressed"]
 [connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/RetryButton" to="." method="_on_retry_button_pressed"]
 [connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]

@@ -2,24 +2,24 @@
 
 [ext_resource type="Script" uid="uid://bedxkpm6a0xyk" path="res://cards/data/card_data.gd" id="1_card"]
 [ext_resource type="Script" path="res://cards/data/card_effect.gd" id="2_effect"]
-[ext_resource type="Texture2D" path="res://assets/art/voll_durchziehen.jpg" id="3_art"]
-
-[sub_resource type="Resource" id="Effect_schaden"]
-script = ExtResource("2_effect")
-kind = 0
-amount = 8
+[ext_resource type="Texture2D" path="res://assets/art/zirbn.jpg" id="3_art"]
 
 [sub_resource type="Resource" id="Effect_selbst"]
 script = ExtResource("2_effect")
 kind = 5
-amount = 3
+amount = 1
+
+[sub_resource type="Resource" id="Effect_block"]
+script = ExtResource("2_effect")
+kind = 1
+amount = 10
 
 [resource]
 script = ExtResource("1_card")
-card_name = "Voll durchziehen"
-cost = 0
-type = 0
-effects = Array[ExtResource("2_effect")]([SubResource("Effect_schaden"), SubResource("Effect_selbst")])
-description = "{icon_dmg} {damage} Schaden\nKostet {self_damage} Leben"
+card_name = "Zirbn"
+cost = 1
+type = 1
+effects = Array[ExtResource("2_effect")]([SubResource("Effect_selbst"), SubResource("Effect_block")])
+description = "{icon_block} {block} Block\nKostet {self_damage} Leben"
 art = ExtResource("3_art")
 metadata/_custom_type_script = "uid://bedxkpm6a0xyk"

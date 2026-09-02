@@ -19,8 +19,16 @@ Nichts davon hindert am Weiterbauen. Alles davon hindert an einer Veröffentlich
       Von bfn beigesteuert, Herkunft ist nirgends dokumentiert. In `ASSETS.md` stehen
       dort Fragezeichen. Entweder eintragen (falls CC0/CC-BY: Namensnennung prüfen) oder
       ersetzen.
-- [ ] **`assets/art/bier.jpg` und `tschick.jpg` gegenprüfen.** Commons-Bilder, aber
-      dieselbe „Public domain heißt oft nur US-gemeinfrei"-Falle wie bei `watschn.jpg`.
+- [ ] **Die sechs Kartenbilder vom 02.09.2026 ersetzen** — `bier.jpg`, `guertel.jpg`,
+      `voll_durchziehen.jpg`, `watschen_bam.jpg`, `zirbn.jpg`, `schem_schem.jpg`. Alle von
+      bfn beigesteuert, Herkunft und Lizenz ungeklärt. Drei Sorten Problem, Details in
+      `ASSETS.md`: erkennbare reale Personen in einer Gewaltdarstellung (`guertel`,
+      `voll_durchziehen`), lesbare Marken (`bier` = Krombacher, `zirbn` = Produktetikett),
+      und vermutlich Stock-Material ohne Lizenz.
+- [ ] **`assets/art/tschick.jpg` gegenprüfen.** Commons-Bild, aber dieselbe
+      „Public domain heißt oft nur US-gemeinfrei"-Falle wie bei `watschn.jpg`.
+      (`bier.jpg` stand hier auch — ist am 02.09.2026 ersetzt worden und jetzt ein
+      anderer Fall, siehe Punkt darüber.)
 - [ ] **Die zwei Hintergründe sind CC BY-SA 4.0 — das ist der schwerste Punkt hier.**
       `assets/art/bg/stube.jpg` (Chris Walch) und `bg/kuechl.jpg` (Hubertl). Namensnennung
       allein reicht bei **ShareAlike nicht**: die Lizenz verlangt, dass Bearbeitungen
@@ -36,15 +44,31 @@ Kenney ebenfalls.
 
 ## Housekeeping
 
-- [ ] **`.import`-Dateien committen** für `assets/art/balg.jpg`, `bier.jpg`,
-      `spieler.jpg`, `tschick.jpg` — nur `watschn.jpg` hat eine. Godot legt sie beim
-      Öffnen des Projekts an; ignoriert gehören laut Godot-Doc nur `.godot/`,
+- [ ] **`.import`-Dateien committen** für alles in `assets/art/` außer `watschn.jpg` —
+      also `balg.jpg`, `bier.jpg`, `spieler.jpg`, `tschick.jpg` und die fünf neuen
+      (`guertel`, `voll_durchziehen`, `watschen_bam`, `zirbn`, `schem_schem`). Godot legt
+      sie beim Öffnen des Projekts an; ignoriert gehören laut Godot-Doc nur `.godot/`,
       `*.translation` und `export_presets.cfg`.
 - [ ] **`.uid`-Dateien** für die neuen Skripte (`combat/enemy_data.gd`,
       `run/run_config.gd`, `run/run_state.gd`) — gleiche Sache, entstehen beim Öffnen.
 - [ ] `combat/actions/hieb.tres`, `deckung.tres`, `wuchtschlag.tres` sind ungenutzt,
       seit der zweite Gegner sein eigenes Moveset hat. Aufräumen oder als Vorlage
       behalten — bewusst noch nicht entschieden.
+- [ ] `CardEffect.Kind.SCHADEN_PRO_KARTE` hat keinen Nutzer mehr, seit Watschen Bam
+      am 02.09.2026 eine X-Karte geworden ist. Der Code dazu (`_count_in_hand()` in
+      `game.gd`, der `card`-Zweig) bleibt stehen: aus dem Enum entfernen ginge nicht
+      ohne die Indizes zu verschieben, und die stehen als Zahlen in jeder `.tres`.
+      Gleiche Lage wie bei `KARTE_ZUSCHIEBEN`.
+- [ ] `cards/data/adrenalin.tres` ist wieder ungenutzt (Entscheidung bfn,
+      01.09.2026): Name passt nicht ins Setting, und Schem Schem besetzt die
+      Rolle „mehr Energie" bereits. Datei liegt noch da — löschen oder als
+      Vorlage behalten, gleiche Frage wie oben.
+
+## Kartenbilder — erledigt am 02.09.2026
+
+Jede Karte im Spiel hat jetzt ein `art`. Bilder liegen auf 220×160, also dem Doppelten
+des `ArtRect` (110×80). Die Lizenzfrage ist damit **nicht** erledigt, sondern nur
+verschoben — siehe den Release-Blocker oben.
 
 ## Fehlende Sound-Dateien
 

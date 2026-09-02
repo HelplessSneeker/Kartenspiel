@@ -49,7 +49,12 @@ Länge raus (4–9 s; für einen Kartenton zu lang).
 | `assets/audio/music/menu.ogg` | Menümusik — „Vibing Over Venus" (ISRC USUAN2300005) | [incompetech](https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2300005) | **Kevin MacLeod** | **CC BY 4.0** | 17.08.2026 |
 | `assets/audio/music/battle.ogg` | Kampfmusik — „Dentaneosuchus Hunt" (ISRC USUAN2500003) | [incompetech](https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2500003) | **Kevin MacLeod** | **CC BY 4.0** | 17.08.2026 |
 
-| `assets/art/bier.jpg` | Kartenbild „Lecker Bierchen" | [Commons `British dimpled glass pint jug with ale`](https://commons.wikimedia.org/wiki/File:British_dimpled_glass_pint_jug_with_ale.jpg) | Jongleur100 | Public domain | 26.08.2026 |
+| `assets/art/bier.jpg` | Kartenbild „Lecker Bierchen" | von bfn beigesteuert — Produktfoto (Krombacher Radler alkoholfrei) | — | **ungeklärt — Platzhalter** | 02.09.2026 |
+| `assets/art/guertel.jpg` | Kartenbild „Gürtel" | von bfn beigesteuert — Stockfoto | — | **ungeklärt — Platzhalter** | 02.09.2026 |
+| `assets/art/voll_durchziehen.jpg` | Kartenbild „Voll durchziehen" | von bfn beigesteuert — Stockfoto | — | **ungeklärt — Platzhalter** | 02.09.2026 |
+| `assets/art/watschen_bam.jpg` | Kartenbild „Watschen Bam" | von bfn beigesteuert — Stockfoto | — | **ungeklärt — Platzhalter** | 02.09.2026 |
+| `assets/art/zirbn.jpg` | Kartenbild „Zirbn" | von bfn beigesteuert — Produktfoto Zirbenschnaps | — | **ungeklärt — Platzhalter** | 02.09.2026 |
+| `assets/art/schem_schem.jpg` | Kartenbild „Schem Schem" | von bfn beigesteuert — Sticker-Grafik | — | **ungeklärt — Platzhalter** | 02.09.2026 |
 | `assets/art/tschick.jpg` | Kartenbild „Ane rachen" | [Commons `Cigarette-s x`](https://commons.wikimedia.org/wiki/File:Cigarette-s_x.jpeg) | Tomasz Sienicki | Public domain | 26.08.2026 |
 | `assets/art/watschn.jpg` | Kartenbild „Watschn" | [Commons `FiveFingersFaceHighandMightyTrailerScreenshot1954`](https://commons.wikimedia.org/wiki/File:FiveFingersFaceHighandMightyTrailerScreenshot1954.jpg) | Trailer-Screenshot, *The High and the Mighty* (1954) | Public domain (**nur US** — siehe unten) | 26.08.2026 |
 | `assets/art/spieler.jpg` | Porträt Spieler | von bfn beigesteuert | — | **ungeklärt — Platzhalter** | 26.08.2026 |
@@ -66,6 +71,40 @@ das Bild in jedem Frame neu rechnen. Abgedunkelt wird dagegen erst in der Engine
 **⚠️ CC BY-SA ist nicht dasselbe wie CC BY** — siehe Backlog. Bei einem Release muss
 außerdem der Bearbeitungshinweis mit in die Namensnennung („zugeschnitten und
 weichgezeichnet").
+
+### ⚠️ Die sechs Kartenbilder vom 02.09.2026 sind Platzhalter
+
+`bier.jpg` (neu, ersetzt das Commons-Bild), `guertel.jpg`, `voll_durchziehen.jpg`,
+`watschen_bam.jpg`, `zirbn.jpg` und `schem_schem.jpg` hat bfn beigesteuert. Herkunft und
+Lizenz sind bei allen sechs ungeklärt — dieselbe Kategorie wie `spieler.jpg`/`balg.jpg`,
+zum Bauen in Ordnung, vor einem Release zu ersetzen. Drei verschiedene Probleme stecken
+darin:
+
+- **Erkennbare reale Personen** bei `guertel.jpg` (Erwachsener + Kind) und
+  `voll_durchziehen.jpg` (zwei Erwachsene). Persönlichkeitsrecht, siehe den
+  Porträt-Abschnitt unten — hier zusätzlich verschärft, weil beide Bilder eine
+  Gewaltsituation zeigen. Ein Model Release deckt so eine Verwendung praktisch nie.
+- **Geschützte Marken** bei `bier.jpg` (Krombacher-Wortmarke und -Logo, klar lesbar) und
+  `zirbn.jpg` (Etikett eines konkreten Produkts). Markenrecht ist ein eigenes Thema neben
+  dem Urheberrecht am Foto; ein Produktfoto in einem verkauften Spiel ist keine
+  Berichterstattung.
+- **Vermutlich Stock-Material** bei `guertel.jpg`, `voll_durchziehen.jpg` und
+  `watschen_bam.jpg` — freigestellte weiße Hintergründe und der Bildaufbau sprechen dafür.
+  Ohne Quelle ist nicht prüfbar, ob eine Lizenz existiert.
+
+**Bearbeitung:** alle sechs auf 220×160 gebracht (JPEG, Qualität 82–85) — dieselbe Größe
+wie die bestehenden Kartenbilder, also genau das Doppelte des `ArtRect` in `card.tscn`
+(110×80). Vier davon mittig auf 11:8 beschnitten.
+
+`bier.jpg` und `zirbn.jpg` gehen einen anderen Weg: Dose und Flasche stehen hochkant, ein
+Mittenschnitt zeigt deshalb nur einen Ausschnitt des Etiketts. Beide sind stattdessen
+**ganz eingepasst** und der Rest mit der Hintergrundfarbe des Originals aufgefüllt — die
+ist bei beiden ein heller Studio-Hintergrund, also fällt der Rand nicht als Balken auf.
+Der erste Versuch war ein Zoom auf das Etikett; bfn hat ihn als falsch beschnitten
+zurückgewiesen (02.09.2026). Merke für weitere Kartenbilder: **hochkantes Motiv →
+einpassen, nicht schneiden.**
+
+Die Originale liegen nicht im Repo.
 
 ### ⚠️ Die beiden Porträts sind Platzhalter
 

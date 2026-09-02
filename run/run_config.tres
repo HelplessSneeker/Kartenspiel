@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="RunConfig" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="RunConfig" load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://run/run_config.gd" id="1_config"]
 [ext_resource type="Script" path="res://cards/data/card_data.gd" id="2_card"]
@@ -8,10 +8,17 @@
 [ext_resource type="Script" path="res://combat/enemy_data.gd" id="6_enemy"]
 [ext_resource type="Resource" path="res://combat/enemies/sohn_ohne_lumpi.tres" id="7_lumpi"]
 [ext_resource type="Resource" path="res://combat/enemies/sohn.tres" id="8_sohn"]
+[ext_resource type="Resource" path="res://cards/data/zirbn.tres" id="9_zirbn"]
+[ext_resource type="Resource" path="res://cards/data/watschen_bam.tres" id="10_bam"]
+[ext_resource type="Resource" path="res://cards/data/schem_schem.tres" id="11_schem"]
+[ext_resource type="Resource" path="res://cards/data/guertel.tres" id="12_guertel"]
+[ext_resource type="Resource" path="res://cards/data/voll_durchziehen.tres" id="15_voll"]
 
 [resource]
 script = ExtResource("1_config")
 starting_deck = Array[ExtResource("2_card")]([ExtResource("3_watschn"), ExtResource("3_watschn"), ExtResource("3_watschn"), ExtResource("3_watschn"), ExtResource("3_watschn"), ExtResource("4_bier"), ExtResource("4_bier"), ExtResource("4_bier"), ExtResource("4_bier"), ExtResource("5_rachen"), ExtResource("5_rachen")])
 enemies = Array[ExtResource("6_enemy")]([ExtResource("7_lumpi"), ExtResource("8_sohn")])
+reward_pool = Array[ExtResource("2_card")]([ExtResource("9_zirbn"), ExtResource("10_bam"), ExtResource("11_schem"), ExtResource("12_guertel"), ExtResource("15_voll")])
+reward_choices = 3
 player_max_health = 50
 victory_title = "Du bist draussen"

@@ -19,6 +19,16 @@ const HAND_SIZE := 5
 ## das der teurere Weg.
 const INTENT_NAME_FORMAT := "[font_size=14][color=#8f96ab]%s[/color][/font_size]"
 
+## Fuer die Belohnungsauswahl. Dieselbe Szene, die auch die Hand benutzt - eine
+## Karte sieht auf dem Endbildschirm aus wie auf dem Tisch, sonst muesste man
+## beim Aussuchen umlernen.
+##
+## Zweites preload derselben Szene neben dem in hand.gd, und das bleibt vorerst
+## so: die Hand baut Karten, die fliegen und angeklickt werden koennen, hier
+## haengen drei in einem Container. Das ist wenig genug Gemeinsamkeit, um sie
+## nicht in eine dritte Datei zu ziehen, die dann beide kennen muessten.
+const CARD_SCENE := preload("res://cards/card.tscn")
+
 ## Der Gegner dieses Kampfes.
 ##
 ## Kommt aus dem Run, nicht aus dem Inspector. Bis zum Run-Umbau standen Leben,
@@ -43,6 +53,33 @@ var energy: int = MAX_ENERGY
 ## verbraucht, ein Abzug waere folgenlos. Die Wirkung muss ankommen, wenn der
 ## Spieler das naechste Mal etwas damit vorhat.
 var _energy_penalty := 0
+
+## Was die zuletzt gespielte Karte an Energie gekostet hat - das X einer X-Karte.
+##
+## Ein Feld und kein Parameter von _apply_effect(), weil dieselbe Methode auch die
+## Gegneraktionen ausfuehrt; ein Argument, das dort immer 0 waere, machte jede
+## Aufrufstelle laenger, ohne etwas zu erklaeren. Das ist genau das Kontext-Objekt,
+## das der Kommentar in card_effect.gd fuer spaeter ankuendigt - solange es ein
+## einziger Wert ist, ist ein Feld billiger als der Umbau.
+##
+## Wird vor jedem Gegnerzug auf 0 gesetzt, damit eine Gegneraktion mit dieser
+## Wirkung nicht mit dem Rest des Spielerzugs zuschlaegt.
+var _energy_spent := 0
+
+## Wie viel eine Karte ueber ihren Grundpreis hinaus kostet, weil sie in diesem
+## Kampf schon gespielt wurde. Schluessel ist die CardData, Wert der Aufschlag.
+##
+## Der Schluessel ist die *Karte*, nicht die einzelne Kopie - und das ist eine
+## Design-Entscheidung, keine Bequemlichkeit. Zwei Schem Schem im Deck werden
+## gemeinsam teurer. Anders ginge es auch gar nicht: alle Kopien einer Karte
+## sind im ganzen Projekt dieselbe Resource (das Startdeck haelt Watschn
+## fuenfmal als denselben Verweis), es gibt also nichts, woran sich "diese eine"
+## festmachen liesse. Spielerisch ist es ohnehin das erwartbare: teurer wird die
+## Angewohnheit, nicht das Stueck Karton.
+##
+## Leert sich von selbst, weil jeder Kampf die Szene neu laedt - siehe
+## cost_growth in card_data.gd.
+var _extra_cost: Dictionary = {}
 
 var player: Combatant
 var enemy: Combatant
@@ -117,6 +154,14 @@ func _ready() -> void:
 
 	brain = EnemyBrain.new(foe.pattern)
 	%Hand.card_clicked.connect(play_card)
+	# Was eine Karte gerade kostet, ist eine Regel und gehoert damit hierher -
+	# die Hand faerbt danach nur ein. Sie bekommt deshalb keine Kopie der Zahl,
+	# sondern den Weg, sie zu erfragen: bei einer Karte, die im Zug teurer wird,
+	# waere jede kopierte Zahl ab dem naechsten Ausspielen falsch.
+	#
+	# Ein Callable statt eines Signals, weil hier eine Antwort gebraucht wird
+	# und nicht eine Benachrichtigung. Signale in Godot geben nichts zurueck.
+	%Hand.cost_lookup = cost_of
 
 	deck = Run.deck.duplicate()
 	deck.shuffle()
@@ -150,6 +195,10 @@ func _enemy_turn() -> void:
 	# also erst, nachdem der Spieler die Gelegenheit hatte, dagegen anzurennen.
 	# Spiegelbildlich zum Spielerblock, nur eine halbe Runde versetzt.
 	enemy.clear_block()
+
+	# Der Gegner gibt keine Energie aus. Ohne dieses Zuruecksetzen truege eine
+	# Gegneraktion mit SCHADEN_PRO_ENERGIE das X der letzten Spielerkarte mit sich.
+	_energy_spent = 0
 
 	var action := brain.intent
 	if action == null:
@@ -204,10 +253,14 @@ func play_card(view: CardView) -> void:
 	if _game_over or _resolving:
 		return
 	var card_data := view.data
+	# Der Preis kommt aus cost_of() und nicht aus card_data.cost: eine Karte mit
+	# cost_growth kostet beim zweiten Mal mehr, und geprueft werden muss genau
+	# der Preis, der gleich auch abgezogen wird.
+	var cost := cost_of(card_data)
 	# Zwei Absagen, ein Geraeusch. Ein eigener Ton fuer "geht nie" waere ehrlicher,
 	# aber es gibt ihn noch nicht - und die Karte sagt es ohnehin selbst: grauer
 	# Rahmen, kein Preis, "Unspielbar" im Text.
-	if not card_data.is_playable() or card_data.cost > energy:
+	if not card_data.is_playable() or cost > energy:
 		Sfx.play("error")
 		return
 
@@ -223,7 +276,18 @@ func play_card(view: CardView) -> void:
 	# ist die Information - dass dabei ein Stueck Karton bewegt wurde, nicht.
 	if card_data.sound.is_empty():
 		Sfx.play("card_play")
-	energy -= card_data.cost
+	energy -= cost
+	# Was diese Karte gekostet hat - das X hinter SCHADEN_PRO_ENERGIE. Muss hier
+	# gemerkt werden und nicht spaeter berechnet: die Wirkung greift erst nach dem
+	# Kartenflug, und da ist `energy` laengst 0.
+	_energy_spent = cost
+
+	# Der Aufschlag faellt beim Ausspielen an, nicht beim Wirken - also hier und
+	# nicht nach dem await weiter unten. Sonst zeigte die Hand fuer die zwei
+	# Zehntel des Kartenflugs noch den alten Preis, und wer in dieser Zeit eine
+	# zweite Kopie anklickt, kaeme zum alten Tarif durch.
+	if card_data.cost_growth != 0:
+		_extra_cost[card_data] = _extra_cost.get(card_data, 0) + card_data.cost_growth
 
 	# Die Karte verlaesst die Hand, *bevor* sie wirkt. Sonst zieht eine Karte mit
 	# "ziehe 2" Karten in eine Hand, in der sie selbst noch liegt - und die
@@ -263,6 +327,44 @@ func play_card(view: CardView) -> void:
 			break
 
 	refresh()
+
+
+## Was die Karte *jetzt gerade* kostet: Grundpreis plus der Aufschlag, den sie
+## sich in diesem Kampf erspielt hat.
+##
+## Oeffentlich, weil die Hand danach einfaerbt (siehe _ready). Das ist die
+## einzige Stelle, an der ein Kartenpreis entsteht - card_data.cost direkt
+## abzufragen ist ab hier ein Fehler, denn er ignoriert cost_growth.
+func cost_of(card: CardData) -> int:
+	if card == null:
+		return 0
+	# Die X-Karte kostet, was gerade da ist. Der Grundpreis und ein etwaiger
+	# Aufschlag fallen damit weg - beides sind Zahlen, die bei ihr nichts
+	# beschreiben. Dass sie hier und nicht in play_card() steht, ist wichtig: die
+	# Hand faerbt ueber dieselbe Funktion ein, also ist eine X-Karte automatisch
+	# nie zu teuer.
+	if card.spends_all_energy:
+		return maxi(energy, 0)
+	return card.cost + int(_extra_cost.get(card, 0))
+
+
+## Wie oft `card` gerade noch auf der Hand liegt - die Zahl hinter
+## SCHADEN_PRO_KARTE.
+##
+## Verglichen wird ueber Identitaet, nicht ueber den Namen: alle Watschn im Deck
+## sind dieselbe Resource, deshalb trifft count() genau die richtigen. Wer
+## spaeter eine Karte per duplicate() ins Deck legt, bricht das - dann zaehlt
+## die Kopie hier nicht mit, und der Fehler sieht aus wie ein Balancing-Problem.
+##
+## Gezaehlt wird *nach* dem Ausspielen der Karte selbst: play_card() nimmt sie
+## vorher aus der Hand. Bei einer Karte, die sich selbst zaehlen wuerde, waere
+## das der Unterschied zwischen "je Watschn" und "je Watschn plus eins" - hier
+## faellt es nicht auf, weil Watschen Bam keine Watschn ist.
+func _count_in_hand(card: CardData) -> int:
+	if card == null:
+		push_warning("SCHADEN_PRO_KARTE ohne Karte - es wird nichts gezaehlt.")
+		return 0
+	return hand.count(card)
 
 
 ## Wohin die gespielte Karte fliegt.
@@ -328,6 +430,20 @@ func _apply_effect(effect: CardEffect, actor: Combatant, target: Combatant) -> v
 			_energy_penalty += effect.amount
 		CardEffect.Kind.KARTE_ZUSCHIEBEN:
 			_push_card(effect.card as CardData, effect.amount)
+		# Gezaehlt wird immer die Spielerhand, egal wer wirkt - dieselbe
+		# Ueberlegung wie bei ENERGIE_ENTZUG: es gibt nur eine Hand. Ein Gegner
+		# mit dieser Wirkung schluege also haerter zu, je mehr der Spieler
+		# haelt. Das ist eine brauchbare Drohung ("er wartet, bis du voll bist")
+		# und keine, die stillschweigend ins Leere laeuft.
+		CardEffect.Kind.SCHADEN_PRO_KARTE:
+			target.take_damage(effect.amount * _count_in_hand(effect.card as CardData))
+		# Zaehlt, was die Karte selbst gekostet hat - nicht, was noch da ist. Der
+		# Unterschied ist bei einer X-Karte keiner (sie nimmt ohnehin alles), wohl
+		# aber, sobald eine Karte mit festem Preis diese Wirkung bekommt: "3
+		# Schaden je Energie, die du dafuer ausgegeben hast" ist eine Regel, "je
+		# Energie, die du noch hast" eine andere.
+		CardEffect.Kind.SCHADEN_PRO_ENERGIE:
+			target.take_damage(effect.amount * _energy_spent)
 
 
 func _is_player(actor: Combatant, kind: CardEffect.Kind) -> bool:
@@ -504,6 +620,44 @@ func _on_player_died() -> void:
 	_end_game(foe.defeat_title, false)
 
 
+## Eine Belohnung ist gewaehlt: ab ins Deck, dann die Bilanz zeigen.
+##
+## Die Karte geht an Run.deck und nicht an `deck` - der Ziehstapel dieses
+## Kampfes ist vorbei, und was hier hineinliefe, waere die Belohnung wieder los,
+## sobald die Szene neu laedt. Der Unterschied zwischen beiden Listen ist genau
+## dieser, und das ist die Stelle, an der er zaehlt.
+func _on_reward_chosen(view: CardView) -> void:
+	Sfx.play("card_play")
+	Run.add_card(view.data)
+	_clear_rewards()
+	_show_summary(true)
+
+
+## "Keine davon" - eine gueltige Antwort, kein Abbruch.
+##
+## Ein Deck wird nicht nur besser, indem es waechst: jede Karte mehr ist eine
+## Karte weniger Wahrscheinlichkeit auf jede andere. Ohne diesen Knopf waere
+## "das Deck schlank halten" keine Strategie, sondern unmoeglich.
+func _on_skip_button_pressed() -> void:
+	Sfx.play("click")
+	_clear_rewards()
+	_show_summary(true)
+
+
+## Raeumt die Auswahlkarten weg.
+##
+## Muss sein, obwohl die ganze Szene gleich neu laedt: bei "Hauptmenue" statt
+## "Weiter" bleibt diese Szene noch einen Moment stehen, und drei Karten hinter
+## einem ausgeblendeten Container zu lassen, waere genau die Art Rest, die man
+## spaeter in einem anderen Zusammenhang wiederfindet.
+##
+## queue_free() statt sofortigem free(): der Klick, der hierher gefuehrt hat,
+## wird gerade noch von einer dieser Karten verarbeitet.
+func _clear_rewards() -> void:
+	for child in %RewardCards.get_children():
+		child.queue_free()
+
+
 ## `has_next` sagt, ob der Run weitergeht. Danach richtet sich, welcher Knopf im
 ## Overlay steht: mitten im Run ist "Weiter" die einzige sinnvolle Fortsetzung,
 ## am Ende ist es "Nochmal". Beide gleichzeitig zu zeigen hiesse, den Spieler zu
@@ -514,9 +668,74 @@ func _on_player_died() -> void:
 ## Jetzt stehen dort die zwei Zahlen, nach denen man an dieser Stelle
 ## entscheidet: was ist mir geblieben, und was kommt als Naechstes. Beides weiss
 ## der Run, keins davon stand vorher irgendwo.
+## Der Endbildschirm hat seit der Belohnung zwei Zustaende, und man sieht immer
+## nur einen: erst die Auswahl, nach der Wahl die Bilanz. Nacheinander und nicht
+## untereinander, aus zwei Gruenden. Der eine ist Platz - drei Karten, eine
+## Lebenszeile, ein Gegnerportraet und drei Knoepfe passen zusammen nicht in ein
+## 720p-Fenster. Der andere wiegt schwerer: eine Auswahl neben einem
+## "Weiter"-Knopf laedt dazu ein, an ihr vorbeizuklicken, und eine uebersehene
+## Belohnung merkt man erst zwei Kaempfe spaeter.
+##
+## Belohnung gibt es nur, wenn der Run weitergeht: nach dem letzten Kampf ist
+## eine neue Karte eine Auszeichnung fuer ein Deck, das nie wieder gemischt
+## wird, und nach einer Niederlage waere sie Hohn.
 func _end_game(title: String, has_next: bool) -> void:
 	_game_over = true
 	%EndTitle.text = title
+
+	# Zwei Zeilen statt eines Ternaers: ein leeres Literal im else-Zweig waere ein
+	# untypisiertes Array und die Zuweisung an eine Array[CardData]-Variable
+	# damit ein Fehler, den erst die Laufzeit meldet.
+	var rewards: Array[CardData] = []
+	if has_next:
+		rewards = Run.draw_rewards()
+
+	if rewards.is_empty():
+		_show_summary(has_next)
+	else:
+		_show_rewards(rewards)
+
+	%EndOverlay.show()
+
+
+## Erster Zustand: drei Karten zur Auswahl, sonst nichts.
+func _show_rewards(rewards: Array[CardData]) -> void:
+	%RewardBox.show()
+	%StatusLabel.hide()
+	%NextBox.hide()
+	%NextButton.hide()
+	%RetryButton.hide()
+
+	for data in rewards:
+		var view: CardView = CARD_SCENE.instantiate()
+		%RewardCards.add_child(view)
+		view.setup(data)
+		# Der Preis ist hier der Grundpreis - was die Karte in *diesem* Kampf
+		# gekostet haette, ist auf einem Bildschirm nach dem Kampf keine
+		# nuetzliche Auskunft. setup() hat ihn bereits gesetzt, es steht nur
+		# hier, damit die Auslassung als Absicht lesbar ist.
+		#
+		# Aus demselben Grund bleibt `view.preview` auf seiner Voreinstellung
+		# true: eine X-Karte zeigt hier X, weil es hier keine Energie gibt, deren
+		# Zahl sie zeigen koennte. In der Hand steht dann die echte.
+		#
+		# Alle Karten starten gedaempft, die unter dem Cursor wird hell. Das ist
+		# dieselbe Mechanik wie in der ruhenden Hand und fuehrt den Blick, ohne
+		# dass hier eine zweite Art von Hover-Effekt gebaut werden muesste - in
+		# einem Container waere Vergroessern ohnehin heikel, weil der Container
+		# die Groesse bestimmt und scale sie nicht mitteilt.
+		view.dimmed = true
+		view.mouse_entered.connect(func() -> void: view.dimmed = false)
+		view.mouse_exited.connect(func() -> void: view.dimmed = true)
+		view.clicked.connect(_on_reward_chosen)
+
+
+## Zweiter Zustand: was mir geblieben ist und wer als Naechstes kommt.
+##
+## Der Inhalt ist derselbe wie vor der Belohnung, nur liegt er jetzt hinter
+## einem eigenen Aufruf statt am Ende von _end_game().
+func _show_summary(has_next: bool) -> void:
+	%RewardBox.hide()
 
 	# Das Leben nur zeigen, solange es eins gibt. "0/50" ueber "Du bleibst
 	# daheim" ist keine Auskunft, sondern eine zweite Art, dasselbe zu sagen.
@@ -530,7 +749,6 @@ func _end_game(title: String, has_next: bool) -> void:
 
 	%NextButton.visible = has_next
 	%RetryButton.visible = not has_next
-	%EndOverlay.show()
 
 
 ## Zeigt, wer nach diesem Kampf kommt.
