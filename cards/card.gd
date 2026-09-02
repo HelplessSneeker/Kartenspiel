@@ -107,6 +107,27 @@ var cost: int = 0:
 	set(value):
 		cost = value
 		_update_cost()
+		# Auch der Text: bei einer X-Karte ist der Preis zugleich der Multiplikator
+		# ("5 Schaden ×3"), die Beschreibung veraltet also mit jeder Preisaenderung.
+		_update_text()
+
+## Ob diese Ansicht ausserhalb eines Kampfes steht - Belohnungsauswahl, spaeter
+## eine Deckansicht. Dann sind `cost` und alles, was daran haengt, keine echten
+## Zahlen, sondern der Grundpreis aus der Resource.
+##
+## Betrifft in der Praxis nur X-Karten, und dort ist es der ganze Unterschied:
+## ohne Kampf gibt es keine Energie, die man ausgeben koennte, also steht auf der
+## Karte X - "so viel du hast". Liegt sie in der Hand, steht die Zahl da, die es
+## gerade wirklich ist. Die Vorschau zeigt die Regel, die Hand den Zug.
+##
+## Voreinstellung true, weil das die sichere Antwort ist: wer eine Karte baut,
+## ohne ihr einen Preis zu sagen, kennt die Energie nicht. hand.gd setzt es auf
+## false, sobald ein Kampf dahintersteht (siehe cost_lookup dort).
+var preview := true:
+	set(value):
+		preview = value
+		_update_cost()
+		_update_text()
 
 ## Beide Faerbungen sind unabhaengig voneinander und werden multipliziert:
 ## eine zu teure Karte in einer ruhenden Hand ist doppelt abgedunkelt.
@@ -130,10 +151,9 @@ func setup(new_data: CardData) -> void:
 	# (siehe _update_cost). Der Grundpreis ist hier nur der Startwert - die Hand
 	# ersetzt ihn gleich durch den, der im Kampf wirklich gilt.
 	cost = data.cost
-	# Zahlen und Icons wandern im selben format()-Aufruf in den Text. Eine .tres
-	# schreibt also "{icon_dmg} {damage} Schaden" - Beschreibungen ohne
-	# Icon-Platzhalter funktionieren unveraendert weiter.
-	%TextLabel.text = Icons.fill(data.description, data.description_values())
+	# Schreibt auch den Text - der Setter oben hat das bereits getan, hier steht
+	# es fuer den Fall, dass jemand setup() ohne anschliessende Preisvergabe ruft.
+	_update_text()
 	# Eine Karte ohne Bild soll keinen leeren 80-Pixel-Block zeigen. visible aus
 	# nimmt den Node aus der VBox-Rechnung heraus, die Karte wird entsprechend
 	# kuerzer - und weil hand.gd die Hoehe abfragt statt sie zu kennen, darf sie
@@ -257,17 +277,40 @@ func _update_cost() -> void:
 	%CostBadge.visible = data.is_playable()
 	if not data.is_playable():
 		return
-	# Die X-Karte zeigt X, nicht die Zahl, die sie in diesem Moment kostet.
-	#
-	# Die Zahl waere greifbarer - sie stuende fuer den Schaden, den man gerade
-	# bekaeme. Sie hat aber einen Haken: sie aendert sich, sobald der Spieler eine
-	# andere Karte legt, und eine Kostenplakette, die von selbst wandert, sieht
-	# nach dem Aufschlag von Schem Schem aus. X sagt stattdessen, worum es geht -
-	# dass diese Karte anders funktioniert als jede andere.
-	if data.spends_all_energy:
-		%CostLabel.text = "%s X" % Icons.bb("energy")
-	else:
-		%CostLabel.text = "%s %d" % [Icons.bb("energy"), cost]
+	%CostLabel.text = "%s %s" % [Icons.bb("energy"), _cost_text()]
+
+
+## Was als Preis dasteht: eine Zahl - oder X, wenn es die Zahl gerade nicht gibt.
+##
+## X steht nur in der Vorschau, und das ist der Punkt: dort *kann* keine Zahl
+## stehen, weil ausserhalb eines Kampfes niemand weiss, wie viel Energie da waere.
+## X ist dann keine Verzierung, sondern die einzig ehrliche Angabe.
+##
+## In der Hand ist die Lage umgekehrt: da steht die Energie fest, und eine Karte,
+## die trotzdem X zeigt, verlangt Kopfrechnen fuer etwas, das das Spiel bereits
+## weiss. (Erste Fassung vom 02.09.2026 zeigte ueberall X, Korrektur bfn am
+## selben Tag.)
+func _cost_text() -> String:
+	if data.spends_all_energy and preview:
+		return "X"
+	return str(cost)
+
+
+## Schreibt die Beschreibung.
+##
+## Zahlen und Icons wandern im selben format()-Aufruf in den Text. Eine .tres
+## schreibt also "{icon_dmg} {damage} Schaden" - Beschreibungen ohne
+## Icon-Platzhalter funktionieren unveraendert weiter.
+##
+## `{times}` kommt hier dazu und nicht aus CardEffect.values_from(): wie oft eine
+## Wirkung ausloest, haengt bei einer X-Karte am Preis, und den kennt nur diese
+## Ansicht. Alles andere in dem Dictionary steht in der Resource.
+func _update_text() -> void:
+	if data == null:
+		return
+	var values := data.description_values()
+	values["times"] = _cost_text()
+	%TextLabel.text = Icons.fill(data.description, values)
 
 
 func _update_tint() -> void:

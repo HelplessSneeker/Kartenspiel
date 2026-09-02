@@ -715,6 +715,10 @@ func _show_rewards(rewards: Array[CardData]) -> void:
 		# nuetzliche Auskunft. setup() hat ihn bereits gesetzt, es steht nur
 		# hier, damit die Auslassung als Absicht lesbar ist.
 		#
+		# Aus demselben Grund bleibt `view.preview` auf seiner Voreinstellung
+		# true: eine X-Karte zeigt hier X, weil es hier keine Energie gibt, deren
+		# Zahl sie zeigen koennte. In der Hand steht dann die echte.
+		#
 		# Alle Karten starten gedaempft, die unter dem Cursor wird hell. Das ist
 		# dieselbe Mechanik wie in der ruhenden Hand und fuehrt den Blick, ohne
 		# dass hier eine zweite Art von Hover-Effekt gebaut werden muesste - in

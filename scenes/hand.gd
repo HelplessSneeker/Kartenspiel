@@ -310,6 +310,11 @@ func _make_view(data: CardData, energy: int) -> CardView:
 	var view: CardView = CARD_SCENE.instantiate()
 	add_child(view)
 	view.setup(data)
+	# Vor dem Preis: die Karte entscheidet daran, ob sie eine Zahl oder ein X
+	# zeigt, und das darf sie nicht zweimal hintereinander anders beantworten.
+	# Ein gueltiges cost_lookup ist genau die Frage "steht ein Kampf dahinter" -
+	# ohne eines faellt _card_cost() ohnehin auf den Grundpreis zurueck.
+	view.preview = not cost_lookup.is_valid()
 	# Nach setup(), das den Grundpreis eingesetzt hat, und vor der Groessen-
 	# rechnung darunter: eine zweistellige Zahl auf der Plakette macht die Karte
 	# minimal breiter, und view.size wird gleich einmalig festgeschrieben.
