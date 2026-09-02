@@ -54,6 +54,18 @@ var energy: int = MAX_ENERGY
 ## Spieler das naechste Mal etwas damit vorhat.
 var _energy_penalty := 0
 
+## Was die zuletzt gespielte Karte an Energie gekostet hat - das X einer X-Karte.
+##
+## Ein Feld und kein Parameter von _apply_effect(), weil dieselbe Methode auch die
+## Gegneraktionen ausfuehrt; ein Argument, das dort immer 0 waere, machte jede
+## Aufrufstelle laenger, ohne etwas zu erklaeren. Das ist genau das Kontext-Objekt,
+## das der Kommentar in card_effect.gd fuer spaeter ankuendigt - solange es ein
+## einziger Wert ist, ist ein Feld billiger als der Umbau.
+##
+## Wird vor jedem Gegnerzug auf 0 gesetzt, damit eine Gegneraktion mit dieser
+## Wirkung nicht mit dem Rest des Spielerzugs zuschlaegt.
+var _energy_spent := 0
+
 ## Wie viel eine Karte ueber ihren Grundpreis hinaus kostet, weil sie in diesem
 ## Kampf schon gespielt wurde. Schluessel ist die CardData, Wert der Aufschlag.
 ##
@@ -184,6 +196,10 @@ func _enemy_turn() -> void:
 	# Spiegelbildlich zum Spielerblock, nur eine halbe Runde versetzt.
 	enemy.clear_block()
 
+	# Der Gegner gibt keine Energie aus. Ohne dieses Zuruecksetzen truege eine
+	# Gegneraktion mit SCHADEN_PRO_ENERGIE das X der letzten Spielerkarte mit sich.
+	_energy_spent = 0
+
 	var action := brain.intent
 	if action == null:
 		return
@@ -261,6 +277,10 @@ func play_card(view: CardView) -> void:
 	if card_data.sound.is_empty():
 		Sfx.play("card_play")
 	energy -= cost
+	# Was diese Karte gekostet hat - das X hinter SCHADEN_PRO_ENERGIE. Muss hier
+	# gemerkt werden und nicht spaeter berechnet: die Wirkung greift erst nach dem
+	# Kartenflug, und da ist `energy` laengst 0.
+	_energy_spent = cost
 
 	# Der Aufschlag faellt beim Ausspielen an, nicht beim Wirken - also hier und
 	# nicht nach dem await weiter unten. Sonst zeigte die Hand fuer die zwei
@@ -318,6 +338,13 @@ func play_card(view: CardView) -> void:
 func cost_of(card: CardData) -> int:
 	if card == null:
 		return 0
+	# Die X-Karte kostet, was gerade da ist. Der Grundpreis und ein etwaiger
+	# Aufschlag fallen damit weg - beides sind Zahlen, die bei ihr nichts
+	# beschreiben. Dass sie hier und nicht in play_card() steht, ist wichtig: die
+	# Hand faerbt ueber dieselbe Funktion ein, also ist eine X-Karte automatisch
+	# nie zu teuer.
+	if card.spends_all_energy:
+		return maxi(energy, 0)
 	return card.cost + int(_extra_cost.get(card, 0))
 
 
@@ -410,6 +437,13 @@ func _apply_effect(effect: CardEffect, actor: Combatant, target: Combatant) -> v
 		# und keine, die stillschweigend ins Leere laeuft.
 		CardEffect.Kind.SCHADEN_PRO_KARTE:
 			target.take_damage(effect.amount * _count_in_hand(effect.card as CardData))
+		# Zaehlt, was die Karte selbst gekostet hat - nicht, was noch da ist. Der
+		# Unterschied ist bei einer X-Karte keiner (sie nimmt ohnehin alles), wohl
+		# aber, sobald eine Karte mit festem Preis diese Wirkung bekommt: "3
+		# Schaden je Energie, die du dafuer ausgegeben hast" ist eine Regel, "je
+		# Energie, die du noch hast" eine andere.
+		CardEffect.Kind.SCHADEN_PRO_ENERGIE:
+			target.take_damage(effect.amount * _energy_spent)
 
 
 func _is_player(actor: Combatant, kind: CardEffect.Kind) -> bool:

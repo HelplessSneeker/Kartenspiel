@@ -255,7 +255,18 @@ func _update_cost() -> void:
 	if data == null:
 		return
 	%CostBadge.visible = data.is_playable()
-	if data.is_playable():
+	if not data.is_playable():
+		return
+	# Die X-Karte zeigt X, nicht die Zahl, die sie in diesem Moment kostet.
+	#
+	# Die Zahl waere greifbarer - sie stuende fuer den Schaden, den man gerade
+	# bekaeme. Sie hat aber einen Haken: sie aendert sich, sobald der Spieler eine
+	# andere Karte legt, und eine Kostenplakette, die von selbst wandert, sieht
+	# nach dem Aufschlag von Schem Schem aus. X sagt stattdessen, worum es geht -
+	# dass diese Karte anders funktioniert als jede andere.
+	if data.spends_all_energy:
+		%CostLabel.text = "%s X" % Icons.bb("energy")
+	else:
 		%CostLabel.text = "%s %d" % [Icons.bb("energy"), cost]
 
 

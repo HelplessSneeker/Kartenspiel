@@ -92,12 +92,19 @@ darin:
   `watschen_bam.jpg` — freigestellte weiße Hintergründe und der Bildaufbau sprechen dafür.
   Ohne Quelle ist nicht prüfbar, ob eine Lizenz existiert.
 
-**Bearbeitung:** alle sechs von mir mittig auf 11:8 beschnitten und auf 220×160 skaliert
-(JPEG, Qualität 82–85) — dieselbe Größe wie die bestehenden Kartenbilder, also genau das
-Doppelte des `ArtRect` in `card.tscn` (110×80). `zirbn.jpg` ist zusätzlich hineingezoomt,
-weil die Flasche im Original hochkant und klein im Bild steht; `bier.jpg` zeigt aus dem
-gleichen Grund nur das Etikett der Dose statt der ganzen Dose. Die Originale liegen nicht
-im Repo.
+**Bearbeitung:** alle sechs auf 220×160 gebracht (JPEG, Qualität 82–85) — dieselbe Größe
+wie die bestehenden Kartenbilder, also genau das Doppelte des `ArtRect` in `card.tscn`
+(110×80). Vier davon mittig auf 11:8 beschnitten.
+
+`bier.jpg` und `zirbn.jpg` gehen einen anderen Weg: Dose und Flasche stehen hochkant, ein
+Mittenschnitt zeigt deshalb nur einen Ausschnitt des Etiketts. Beide sind stattdessen
+**ganz eingepasst** und der Rest mit der Hintergrundfarbe des Originals aufgefüllt — die
+ist bei beiden ein heller Studio-Hintergrund, also fällt der Rand nicht als Balken auf.
+Der erste Versuch war ein Zoom auf das Etikett; bfn hat ihn als falsch beschnitten
+zurückgewiesen (02.09.2026). Merke für weitere Kartenbilder: **hochkantes Motiv →
+einpassen, nicht schneiden.**
+
+Die Originale liegen nicht im Repo.
 
 ### ⚠️ Die beiden Porträts sind Platzhalter
 

@@ -54,6 +54,11 @@ Kenney ebenfalls.
 - [ ] `combat/actions/hieb.tres`, `deckung.tres`, `wuchtschlag.tres` sind ungenutzt,
       seit der zweite Gegner sein eigenes Moveset hat. Aufräumen oder als Vorlage
       behalten — bewusst noch nicht entschieden.
+- [ ] `CardEffect.Kind.SCHADEN_PRO_KARTE` hat keinen Nutzer mehr, seit Watschen Bam
+      am 02.09.2026 eine X-Karte geworden ist. Der Code dazu (`_count_in_hand()` in
+      `game.gd`, der `card`-Zweig) bleibt stehen: aus dem Enum entfernen ginge nicht
+      ohne die Indizes zu verschieben, und die stehen als Zahlen in jeder `.tres`.
+      Gleiche Lage wie bei `KARTE_ZUSCHIEBEN`.
 - [ ] `cards/data/adrenalin.tres` ist wieder ungenutzt (Entscheidung bfn,
       01.09.2026): Name passt nicht ins Setting, und Schem Schem besetzt die
       Rolle „mehr Energie" bereits. Datei liegt noch da — löschen oder als

@@ -65,14 +65,15 @@ enum Kind {
 	SELBSTSCHADEN,     # Schaden an dem, der wirkt - der Preis starker Karten
 	ENERGIE_ENTZUG,    # amount Energie weniger im naechsten Spielerzug
 	KARTE_ZUSCHIEBEN,  # `card` amount-mal auf die Ablage des Spielers - z.Z. ungenutzt
-	SCHADEN_PRO_KARTE, # amount Schaden je `card`, die noch auf der Hand liegt
+	SCHADEN_PRO_KARTE, # amount Schaden je `card` auf der Hand - z.Z. ungenutzt
+	SCHADEN_PRO_ENERGIE, # amount Schaden je Energie, die das Ausspielen gekostet hat
 }
 
 @export var kind: Kind = Kind.SCHADEN
 
 ## Wie viel. Punkte bei SCHADEN/BLOCK/HEILEN/SELBSTSCHADEN, Anzahl bei ZIEHEN,
-## ENERGIE, ENERGIE_ENTZUG und KARTE_ZUSCHIEBEN. Bei SCHADEN_PRO_KARTE sind es
-## Punkte *je gezaehlter Karte*, nicht insgesamt.
+## ENERGIE, ENERGIE_ENTZUG und KARTE_ZUSCHIEBEN. Bei SCHADEN_PRO_KARTE und
+## SCHADEN_PRO_ENERGIE sind es Punkte *je gezaehlter Einheit*, nicht insgesamt.
 @export var amount: int = 0
 
 ## Welche Karte gemeint ist. Zwei Wirkungen benutzen das Feld, mit verschiedener
@@ -153,6 +154,11 @@ static func _value_key(kind_value: Kind) -> String:
 		# waere ein zweiter Name fuer dieselbe Sache - und Karten, die beides
 		# haben, gibt es nicht: dann braucht der Text ohnehin eigene Zeilen.
 		Kind.SCHADEN_PRO_KARTE:
+			return "damage"
+		# Aus demselben Grund wie eine Zeile darueber: auf der Karte steht eine
+		# Schadenszahl, und dass sie mit der Energie multipliziert wird, sagt der
+		# Satz drumherum ("je ausgegebener Energie").
+		Kind.SCHADEN_PRO_ENERGIE:
 			return "damage"
 		_:
 			return ""

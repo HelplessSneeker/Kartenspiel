@@ -52,6 +52,29 @@ enum Type { ANGRIFF, VERTEIDIGUNG, FERTIGKEIT, STATUS }
 ## jeder Kampf die Szene neu laedt.
 @export var cost_growth: int = 0
 
+## Kostet die Karte alles, was gerade an Energie da ist? Die X-Karte.
+##
+## `cost` wird dann ignoriert - was sie kostet, weiss erst der laufende Kampf,
+## und die Antwort ist immer "alles". Deshalb steht hier eine Flagge und keine
+## Zahl: es gibt nichts einzustellen, eine Karte ist entweder eine X-Karte oder
+## keine.
+##
+## Sinnvoll nur zusammen mit einer Wirkung, welche die ausgegebene Energie auch
+## verrechnet - zur Zeit SCHADEN_PRO_ENERGIE. Eine X-Karte ohne so eine Wirkung
+## waere eine, die die Energie verschluckt und nichts dafuer gibt; das faellt
+## beim Bauen der .tres nicht auf, sondern erst beim Spielen.
+##
+## Zwei Nebenwirkungen, beide gewollt: die Karte ist *immer* spielbar, denn der
+## Preis kann nie hoeher sein als das, was da ist - und bei 0 Energie tut sie
+## nichts. Das Zweite ist dieselbe Falle, die Watschen Bam vorher schon hatte
+## (ohne Watschn auf der Hand: 0 Schaden). Der Preis steht auf der Plakette, der
+## Spieler entscheidet.
+##
+## Zusammen mit `cost_growth` ergibt die Flagge nichts: der Aufschlag landete auf
+## einem Grundpreis, den niemand mehr liest. Bei einer Karte, die beides gesetzt
+## hat, gewinnt die Flagge - siehe cost_of() in game.gd.
+@export var spends_all_energy := false
+
 @export var type: Type = Type.ANGRIFF
 
 ## Wird der Reihe nach ausgefuehrt, wenn die Karte gespielt wird.
@@ -111,12 +134,14 @@ func hits_enemy() -> bool:
 			continue
 		if effect.kind == CardEffect.Kind.SCHADEN:
 			return true
-		# Auch dann, wenn die Zahl gerade 0 ergibt: Watschen Bam ohne Watschn auf
-		# der Hand macht keinen Schaden, ist aber trotzdem ein Schlag und fliegt
-		# zum Gegner. Wohin eine Karte zielt, darf nicht davon abhaengen, wie die
-		# Hand in diesem Moment aussieht - sonst landet dieselbe Karte mal links
-		# und mal rechts, und das liest sich als Fehler.
+		# Auch dann, wenn die Zahl gerade 0 ergibt: Watschen Bam mit 0 Energie
+		# macht keinen Schaden, ist aber trotzdem ein Schlag und fliegt zum
+		# Gegner. Wohin eine Karte zielt, darf nicht vom Zustand dieses Moments
+		# abhaengen - sonst landet dieselbe Karte mal links und mal rechts, und
+		# das liest sich als Fehler.
 		if effect.kind == CardEffect.Kind.SCHADEN_PRO_KARTE:
+			return true
+		if effect.kind == CardEffect.Kind.SCHADEN_PRO_ENERGIE:
 			return true
 	return false
 
