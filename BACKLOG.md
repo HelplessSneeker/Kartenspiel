@@ -45,6 +45,10 @@ Kenney ebenfalls.
 - [ ] `combat/actions/hieb.tres`, `deckung.tres`, `wuchtschlag.tres` sind ungenutzt,
       seit der zweite Gegner sein eigenes Moveset hat. Aufräumen oder als Vorlage
       behalten — bewusst noch nicht entschieden.
+- [ ] `cards/data/adrenalin.tres` ist wieder ungenutzt (Entscheidung bfn,
+      01.09.2026): Name passt nicht ins Setting, und Schem Schem besetzt die
+      Rolle „mehr Energie" bereits. Datei liegt noch da — löschen oder als
+      Vorlage behalten, gleiche Frage wie oben.
 
 ## Fehlende Kartenbilder
 
