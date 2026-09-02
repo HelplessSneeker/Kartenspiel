@@ -19,8 +19,16 @@ Nichts davon hindert am Weiterbauen. Alles davon hindert an einer Veröffentlich
       Von bfn beigesteuert, Herkunft ist nirgends dokumentiert. In `ASSETS.md` stehen
       dort Fragezeichen. Entweder eintragen (falls CC0/CC-BY: Namensnennung prüfen) oder
       ersetzen.
-- [ ] **`assets/art/bier.jpg` und `tschick.jpg` gegenprüfen.** Commons-Bilder, aber
-      dieselbe „Public domain heißt oft nur US-gemeinfrei"-Falle wie bei `watschn.jpg`.
+- [ ] **Die sechs Kartenbilder vom 02.09.2026 ersetzen** — `bier.jpg`, `guertel.jpg`,
+      `voll_durchziehen.jpg`, `watschen_bam.jpg`, `zirbn.jpg`, `schem_schem.jpg`. Alle von
+      bfn beigesteuert, Herkunft und Lizenz ungeklärt. Drei Sorten Problem, Details in
+      `ASSETS.md`: erkennbare reale Personen in einer Gewaltdarstellung (`guertel`,
+      `voll_durchziehen`), lesbare Marken (`bier` = Krombacher, `zirbn` = Produktetikett),
+      und vermutlich Stock-Material ohne Lizenz.
+- [ ] **`assets/art/tschick.jpg` gegenprüfen.** Commons-Bild, aber dieselbe
+      „Public domain heißt oft nur US-gemeinfrei"-Falle wie bei `watschn.jpg`.
+      (`bier.jpg` stand hier auch — ist am 02.09.2026 ersetzt worden und jetzt ein
+      anderer Fall, siehe Punkt darüber.)
 - [ ] **Die zwei Hintergründe sind CC BY-SA 4.0 — das ist der schwerste Punkt hier.**
       `assets/art/bg/stube.jpg` (Chris Walch) und `bg/kuechl.jpg` (Hubertl). Namensnennung
       allein reicht bei **ShareAlike nicht**: die Lizenz verlangt, dass Bearbeitungen
@@ -36,9 +44,10 @@ Kenney ebenfalls.
 
 ## Housekeeping
 
-- [ ] **`.import`-Dateien committen** für `assets/art/balg.jpg`, `bier.jpg`,
-      `spieler.jpg`, `tschick.jpg` — nur `watschn.jpg` hat eine. Godot legt sie beim
-      Öffnen des Projekts an; ignoriert gehören laut Godot-Doc nur `.godot/`,
+- [ ] **`.import`-Dateien committen** für alles in `assets/art/` außer `watschn.jpg` —
+      also `balg.jpg`, `bier.jpg`, `spieler.jpg`, `tschick.jpg` und die fünf neuen
+      (`guertel`, `voll_durchziehen`, `watschen_bam`, `zirbn`, `schem_schem`). Godot legt
+      sie beim Öffnen des Projekts an; ignoriert gehören laut Godot-Doc nur `.godot/`,
       `*.translation` und `export_presets.cfg`.
 - [ ] **`.uid`-Dateien** für die neuen Skripte (`combat/enemy_data.gd`,
       `run/run_config.gd`, `run/run_state.gd`) — gleiche Sache, entstehen beim Öffnen.
@@ -50,20 +59,11 @@ Kenney ebenfalls.
       Rolle „mehr Energie" bereits. Datei liegt noch da — löschen oder als
       Vorlage behalten, gleiche Frage wie oben.
 
-## Fehlende Kartenbilder
+## Kartenbilder — erledigt am 02.09.2026
 
-Zirbn, Watschen Bam und Schem Schem haben kein `art` — die Karten zeigen dann
-einfach keins, das Layout bleibt heil (siehe `card.gd`). Bilder sind auf 220×160
-zugeschnitten, also das Doppelte des Rahmens.
-
-- [ ] **Schem Schem: „Baggy Koks"** (bfns Ansage). Das ist die heikelste
-      Bildsuche im Projekt bisher — nicht technisch, sondern weil Wikimedia
-      Commons bei dem Motiv fast nur Polizei-Beweisfotos führt, und die tragen
-      neben der Bildlizenz oft noch Behörden-Rechte. Vor der Suche klären, ob es
-      wirklich das Motiv sein soll oder eine harmlosere Andeutung.
-- [ ] **Zirbn** — Zirbenschnaps im Glas, sollte auf Commons unproblematisch sein.
-- [ ] **Watschen Bam** — hat aktuell keins; `watschn.jpg` ist bereits bei der
-      Watschn im Einsatz und steht ohnehin auf der Ersetzen-Liste oben.
+Jede Karte im Spiel hat jetzt ein `art`. Bilder liegen auf 220×160, also dem Doppelten
+des `ArtRect` (110×80). Die Lizenzfrage ist damit **nicht** erledigt, sondern nur
+verschoben — siehe den Release-Blocker oben.
 
 ## Fehlende Sound-Dateien
 

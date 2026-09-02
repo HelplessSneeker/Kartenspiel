@@ -26,9 +26,10 @@ extends Resource
 ##
 ## Getrennt vom Startdeck, obwohl beides Listen von Karten sind: das Startdeck
 ## sagt, womit man anfaengt, der Pool, was man werden kann. Eine Karte darf in
-## beiden stehen - dann bekommt man eine zweite davon - oder nur hier. Zirbn,
-## Watschen Bam und Schem Schem sind genau dieser Fall und sonst nirgends
-## erreichbar.
+## beiden stehen - dann bekommt man eine zweite davon - oder nur hier. Zur Zeit
+## trifft das auf den ganzen Pool zu: Zirbn, Watschen Bam, Schem Schem, Guertel
+## und Voll durchziehen stehen in keinem Startdeck und sind nur ueber eine
+## Belohnung erreichbar.
 ##
 ## Leer heisst: keine Belohnung, der Endbildschirm sieht aus wie vorher. Das ist
 ## kein Fehlerfall, sondern der Weg, das Ganze abzuschalten.
