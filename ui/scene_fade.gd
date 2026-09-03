@@ -26,7 +26,7 @@ const IN_TIME := 0.28
 ## Nicht Schwarz, sondern der unterste Ton des Hintergrundverlaufs. Das Spiel
 ## hat ein eigenes Dunkel; ein reines Schwarz dazwischen waere ein fremder Ton
 ## in einer Palette, die sonst durchgehalten wird.
-const COLOR := Color(0.0431373, 0.0470588, 0.0666667)
+const COLOR := Color(0.0431373, 0.0352941, 0.0235294)
 
 var _rect: ColorRect
 var _busy := false

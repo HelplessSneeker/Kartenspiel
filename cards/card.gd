@@ -85,7 +85,13 @@ signal clicked(card: CardView)
 const UNPLAYABLE_TINT := Color(0.55, 0.55, 0.55)
 
 ## Hand ruht - voruebergehender Zustand, haengt an der Maus.
-const IDLE_TINT := Color(0.65, 0.65, 0.7)
+##
+## Warm getoent seit dem Farbdurchgang (03.09.2026). Davor stand hier
+## (0.65, 0.65, 0.7), also ein *kuehler* Multiplikator - auf einer warmen
+## Oberflaeche zieht so eine Daempfung die ganze ruhende Hand ins Blaeuliche und
+## arbeitet damit gegen die Palette. Die Helligkeit ist absichtlich dieselbe
+## geblieben, nur die Richtung hat sich gedreht.
+const IDLE_TINT := Color(0.7, 0.66, 0.6)
 
 ## Rahmenfarbe je Kartenart - das Einzige am Kartenaussehen, das wirklich von
 ## den Kartendaten abhaengt. Hintergrund, Radius, Rahmenbreite und das Padding
@@ -102,7 +108,7 @@ const BORDER_FERTIGKEIT := Color("8a7ab5")
 ## einzige Kartentyp, der nichts anbietet, und sollen zwischen den vier bunten
 ## auch so aussehen. Zusaetzlich haengt an ihnen dauerhaft UNPLAYABLE_TINT -
 ## eine Statuskarte ist nie spielbar, also nie hell.
-const BORDER_STATUS := Color("5a5a62")
+const BORDER_STATUS := Color("5a5348")
 
 
 var data: CardData
