@@ -1,0 +1,77 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/card_list_overlay.gd" id="1_list"]
+
+[node name="CardListOverlay" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_list")
+
+[node name="Dim" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Dialog" type="PanelContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_type_variation = &"Dialog"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/Dialog"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/Dialog/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"DialogTitle"
+text = "Karten"
+horizontal_alignment = 1
+
+[node name="EmptyLabel" type="Label" parent="CenterContainer/Dialog/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(300, 60)
+layout_mode = 2
+theme_type_variation = &"PileTitle"
+text = "Keine Karten drin"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Scroll" type="ScrollContainer" parent="CenterContainer/Dialog/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(698, 0)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Grid" type="GridContainer" parent="CenterContainer/Dialog/VBoxContainer/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+columns = 5
+
+[node name="CloseButton" type="Button" parent="CenterContainer/Dialog/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Zurück"
+
+[connection signal="gui_input" from="Dim" to="." method="_on_dim_gui_input"]
+[connection signal="pressed" from="CenterContainer/Dialog/VBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]

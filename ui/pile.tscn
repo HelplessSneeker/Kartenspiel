@@ -4,6 +4,7 @@
 
 [node name="Pile" type="PanelContainer"]
 custom_minimum_size = Vector2(72, 106)
+mouse_default_cursor_shape = 2
 theme_type_variation = &"Pile"
 script = ExtResource("1_pile")
 

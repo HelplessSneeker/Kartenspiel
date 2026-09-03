@@ -596,6 +596,34 @@ func _on_end_turn_button_pressed() -> void:
 	end_turn()
 
 
+## Die drei Nachschlage-Fenster. Alle drei zeigen dasselbe Overlay, nur mit
+## anderer Liste - und das ist der ganze Unterschied zwischen ihnen.
+##
+## Was hier auffaellt, ist die Dreiteilung selbst: `deck` ist der Ziehstapel
+## *dieses Kampfes*, `discard` das, was in *diesem Kampf* schon durch ist, und
+## Run.deck der Besitzstand ueber den ganzen Durchlauf. Bisher stand dieser
+## Unterschied nur in Kommentaren und war im Spiel nirgends zu sehen; jetzt sind
+## es drei Knoepfe, und die Zahlen darauf muessen zusammenpassen - Ziehstapel
+## plus Ablage plus Hand ergibt das Deck.
+##
+## Keine Sperre gegen _game_over oder _resolving: nachsehen aendert nichts. Waer
+## das Fenster offen, waehrend eine Karte fliegt, laeuft die Animation dahinter
+## einfach weiter - der abgedunkelte Hintergrund faengt nur die Klicks ab.
+func _on_deck_pile_clicked() -> void:
+	%CardList.open("Ziehstapel", deck)
+
+
+func _on_discard_pile_clicked() -> void:
+	%CardList.open("Ablage", discard)
+
+
+## Das Deck des Runs, nicht der Ziehstapel: hier steht, was man ueber den ganzen
+## Durchlauf besitzt - unabhaengig davon, was gerade wo liegt. Genau die Frage,
+## die bei der Belohnungsauswahl zaehlt ("brauche ich noch einen Angriff?").
+func _on_deck_button_pressed() -> void:
+	%CardList.open("Dein Deck", Run.deck)
+
+
 ## Der Kampf blockiert nach dem Ende alle Eingaben. Solange das nirgends steht,
 ## sieht das Spiel dabei aus wie eingefroren - deshalb zeigt sich das Ergebnis,
 ## statt nur in der Konsole zu landen. Das Overlay liegt ueber allem und faengt
