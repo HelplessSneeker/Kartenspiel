@@ -39,7 +39,7 @@ extends Control
 ## Steht hier und nicht im Bild, weil es der Regler ist, an dem man dreht: die
 ## Unschaerfe ist in die Datei gebacken (der Hintergrund bewegt sich nie, ein
 ## Shader waere in jedem Frame umsonst bezahlt), das Abdunkeln nicht.
-@export var dim := Color(0.5, 0.5, 0.55, 1):
+@export var dim := Color(0.54, 0.49, 0.42, 1):
 	set(value):
 		dim = value
 		if is_node_ready():

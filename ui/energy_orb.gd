@@ -22,13 +22,13 @@ const RING_WIDTH := 7.0
 ## viele Stuecke er zerfaellt, bevor das erste fehlt.
 const GAP := 0.12
 
-const FILLED := Color("f0d070")
+const FILLED := Color("d0ac73")
 
 ## Der ausgegebene Rest bleibt sichtbar, statt zu verschwinden. Eine Luecke
 ## saehe nach Beschaedigung aus; ein grauer Abschnitt sagt "hier war etwas".
-const SPENT := Color("343a4c")
+const SPENT := Color("3d3428")
 
-const BG := Color(0.0784314, 0.0862745, 0.121569, 0.92)
+const BG := Color(0.0862745, 0.0705882, 0.054902, 0.92)
 
 ## Wie viele Abschnitte der Ring hat.
 @export var maximum := 4:

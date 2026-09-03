@@ -16,7 +16,7 @@ script = ExtResource("1_sl1te")
 
 [node name="Background" parent="." instance=ExtResource("3_room")]
 image = ExtResource("4_stube")
-dim = Color(0.34, 0.34, 0.4, 1)
+dim = Color(0.38, 0.34, 0.28, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=1646585688]
 layout_mode = 1
