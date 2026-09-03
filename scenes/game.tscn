@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://d3pd0u6pwdqs0" path="res://scenes/hand.gd" id="5_iywne"]
 [ext_resource type="PackedScene" path="res://combat/health_view.tscn" id="6_health"]
 [ext_resource type="PackedScene" path="res://ui/pile.tscn" id="11_pile"]
+[ext_resource type="PackedScene" path="res://ui/card_list_overlay.tscn" id="24_list"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="12_pause"]
 [ext_resource type="Texture2D" path="res://assets/art/spieler.jpg" id="19_spieler"]
 [ext_resource type="PackedScene" path="res://ui/room_background.tscn" id="22_room"]
@@ -106,6 +107,17 @@ layout_mode = 2
 size_flags_vertical = 4
 theme_type_variation = &"HudLabel"
 
+[node name="DeckButton" type="Button" parent="MarginContainer/VBoxContainer/TopBar/Bar"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 150.0
+grow_vertical = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+tooltip_text = "Dein ganzes Deck ansehen"
+flat = true
+
 [node name="Battelfield" type="Control" parent="MarginContainer/VBoxContainer" unique_id=262212546]
 layout_mode = 2
 size_flags_vertical = 3
@@ -150,6 +162,20 @@ unique_name_in_owner = true
 layout_mode = 2
 title = "Gegner"
 
+[node name="Hand" type="Control" parent="." unique_id=173045572]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("5_iywne")
+deck_pile_path = NodePath("../DeckPile")
+discard_pile_path = NodePath("../DiscardPile")
+
 [node name="DeckPile" parent="." instance=ExtResource("11_pile")]
 unique_name_in_owner = true
 layout_mode = 1
@@ -161,6 +187,7 @@ offset_top = -122.0
 offset_right = 88.0
 offset_bottom = -16.0
 grow_vertical = 0
+tooltip_text = "Was noch im Ziehstapel liegt"
 title = "Deck"
 
 [node name="DiscardPile" parent="." instance=ExtResource("11_pile")]
@@ -177,21 +204,8 @@ offset_right = -16.0
 offset_bottom = -16.0
 grow_horizontal = 0
 grow_vertical = 0
+tooltip_text = "Was schon abgelegt ist"
 title = "Ablage"
-
-[node name="Hand" type="Control" parent="." unique_id=173045572]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 22)
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 0
-script = ExtResource("5_iywne")
-deck_pile_path = NodePath("../DeckPile")
-discard_pile_path = NodePath("../DiscardPile")
 
 [node name="EnergyOrb" type="Control" parent="."]
 unique_name_in_owner = true
@@ -362,11 +376,21 @@ text = "Nochmal"
 layout_mode = 2
 text = "Hauptmenü"
 
+[node name="ListLayer" type="CanvasLayer" parent="."]
+layer = 15
+
+[node name="CardList" parent="ListLayer" instance=ExtResource("24_list")]
+unique_name_in_owner = true
+visible = false
+
 [node name="PauseLayer" type="CanvasLayer" parent="."]
 layer = 20
 
 [node name="PauseMenu" parent="PauseLayer" instance=ExtResource("12_pause")]
 
+[connection signal="pressed" from="MarginContainer/VBoxContainer/TopBar/Bar/DeckButton" to="." method="_on_deck_button_pressed"]
+[connection signal="clicked" from="DeckPile" to="." method="_on_deck_pile_clicked"]
+[connection signal="clicked" from="DiscardPile" to="." method="_on_discard_pile_clicked"]
 [connection signal="pressed" from="EndTurnButton" to="." method="_on_end_turn_button_pressed"]
 [connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/RewardBox/SkipButton" to="." method="_on_skip_button_pressed"]
 [connection signal="pressed" from="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/NextButton" to="." method="_on_next_button_pressed"]
