@@ -43,6 +43,7 @@ mouse_filter = 2
 
 [node name="StartButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1517487411]
 layout_mode = 2
+theme_type_variation = &"PrimaryButton"
 text = "Spielen"
 
 [node name="OptionsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1725419095]
@@ -56,6 +57,7 @@ text = "Credits"
 
 [node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=849804253]
 layout_mode = 2
+theme_type_variation = &"QuietButton"
 text = "Beenden"
 
 [node name="Options" parent="." unique_id=186850343 instance=ExtResource("2_options")]

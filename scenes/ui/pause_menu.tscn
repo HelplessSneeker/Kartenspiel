@@ -52,6 +52,7 @@ mouse_filter = 2
 [node name="ResumeButton" type="Button" parent="CenterContainer/Dialog/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"PrimaryButton"
 text = "Fortsetzen"
 
 [node name="RestartButton" type="Button" parent="CenterContainer/Dialog/VBoxContainer"]
@@ -65,6 +66,7 @@ text = "Optionen"
 
 [node name="MenuButton" type="Button" parent="CenterContainer/Dialog/VBoxContainer"]
 layout_mode = 2
+theme_type_variation = &"QuietButton"
 text = "Hauptmenü"
 
 [node name="Options" parent="." instance=ExtResource("2_options")]

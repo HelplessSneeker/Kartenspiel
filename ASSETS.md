@@ -22,6 +22,9 @@ Download**, nicht später. Wer das nachträglich rekonstruieren will, hat verlor
 | `assets/icons/energy.svg` | Energie | [game-icons `lorc/power-lightning`](https://game-icons.net/1x1/lorc/power-lightning.html) | **Lorc** | **CC BY 3.0** | 08.08.2026 |
 | `assets/icons/heal.svg` | Heilung | [game-icons `sbed/health-normal`](https://game-icons.net/1x1/sbed/health-normal.html) | **sbed** | **CC BY 3.0** | 08.08.2026 |
 
+| `assets/ui/slider_grabber*.svg` | Knopf der Lautstärkeregler | selbst geschrieben (zwei Kreise, Theme-Farben) | — | eigenes Werk, keine Auflage | 03.09.2026 |
+| `assets/ui/card_back.png` | Kartenrückseite im Ziehstapel | selbst gezeichnet, `tools/make_card_back.py` | — | eigenes Werk, keine Auflage | 03.09.2026 |
+
 | `assets/audio/sfx/card-*.ogg` | Karten ziehen/legen/mischen | [Kenney Casino Audio](https://kenney.nl/assets/casino-audio) | Kenney | CC0 | 08.08.2026 |
 | `assets/audio/sfx/click_001.ogg` | Menü-Klick | [Kenney Interface Sounds](https://kenney.nl/assets/interface-sounds) | Kenney | CC0 | 08.08.2026 |
 | `assets/audio/sfx/error_002.ogg` | Zu wenig Energie | [Kenney Interface Sounds](https://kenney.nl/assets/interface-sounds) | Kenney | CC0 | 08.08.2026 |

@@ -29,6 +29,24 @@ signal clicked
 ## dass hier etwas passiert - zusammen mit dem Zeigefinger-Cursor aus der .tscn.
 const HOVER_TINT := Color(1.25, 1.25, 1.25)
 
+## Die Kartenrueckseite, die im Stapel liegt. Leer heisst: nur der Rahmen.
+##
+## Nur der Ziehstapel hat eine. Auf der Ablage waere sie falsch herum gedacht -
+## dort liegen gespielte Karten mit dem Gesicht nach oben, und eine Rueckseite
+## haette dort dieselbe Aussage wie "hier liegt irgendwas".
+##
+## Als @export und nicht fest in der Szene, weil dieselbe Szene beide Stapel
+## bedient - dieselbe Ueberlegung wie bei `title`.
+##
+## Die 70% Deckkraft stehen an der TextureRect in der .tscn und nicht hier: die
+## Zahl liegt mitten auf dem Rautenwappen, und bei voller Deckkraft streiten
+## sich beide. Nachgesehen an einer Simulation in Anzeigegroesse, nicht geraten.
+@export var back: Texture2D:
+	set(value):
+		back = value
+		if is_node_ready():
+			_apply_back()
+
 ## Beschriftung unter der Zahl. Steht im Inspector, damit dieselbe Szene fuer
 ## beide Stapel reicht - wie bei HealthView.
 @export var title: String = "":
@@ -47,8 +65,16 @@ var count: int = 0:
 func _ready() -> void:
 	%TitleLabel.text = title
 	%CountLabel.text = str(count)
+	_apply_back()
 	mouse_entered.connect(func() -> void: modulate = HOVER_TINT)
 	mouse_exited.connect(func() -> void: modulate = Color.WHITE)
+
+
+## Ohne Bild bleibt die TextureRect unsichtbar statt leer sichtbar - sonst
+## liegt im Ablagestapel ein durchsichtiges Rechteck, das nichts tut.
+func _apply_back() -> void:
+	%BackRect.texture = back
+	%BackRect.visible = back != null
 
 
 func _gui_input(event: InputEvent) -> void:
