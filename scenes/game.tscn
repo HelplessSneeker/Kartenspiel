@@ -347,7 +347,6 @@ text = "Dein Deck ansehen"
 
 [node name="SkipButton" type="Button" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/RewardBox"]
 layout_mode = 2
-theme_type_variation = &"QuietButton"
 text = "Keine davon"
 
 [node name="StatusLabel" type="RichTextLabel" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer"]

@@ -14,10 +14,24 @@ extends PanelContainer
 ## meldet die Karte statt 250 rund 690 Pixel Hoehe - und hand.gd baut ihr
 ## Layout auf genau diesem Wert auf.
 ##
-## Die Kartenhoehe (250) ist dagegen unkritisch: hand.gd fragt sie ueber
-## get_combined_minimum_size() ab, statt sie zu kennen. Sie war 190, bevor das
-## Bild dazukam - 80 Pixel Bild plus die zusaetzliche VBox-Separation von 6
-## haetten sonst den Text aus der Karte geschoben.
+## Die Kartenhoehe (230) ist dagegen unkritisch: hand.gd fragt sie ueber
+## get_combined_minimum_size() ab, statt sie zu kennen.
+##
+## Die Zahl war zweimal falsch. Erst 190, bevor das Bild dazukam. Dann 250 -
+## und das war zu viel: Name, Plakette, ein 80 Pixel hohes Bild und zwei Zeilen
+## Text ergeben rund 200, also stand das untere Fuenftel jeder Karte leer. Auf
+## einem Screenshot (03.09.2026) war das der Grund, warum die Karten unfertig
+## wirkten, deutlicher als jede Farbe.
+##
+## Jetzt 230 bei 110 Pixel Bildhoehe: die Karte ist voll, und das Bild ist rund
+## 40% groesser - bei einem Foto von 110x80 erkennt man nicht, was drauf ist,
+## und der Witz der Karte lebt vom Motiv.
+##
+## Warum nicht noch groesser: die Bilder sind querformatig (220x160), und
+## STRETCH_KEEP_ASPECT_COVERED schneidet den Ueberschuss seitlich weg. Bei 110
+## Bildhoehe bleiben rund drei Viertel der Breite stehen, bei 130 nur noch gut
+## die Haelfte - dann verliert "Watschen Bam" die aeusseren Haende, und die
+## sind der Inhalt. An einem Mockup mit den echten Bildern verglichen.
 ##
 ## Das ArtRect steht auf expand_mode = EXPAND_IGNORE_SIZE und stretch_mode =
 ## STRETCH_KEEP_ASPECT_COVERED. IGNORE_SIZE, damit ein 220 Pixel breites Foto

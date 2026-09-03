@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bs3yqbfecyowa" path="res://cards/card.gd" id="1_ivai2"]
 
 [node name="Card" type="PanelContainer" unique_id=514923645]
-custom_minimum_size = Vector2(130, 250)
+custom_minimum_size = Vector2(130, 230)
 theme_type_variation = &"Card"
 script = ExtResource("1_ivai2")
 
@@ -38,7 +38,7 @@ autowrap_mode = 0
 [node name="ArtRect" type="TextureRect" parent="VBoxContainer" unique_id=1108224573]
 unique_name_in_owner = true
 clip_contents = true
-custom_minimum_size = Vector2(110, 80)
+custom_minimum_size = Vector2(110, 110)
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
