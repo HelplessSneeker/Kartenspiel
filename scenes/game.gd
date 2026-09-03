@@ -618,8 +618,18 @@ func _on_discard_pile_clicked() -> void:
 
 
 ## Das Deck des Runs, nicht der Ziehstapel: hier steht, was man ueber den ganzen
-## Durchlauf besitzt - unabhaengig davon, was gerade wo liegt. Genau die Frage,
-## die bei der Belohnungsauswahl zaehlt ("brauche ich noch einen Angriff?").
+## Durchlauf besitzt - unabhaengig davon, was gerade wo liegt.
+##
+## Haengt an zwei Knoepfen: dem in der Kopfleiste waehrend des Kampfes und dem in
+## der Belohnungsauswahl. Dieselbe Frage an zwei Orten, und der zweite ist der
+## wichtigere - "brauche ich noch einen Angriff?" entscheidet sich genau dort.
+## Bewusst *eine* Methode fuer beide statt zweier gleichlautender: sie tun
+## dasselbe, und zwei Namen dafuer waeren zwei Stellen, die auseinanderlaufen
+## koennen.
+##
+## Gezeigt wird das Deck *vor* der Belohnung - add_card() laeuft erst mit der
+## Wahl. Das ist die richtige Auskunft: man will wissen, wozu die neue Karte
+## dazukaeme, nicht wie es danach aussieht.
 func _on_deck_button_pressed() -> void:
 	%CardList.open("Dein Deck", Run.deck)
 
