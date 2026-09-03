@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
-# Screenshot einer Szene, auf einem Rechner ohne Bildschirm.
+# Screenshot einer Szene oder eines Spielzustands, ohne Bildschirm.
 #
-#     tools/shoot.sh res://scenes/ui/main_menu.tscn /tmp/menu.png [frames]
+#     tools/shoot.sh belohnung /tmp/x.png            # Aufbau
+#     tools/shoot.sh res://scenes/ui/credits.tscn /tmp/x.png   # rohe Szene
+#
+# Aufbauten: menu optionen credits kampf pause ziehstapel ablage deck
+#            belohnung sieg niederlage hover
+# Welcher Aufbau welche Szene laedt und wie er sie in Form bringt, steht in
+# tools/shoot.gd.
 #
 # Startet einen virtuellen Bildschirm (Xvfb), laesst Godot mit Mesas
 # Software-Renderer hineinzeichnen und ruft tools/shoot.gd auf, das das Bild
