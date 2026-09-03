@@ -5,10 +5,22 @@
 [ext_resource type="PackedScene" path="res://combat/health_view.tscn" id="6_health"]
 [ext_resource type="PackedScene" path="res://ui/pile.tscn" id="11_pile"]
 [ext_resource type="PackedScene" path="res://ui/card_list_overlay.tscn" id="24_list"]
+[ext_resource type="Texture2D" path="res://assets/ui/card_back.png" id="25_back"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="12_pause"]
 [ext_resource type="Texture2D" path="res://assets/art/spieler.jpg" id="19_spieler"]
 [ext_resource type="PackedScene" path="res://ui/room_background.tscn" id="22_room"]
 [ext_resource type="Script" path="res://ui/energy_orb.gd" id="23_orb"]
+
+[sub_resource type="Gradient" id="Gradient_floor"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.0431373, 0.0470588, 0.0666667, 0, 0.0431373, 0.0470588, 0.0666667, 0.82)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_floor"]
+gradient = SubResource("Gradient_floor")
+width = 8
+height = 256
+fill_from = Vector2(0, 0)
+fill_to = Vector2(0, 1)
 
 [node name="Game" type="Control" unique_id=139426249]
 layout_mode = 3
@@ -21,6 +33,19 @@ script = ExtResource("1_uwrxv")
 
 [node name="Background" parent="." instance=ExtResource("22_room")]
 unique_name_in_owner = true
+
+[node name="HandShade" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -300.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_floor")
+expand_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1894322726]
 layout_mode = 1
@@ -188,6 +213,7 @@ offset_right = 88.0
 offset_bottom = -16.0
 grow_vertical = 0
 tooltip_text = "Was noch im Ziehstapel liegt"
+back = ExtResource("25_back")
 title = "Deck"
 
 [node name="DiscardPile" parent="." instance=ExtResource("11_pile")]
