@@ -37,10 +37,10 @@ SIZE = (260, 380)
 # gehoert dem Panel darum herum.
 RADIUS = 14
 
-BASE = (27, 31, 44)          # dieselbe Familie wie der Stapel-Hintergrund
-LATTICE = (46, 53, 71)       # Gitter, knapp ueber dem Grund - nur Textur
-GOLD = (138, 116, 64)        # gedaempftes Gold, der Akzent des Themes
-GOLD_BRIGHT = (192, 162, 92)
+BASE = (36, 30, 24)          # dieselbe Familie wie der Stapel-Hintergrund
+LATTICE = (60, 50, 40)       # Gitter, knapp ueber dem Grund - nur Textur
+GOLD = (138, 112, 72)        # gedaempftes Gold, der Akzent des Themes
+GOLD_BRIGHT = (192, 160, 108)
 
 # Abstand der Gitterlinien. Bei Anzeigegroesse sind das rund 6 Pixel - eng
 # genug, dass es als Muster liest, weit genug, dass es nicht flimmert.
