@@ -20,6 +20,19 @@ extends VBoxContainer
 ## HealthTitle, HealthValue und HealthBlock im Theme eine Kontur bekommen. Ohne
 ## sie verschwindet ein heller Name auf einer hellen Wand.
 ##
+## Die Zahl liegt seit 03.09.2026 *auf* dem Balken statt darunter (Befund aus
+## bfns Screenshots: der Balken war ein nackter roter Block und das Lauteste am
+## Bildschirm). Ein Balken mit Zahl darin liest sich als Anzeige, ein Balken mit
+## Zahl darunter als zwei Dinge. `%ValueLabel` wandert dabei nur im Baum - der
+## eindeutige Name loest weiterhin auf, deshalb aendert sich hier keine Zeile.
+##
+## Ein *Rahmen* um den Balken geht nicht, obwohl er alles andere im Theme hat:
+## ProgressBar zeichnet die Fuellung ueber die volle Breite des Knotens und
+## nicht innerhalb der Raender des Hintergrunds (progress_bar.cpp nachgesehen).
+## Ein Rahmen waere bei vollem Leben komplett verdeckt und bei halbem nur rechts
+## zu sehen. Stattdessen ist die Fuellung entsaettigt und der Hintergrund
+## dunkler - der Balken ordnet sich damit ein, ohne einen Rahmen zu brauchen.
+##
 ## Seit dem Juice-Durchgang hat die Anzeige zwei Aufgaben, die man nicht
 ## verwechseln sollte: den *Zustand* zeigen (_refresh, haengt an `changed`) und
 ## auf *Ereignisse* reagieren (Zahl, Ruck, Aufleuchten - haengt an damaged,
