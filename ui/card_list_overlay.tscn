@@ -57,7 +57,7 @@ vertical_alignment = 1
 
 [node name="Scroll" type="ScrollContainer" parent="CenterContainer/Dialog/VBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(698, 0)
+custom_minimum_size = Vector2(708, 0)
 layout_mode = 2
 horizontal_scroll_mode = 0
 

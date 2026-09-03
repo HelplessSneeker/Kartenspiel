@@ -127,22 +127,32 @@ func _add_card(data: CardData) -> void:
 ## waere entweder zu klein fuer ein volles Deck oder zu gross fuer eine Ablage
 ## mit drei Karten, und im zweiten Fall stuende das halbe Fenster leer.
 ##
-## Die Kartenhoehe wird abgefragt statt gewusst - Karten ohne Bild sind kuerzer
-## (siehe setup() in card.gd), und die 250 aus card.tscn sind ein Minimum, keine
-## Zusage.
+## Gerechnet wird aus der Gesamthoehe des Rasters, nicht aus der Hoehe der
+## ersten Karte. Die erste Fassung tat Letzteres und lag deshalb daneben: eine
+## Karte mit zweizeiligem Text ist hoeher als eine mit einzeiligem, und eine
+## Reihe ist so hoch wie ihre hoechste Karte. Bei zehn Karten fehlten dadurch
+## ein paar Pixel - zu wenig, um es zu sehen, aber genug, dass der Bereich
+## scrollbar war, ohne dass es etwas zu scrollen gab. (Befund bfn, 03.09.2026)
+##
+## Passt alles, bekommt der Ausschnitt exakt die Inhaltshoehe. Dann gibt es
+## nichts zu scrollen und Godot blendet den Balken von selbst aus.
 func _fit_scroll() -> void:
 	var count := %Grid.get_child_count()
 	if count == 0:
 		return
-	var first := %Grid.get_child(0) as Control
-	if first == null:
-		return
-	var card_height: float = first.get_combined_minimum_size().y
-	var separation: int = %Grid.get_theme_constant("v_separation")
 
+	var content: float = %Grid.get_combined_minimum_size().y
 	var rows := ceili(float(count) / float(%Grid.columns))
-	var shown := mini(rows, MAX_ROWS)
-	%Scroll.custom_minimum_size.y = shown * card_height + (shown - 1) * separation
+	if rows <= MAX_ROWS:
+		%Scroll.custom_minimum_size.y = content
+		return
+
+	# Anteilig kuerzen: eine mittlere Reihenhoehe ist hier die ehrlichere Zahl
+	# als die irgendeiner einzelnen Karte, und auf ein paar Pixel kommt es beim
+	# Abschneiden nicht an - der Balken sagt ohnehin, dass es weitergeht.
+	var separation: int = %Grid.get_theme_constant("v_separation")
+	var per_row := (content - (rows - 1) * separation) / float(rows)
+	%Scroll.custom_minimum_size.y = MAX_ROWS * per_row + (MAX_ROWS - 1) * separation
 
 
 func _clear() -> void:
