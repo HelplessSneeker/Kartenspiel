@@ -315,11 +315,13 @@ alignment = 1
 
 [node name="RewardDeckButton" type="Button" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/RewardBox"]
 layout_mode = 2
+theme_type_variation = &"QuietButton"
 tooltip_text = "Was du schon hast"
 text = "Dein Deck ansehen"
 
 [node name="SkipButton" type="Button" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer/RewardBox"]
 layout_mode = 2
+theme_type_variation = &"QuietButton"
 text = "Keine davon"
 
 [node name="StatusLabel" type="RichTextLabel" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer"]
@@ -370,15 +372,18 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
+theme_type_variation = &"PrimaryButton"
 text = "Weiter"
 
 [node name="RetryButton" type="Button" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer" unique_id=173045579]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"PrimaryButton"
 text = "Nochmal"
 
 [node name="MenuButton" type="Button" parent="OverlayLayer/EndOverlay/CenterContainer/Dialog/VBoxContainer"]
 layout_mode = 2
+theme_type_variation = &"QuietButton"
 text = "Hauptmenü"
 
 [node name="ListLayer" type="CanvasLayer" parent="."]
